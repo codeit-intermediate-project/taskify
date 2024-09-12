@@ -1,36 +1,84 @@
-import { Flex, Stack, Text, UnstyledButton } from '@mantine/core';
-import { useDisclosure } from '@mantine/hooks';
+import React, { useCallback } from 'react';
+
+import { Flex, Stack } from '@mantine/core';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 
+import { useRoot } from '@core/contexts/RootContexts';
+import useDashboardsPagination from '@lib/hooks/useDashboardsPagination';
 import useDevice from '@lib/hooks/useDevice';
+import cn from '@lib/utils/cn';
 
-import Logo from './Logo';
-import DashboardAddModal from './Modals/DashboardAddModal';
-import SideBarList from './SideBarList';
+import SideBarPagination from './SideBarPagination';
 
-export default function SideBar() {
+export default function SideBarList() {
   const device = useDevice();
-  const [opened, { open, close }] = useDisclosure(false);
+  const router = useRouter();
+  const { dashboardid, setDashboardid } = useRoot();
+  const {
+    currentPage,
+    totalItems,
+    data: dashboards,
+    handlePageChange,
+  } = useDashboardsPagination();
 
   const isMobile = device === 'mobile';
 
+  /** useRoot의 setDashboardid를 업데이트해야 헤더에 상태 반영 가능 */
+  const redirectDashboard = useCallback(
+    (id: number) => {
+      setDashboardid(String(id));
+      router.push(`/dashboard/${id}`);
+    },
+    [router, setDashboardid]
+  );
+
+  const handleDashboardClick = (id: number) => {
+    redirectDashboard(id);
+  };
+
   return (
-    <Stack className="fixed bottom-0 left-0 top-0 z-50 w-[67px] items-center border-r border-border-gray bg-white pt-5 text-gray-400 md:w-40 md:items-stretch md:px-[13px] xl:w-[300px]">
-      <Logo />
-      <DashboardAddModal opened={opened} onClose={close}>
-        <Flex className="mt-4 items-center justify-between md:mt-10">
-          {!isMobile && (
-            <Text className="font-xs-12px-semibold">Dash Boards</Text>
-          )}
-          <UnstyledButton
-            className="relative flex h-5 w-5 items-center justify-center"
-            onClick={open}
+    <Stack className="items-center gap-2 md:items-stretch">
+      {dashboards &&
+        dashboards?.map(dashboard => (
+          <Flex
+            key={dashboard.id}
+            className={cn(
+              'h-[43px] items-center rounded hover:border-2 hover:border-blue',
+              dashboard.id === Number(dashboardid) && 'bg-violet-white'
+            )}
+            onClick={() => handleDashboardClick(dashboard.id)}
           >
-            <Image fill src="/icons/add_box.png" alt="Dashboard create" />
-          </UnstyledButton>
-        </Flex>
-      </DashboardAddModal>
-      <SideBarList />
+            <button className="flex h-10 w-10 items-center justify-center">
+              <div
+                className="h-2 w-2 rounded-full"
+                style={{ backgroundColor: dashboard.color }}
+                aria-label="link button"
+              />
+            </button>
+            {!isMobile && (
+              <Flex className="items-center gap-2">
+                <span className="h-[26px] max-w-[75px] overflow-hidden text-ellipsis whitespace-nowrap font-lg-16px-medium xl:max-w-[200px] xl:font-2lg-18px-medium">
+                  {dashboard.title}
+                </span>
+                {dashboard.createdByMe && (
+                  <Image
+                    width={16}
+                    height={12}
+                    src="/icons/crown.png"
+                    alt="createdByMe"
+                  />
+                )}
+              </Flex>
+            )}
+          </Flex>
+        ))}
+      <SideBarPagination
+        currentPage={currentPage}
+        totalItems={totalItems}
+        onPageChange={handlePageChange}
+        itemsPerPage={10}
+      />
     </Stack>
   );
 }

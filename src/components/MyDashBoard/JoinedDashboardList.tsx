@@ -13,7 +13,6 @@ import Pagination from './UI/Pagination';
 export default function JoinedDashboardList() {
   const { localDashboards, loading, error } = useMyDashboard();
   const [modalOpened, setModalOpened] = useState(false);
-
   const itemsPerPage = 5;
 
   const fetchDashboards = useCallback(
@@ -34,14 +33,6 @@ export default function JoinedDashboardList() {
     itemsPerPage,
   });
 
-  // createdByMe가 true인 대시보드, false인 대시보드 분리
-  const createdByMeDashboards = currentDashboards.filter(
-    dashboard => dashboard.createdByMe
-  );
-  const notCreatedByMeDashboards = currentDashboards.filter(
-    dashboard => !dashboard.createdByMe
-  );
-
   return (
     <section className="flex flex-col gap-3">
       {loading && <div>나의 대시보드 목록을 불러오고 있습니다.</div>}
@@ -49,14 +40,8 @@ export default function JoinedDashboardList() {
         <>
           <div className="grid grid-flow-row-dense grid-cols-1 grid-rows-6 gap-3 md:grid-cols-2 md:grid-rows-3 xl:grid-cols-3 xl:grid-rows-2">
             <CreateDashboardButton onClick={() => setModalOpened(true)} />
-            {createdByMeDashboards.map(myDashboard => (
-              <DashboardCard key={myDashboard.id} value={myDashboard} />
-            ))}
-            {notCreatedByMeDashboards.map(notCreatedByMeDashboard => (
-              <DashboardCard
-                key={notCreatedByMeDashboard.id}
-                value={notCreatedByMeDashboard}
-              />
+            {currentDashboards.map(dashboard => (
+              <DashboardCard key={dashboard.id} value={dashboard} />
             ))}
           </div>
           <Pagination

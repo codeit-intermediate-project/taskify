@@ -1,7 +1,18 @@
+import { DashboardsResponseDto } from '@core/dtos/DashboardsDto';
+
 import instance from './instance';
 
-const getDashboards = async () => {
-  const response = await instance.get('/dashboards');
+interface GetDashboardsParams {
+  page?: number;
+  size?: number;
+  cursorId: number | null;
+}
+
+const getDashboards = async (props?: GetDashboardsParams) => {
+  const params = { ...props, navigationMethod: 'pagination' };
+  const response = await instance.get<DashboardsResponseDto>('/dashboards', {
+    params,
+  });
   return response.data;
 };
 

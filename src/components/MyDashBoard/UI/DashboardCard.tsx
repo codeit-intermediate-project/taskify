@@ -9,7 +9,7 @@ interface DashboardCardProps {
     id: number;
     title: string;
     color: string;
-    createdByMe: boolean;
+    createdByMe: boolean; // createdByMe 속성 추가
   };
 }
 

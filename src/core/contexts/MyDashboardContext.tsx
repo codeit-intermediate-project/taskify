@@ -11,7 +11,10 @@ import React, {
 } from 'react';
 
 import getDashboards from '@core/api/getDashboards';
-import { INIT_MYDASHBOARDS_CONTEXT } from '@lib/constants/initialValue';
+import {
+  INIT_MYDASHBOARDS_CONTEXT,
+  INIT_DASHBOARDS_REQUEST,
+} from '@lib/constants/dashboardsInit';
 import useApi from '@lib/hooks/useApi';
 
 import type {
@@ -25,13 +28,9 @@ const MyDashboardContext = createContext<MyDashboardContextDto>(
 );
 
 export const MyDashboardProvider = ({ children }: PropsWithChildren) => {
-  const [fetchedDashboards, setFetchedDashboards] = useState<
-    DashboardApplicationServiceResponseDto[]
-  >([]);
   const [localDashboards, setLocalDashboards] = useState<
     DashboardApplicationServiceResponseDto[]
   >([]);
-
   const { data, isLoading, error, callApi } = useApi<DashboardsResponseDto>(
     '/dashboards',
     'GET'
@@ -41,15 +40,20 @@ export const MyDashboardProvider = ({ children }: PropsWithChildren) => {
   useEffect(() => {
     const fetchData = async () => {
       const config = {
-        params: {
-          navigationMethod: 'pagination',
-        },
+        params: INIT_DASHBOARDS_REQUEST,
       };
       await callApi(undefined, config);
     };
 
     fetchData();
   }, [callApi]);
+
+  // 데이터가 변경될 때 로컬 대시보드 상태 업데이트
+  useEffect(() => {
+    if (data && data.dashboards) {
+      setLocalDashboards(data.dashboards);
+    }
+  }, [data]);
 
   // 로컬 대시보드 추가
   const addDashboard = (
@@ -58,32 +62,22 @@ export const MyDashboardProvider = ({ children }: PropsWithChildren) => {
     setLocalDashboards(prev => [...prev, newDashboard]);
   };
 
-  // 대시보드 데이터가 변경될 때마다 로컬 대시보드 상태 업데이트
-  useEffect(() => {
-    if (data && data.dashboards) {
-      setFetchedDashboards(data.dashboards);
-      setLocalDashboards(data.dashboards);
-    }
-  }, [data]);
-
   // 대시보드 데이터 재패칭 함수
   const fetchDashboards = useCallback(async () => {
     const response = await getDashboards();
-    setFetchedDashboards(response.dashboards);
     setLocalDashboards(response.dashboards);
   }, []);
 
   // Context 값 메모이제이션
   const value = useMemo(
     () => ({
-      fetchedDashboards,
       localDashboards,
       loading: isLoading,
       error,
       addDashboard,
       fetchDashboards,
     }),
-    [fetchDashboards, localDashboards, isLoading, error, fetchedDashboards]
+    [localDashboards, isLoading, error, fetchDashboards]
   );
 
   return (

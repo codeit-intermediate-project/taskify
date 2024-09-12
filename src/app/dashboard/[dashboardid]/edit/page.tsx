@@ -49,7 +49,7 @@ export default function DashBoardEditPage() {
       <div className="mt-8 space-y-6 px-4 md:mt-14">
         <EditDashboard dashboardId={Number(dashboardId)} />
         <MemberList dashboardId={Number(dashboardId)} />
-        <InvitationList dashboardId={Number(dashboardId)} />
+        <InvitationList dashboardId={dashboardId} />
         <button
           onClick={handleDeleteDashboard}
           type="button"
