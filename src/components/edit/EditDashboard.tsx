@@ -2,6 +2,8 @@
 import useDashboardDetail from '@lib/hooks/useDashboardDetail';
 import DashboardColorPicker from './DashboardColorPicker';
 import { updateDashboard } from '@core/api/columnApis';
+import PrimaryButton from '@components/@shared/UI/Button/PrimaryButton';
+import { useEffect, useState } from 'react';
 
 interface EditDashboardProps {
   dashboardId: number;
@@ -15,6 +17,19 @@ export default function EditDashboard({ dashboardId }: EditDashboardProps) {
     setDashboardColor,
     refetch,
   } = useDashboardDetail(dashboardId);
+
+  const [initialName, setInitialName] = useState('');
+  const [initialColor, setInitialColor] = useState('');
+
+  useEffect(() => {
+    if (initialName === '' && initialColor === '') {
+      setInitialName(dashboardName);
+      setInitialColor(dashboardColor);
+    }
+  }, [dashboardName, dashboardColor, initialColor, initialName]);
+
+  const hasChanges =
+    dashboardName !== initialName || dashboardColor !== initialColor;
 
   const handleUpdate = async () => {
     // 대시보드 업데이트
@@ -49,13 +64,13 @@ export default function EditDashboard({ dashboardId }: EditDashboardProps) {
           />
         </div>
       </div>
-      <button
+      <PrimaryButton
         onClick={handleUpdate}
-        type="button"
-        className="h-14 w-full rounded-lg bg-violet text-base text-white shadow md:h-16 md:text-lg"
+        disabled={!hasChanges}
+        className="h-14 w-full rounded-lg text-base shadow md:h-16 md:w-[488px] md:text-lg lg:w-[564px]"
       >
         변경
-      </button>
+      </PrimaryButton>
     </div>
   );
 }

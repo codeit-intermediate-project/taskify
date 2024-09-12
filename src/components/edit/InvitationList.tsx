@@ -1,15 +1,13 @@
 /* eslint-disable import/order */
 
-/* eslint-disable import/order */
-
 'use client';
 
 import { useState, useRef, useCallback, useEffect } from 'react';
 import Image from 'next/image';
 
-import InviteModal from '@/src/components/edit/InviteModal';
-import Pagination from '@/src/components/edit/Pagination';
-import usePagination from '@/src/lib/hooks/usePagination';
+import InviteModal from '@components/edit/InviteModal';
+import Pagination from '@components/edit/Pagination';
+import usePagination from '@lib/hooks/usePagination';
 import {
   addInvitation,
   deleteInvitation,
@@ -60,7 +58,7 @@ export default function InvitationList({ dashboardId }: InvitationListProps) {
     handlePageChange,
     data: currentItems,
   } = usePagination<EmailInvitation>({
-    totalItems: invitations.length, // 항상 숫자 값으로 보장
+    totalItems: invitations.length,
     itemsPerPage,
     fetchData: fetchInvitation,
   });
@@ -102,7 +100,7 @@ export default function InvitationList({ dashboardId }: InvitationListProps) {
         <div className="flex items-center gap-4">
           <Pagination
             currentPage={currentPage}
-            totalItems={invitations.length} // 항상 숫자 값으로 보장
+            totalItems={invitations.length}
             itemsPerPage={itemsPerPage}
             onPageChange={handlePageChange}
           />
