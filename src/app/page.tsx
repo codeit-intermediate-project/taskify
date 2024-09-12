@@ -17,10 +17,8 @@ export default function Home() {
   useEffect(() => {
     if (!user) return;
 
-    // user가 갱신이 필요할 때만 refreshUser 호출
-    if (!user.isRefreshed) {
-      refreshUser(user);
-    }
+    // 유저 정보 갱신 여부 확인 없이 바로 갱신
+    refreshUser(user);
 
     if (dashboardid) {
       router.push(`/dashboard/${dashboardid}`);
