@@ -45,6 +45,13 @@ export default function useColumns() {
   };
   // 컬럼 수정 로직
   const onSubmitEditColumnForm = async (editedTitle: string) => {
+    const beforeColumn = columnList.find(
+      column => column.id === targetColumnId
+    );
+    if (beforeColumn?.title === editedTitle) {
+      return;
+    }
+
     const formData = {
       title: editedTitle,
     };
@@ -57,7 +64,8 @@ export default function useColumns() {
       column.id === targetColumnId ? editedColumn : column
     );
     setColumnList(updatedColumnList);
-  }; // 다시확인
+  };
+
   // 컬럼 삭제 로직
   const onClickDeleteAtEditModal = async () => {
     await deleteColumn(targetColumnId);

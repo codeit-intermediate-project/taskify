@@ -5,7 +5,7 @@ import { useDisclosure } from '@mantine/hooks';
 import dayjs from 'dayjs';
 import Image from 'next/image';
 
-import CardDetailComment from '@components/dashboard/UI/CardDetailComment';
+import CardDetailComment from '@components/dashboard/CardDetailComment';
 import DropDownEditMenu from '@components/dashboard/UI/DropDownEditMenu';
 import { DashBoardContext } from '@core/contexts/DashBoardContext';
 import { CardServiceResponseDto } from '@core/dtos/CardsDto';
