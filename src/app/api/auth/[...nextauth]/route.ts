@@ -1,5 +1,5 @@
 /* eslint-disable import/order */
-/* eslint-disable import/no-extraneous-dependencies */
+
 import NextAuth from 'next-auth/next';
 
 import KakaoProvider from 'next-auth/providers/kakao';
