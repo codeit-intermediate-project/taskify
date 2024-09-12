@@ -8,41 +8,30 @@ import UnAutherHeader from '@components/Common/UnAuthHeader';
 import LandingBottom from '@components/Home/LandingBottom';
 import LandingMain from '@components/Home/LandingMain';
 import LandingTop from '@components/Home/LandingTop';
-// import { useRoot } from '@core/contexts/RootContexts';
-
-// 최신 dev 문제가 생겨 useRoot 이용에 제한이 생겨서
-// 같은 형태의 데이터를 만들어서 사용했습니다.
-
-const { user, dashBoardList } = {
-  user: 0,
-  dashBoardList: {
-    dashboards: [
-      {
-        id: 0,
-      },
-    ],
-  },
-};
+import { useRoot } from '@core/contexts/RootContexts';
 
 export default function Home() {
-  // const { user, dashBoardList} = useRoot();
+  const { user, dashboardid, refreshUser } = useRoot(); // RootContext에서 유저 상태 및 대시보드 ID 가져오기
   const router = useRouter();
 
   useEffect(() => {
-    function handleUserDashboardRedirect() {
-      if (user && dashBoardList.dashboards?.length > 0) {
-        const firstDashboardId = dashBoardList.dashboards[0].id;
-        if (firstDashboardId !== undefined) {
-          router.push(`/dashboard/${firstDashboardId}`);
-        }
-      }
+    if (!user) return;
+
+    // user가 갱신이 필요할 때만 refreshUser 호출
+    if (!user.isRefreshed) {
+      refreshUser(user);
     }
 
-    handleUserDashboardRedirect();
-  }, [router]);
-  // useRoot 사용시 디펜던시 [user, dashBoardList, router]
+    if (dashboardid) {
+      router.push(`/dashboard/${dashboardid}`);
+    } else {
+      router.push('/mydashboard');
+    }
+  }, [user, dashboardid, refreshUser, router]);
 
-  if (user) return null;
+  if (user) {
+    return;
+  }
 
   return (
     <>

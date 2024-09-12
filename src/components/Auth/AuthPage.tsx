@@ -1,15 +1,13 @@
-'use client';
-
 import { useState, useMemo } from 'react';
-import {
-  SubmitHandler,
-  useForm,
-  FieldErrors,
-  UseFormRegister,
-} from 'react-hook-form';
+import { SubmitHandler, useForm } from 'react-hook-form';
 
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+
+import { useRoot } from '@core/contexts/RootContexts';
+
+import Modal from './AuthModal';
+import InputField from './InputField';
 
 interface AuthPageProps {
   mode: 'login' | 'signup';
@@ -23,86 +21,82 @@ interface FormValues {
   terms?: boolean;
 }
 
-interface InputFieldProps {
-  id: keyof FormValues;
-  type?: string;
-  placeholder: string;
-  autoComplete?: string;
-  register: UseFormRegister<FormValues>;
-  errors: FieldErrors<FormValues>[keyof FormValues] | undefined;
-  validation: object;
-  showPassword?: boolean;
-  setShowPassword?: React.Dispatch<React.SetStateAction<boolean>>;
-}
-
-const InputField = ({
-  id,
-  type = 'text',
-  placeholder,
-  autoComplete,
-  showPassword,
-  setShowPassword,
-  register,
-  errors,
-  validation,
-}: InputFieldProps) => (
-  <div>
-    <label htmlFor={id} className="block text-sm font-medium text-gray-700">
-      {placeholder}
-    </label>
-    <div className="relative">
-      <input
-        id={id}
-        type={showPassword ? 'text' : type}
-        placeholder={placeholder}
-        autoComplete={autoComplete}
-        {...register(id, validation)}
-        className={`mt-1 block w-full rounded-md border bg-white px-3 py-2 focus:outline-none ${
-          errors ? 'border-red' : 'border-[#D9D9D9]'
-        } focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
-      />
-      {type === 'password' && setShowPassword && (
-        <button
-          type="button"
-          onClick={() => setShowPassword(prev => !prev)}
-          className="absolute inset-y-0 right-0 top-5 flex -translate-y-1/2 transform items-center px-3"
-          aria-label="Toggle password visibility"
-        >
-          <Image
-            src={`/icons/${
-              showPassword ? 'visibility_off' : 'visibility_on'
-            }.png`}
-            alt={showPassword ? '비밀번호 숨기기' : '비밀번호 표시하기'}
-            width={20}
-            height={20}
-          />
-        </button>
-      )}
-    </div>
-    {errors && <p className="mt-1 text-sm text-red">{errors.message}</p>}
-  </div>
-);
-
 export default function AuthPage({ mode }: AuthPageProps) {
+  const { login, refreshUser } = useRoot();
   const {
     register,
     handleSubmit,
     formState: { errors },
     watch,
-  } = useForm<FormValues>({
-    mode: 'onBlur',
-  });
+  } = useForm<FormValues>({ mode: 'onBlur' });
+
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [termsAccepted, setTermsAccepted] = useState(false);
+  const [isModalVisible, setIsModalVisible] = useState(false); // 모달 상태
+  const [modalMessage, setModalMessage] = useState(''); // 모달 메시지
 
-  const onSubmit: SubmitHandler<FormValues> = async () => {
+  const emailValue = watch('email');
+  const passwordValue = watch('password');
+  const passwordConfirmValue = watch('passwordConfirm');
+
+  const onSubmit: SubmitHandler<FormValues> = async data => {
     try {
-      router.push(mode === 'login' ? '/mydashboard' : '/login');
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error('Authentication failed:', error);
+      if (mode === 'signup') {
+        const response = await fetch(
+          'https://sp-taskify-api.vercel.app/8-3/users',
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              email: data.email.trim(),
+              nickname: data.nickname?.trim(),
+              password: data.password.trim(),
+            }),
+          }
+        );
+
+        const result = await response.json();
+
+        if (response.status === 201) {
+          setModalMessage('가입이 완료되었습니다!');
+        } else {
+          throw new Error(result.message || '회원가입에 실패했습니다.');
+        }
+      } else {
+        const response = await login({
+          email: data.email.trim(),
+          password: data.password.trim(),
+        });
+
+        if (response?.status === 201) {
+          refreshUser();
+          setModalMessage('로그인 성공!');
+        } else {
+          throw new Error(response?.data?.message || '로그인에 실패했습니다.');
+        }
+      }
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        const errorMessage = error.message || '로그인에 실패했습니다.';
+        setModalMessage(errorMessage);
+      } else {
+        setModalMessage('알 수 없는 오류가 발생했습니다.');
+      }
+    } finally {
+      setIsModalVisible(true);
+    }
+  };
+
+  const closeModal = () => {
+    setIsModalVisible(false);
+    if (modalMessage === '가입이 완료되었습니다!') {
+      router.push('/login');
+    } else if (modalMessage === '로그인 성공!') {
+      router.push('/mydashboard');
     }
   };
 
@@ -111,19 +105,27 @@ export default function AuthPage({ mode }: AuthPageProps) {
       return (
         termsAccepted &&
         !Object.keys(errors).length &&
-        watch('password') === watch('passwordConfirm')
+        passwordValue === passwordConfirmValue
       );
     }
-    return watch('email') && watch('password') && !Object.keys(errors).length;
-  }, [errors, watch, mode, termsAccepted]);
-
-  const handleLogoClick = () => {
-    router.push('/');
-  };
+    return (
+      Boolean(emailValue) &&
+      Boolean(passwordValue) &&
+      !Object.keys(errors).length
+    );
+  }, [
+    emailValue,
+    passwordValue,
+    passwordConfirmValue,
+    errors,
+    termsAccepted,
+    mode,
+  ]);
 
   return (
     <div className="flex min-h-screen items-center justify-center p-4">
       <div className="w-full max-w-sm rounded-lg p-6">
+        {/* 상단 로고와 텍스트 */}
         <div className="mb-6 flex flex-col items-center">
           <Image
             src="/images/main_logo.png"
@@ -131,7 +133,7 @@ export default function AuthPage({ mode }: AuthPageProps) {
             width={200}
             height={200}
             className="cursor-pointer"
-            onClick={handleLogoClick}
+            onClick={() => router.push('/')}
           />
           <p className="mt-4 text-[18px] text-black-500 font-2lg-18px-medium">
             {mode === 'login'
@@ -139,11 +141,12 @@ export default function AuthPage({ mode }: AuthPageProps) {
               : '첫 방문을 환영합니다!'}
           </p>
         </div>
+
+        {/* 입력 필드 */}
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           {mode === 'signup' && (
             <InputField
               id="nickname"
-              type="text"
               placeholder="닉네임을 입력해 주세요"
               register={register}
               errors={errors.nickname}
@@ -153,16 +156,13 @@ export default function AuthPage({ mode }: AuthPageProps) {
                   value: 10,
                   message: '열 자 이하로 작성해 주세요.',
                 },
-                onBlur: () => {},
               }}
             />
           )}
-
           <InputField
             id="email"
             type="email"
             placeholder="이메일을 입력해 주세요"
-            autoComplete="email"
             register={register}
             errors={errors.email}
             validation={{
@@ -171,10 +171,8 @@ export default function AuthPage({ mode }: AuthPageProps) {
                 value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
                 message: '이메일 형식으로 작성해 주세요.',
               },
-              onBlur: () => {},
             }}
           />
-
           <InputField
             id="password"
             type="password"
@@ -190,10 +188,8 @@ export default function AuthPage({ mode }: AuthPageProps) {
             validation={{
               required: '비밀번호는 필수 항목입니다.',
               minLength: { value: 8, message: '8자 이상 입력해 주세요.' },
-              onBlur: () => {},
             }}
           />
-
           {mode === 'signup' && (
             <>
               <InputField
@@ -205,10 +201,8 @@ export default function AuthPage({ mode }: AuthPageProps) {
                 register={register}
                 errors={errors.passwordConfirm}
                 validation={{
-                  validate: (value: string) =>
-                    value === watch('password') ||
-                    '비밀번호가 일치하지 않습니다.',
-                  onBlur: () => {},
+                  validate: value =>
+                    value === passwordValue || '비밀번호가 일치하지 않습니다.',
                 }}
               />
 
@@ -229,7 +223,6 @@ export default function AuthPage({ mode }: AuthPageProps) {
               </div>
             </>
           )}
-
           <button
             type="submit"
             disabled={!isFormValid}
@@ -241,22 +234,24 @@ export default function AuthPage({ mode }: AuthPageProps) {
           >
             {mode === 'login' ? '로그인' : '가입하기'}
           </button>
-          <div className="mt-4 flex items-center justify-center text-sm text-gray-600">
-            <p className="mr-2 text-gray-700">
-              {mode === 'login' ? '회원이 아니신가요?' : '이미 회원이신가요?'}
-            </p>
-            <button
-              type="button"
-              onClick={() =>
-                router.push(mode === 'login' ? '/signup' : '/login')
-              }
-              className="font-semibold text-indigo-600 underline hover:text-indigo-800"
-            >
-              {mode === 'login' ? '회원가입하기' : '로그인하기'}
-            </button>
-          </div>
         </form>
+
+        {/* 하단 회원가입/로그인 링크 */}
+        <div className="mt-4 flex items-center justify-center text-sm text-gray-600">
+          <p className="mr-2 text-gray-700">
+            {mode === 'login' ? '회원이 아니신가요?' : '이미 회원이신가요?'}
+          </p>
+          <button
+            type="button"
+            onClick={() => router.push(mode === 'login' ? '/signup' : '/login')}
+            className="font-semibold text-indigo-600 underline hover:text-indigo-800"
+          >
+            {mode === 'login' ? '회원가입하기' : '로그인하기'}
+          </button>
+        </div>
       </div>
+
+      {isModalVisible && <Modal message={modalMessage} onClose={closeModal} />}
     </div>
   );
 }
