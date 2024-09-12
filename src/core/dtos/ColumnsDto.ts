@@ -14,7 +14,7 @@ export interface CreateColumnRequestDto {
 // get columns response DTO
 export interface GetColumnsResponseDto {
   result: 'SUCCESS';
-  data: ColumnServiceResponseDto[] | null;
+  data: ColumnServiceResponseDto[];
 }
 
 export interface FindColumnsRequestDto {

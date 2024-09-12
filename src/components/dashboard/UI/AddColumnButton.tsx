@@ -8,7 +8,7 @@ interface AddColumnButtonProps {
 export default function AddColumnButton({ open }: AddColumnButtonProps) {
   return (
     <div className="border-gray-100 px-3 md:px-5 xl:min-w-[354px] xl:border-l">
-      <div className="flex h-[66px] w-full items-center justify-center rounded-md border border-gray-200 md:h-[70px] xl:mt-[58px]">
+      <div className="mt-[58px] flex h-[66px] w-full items-center justify-center rounded-md border border-gray-200 md:h-[70px]">
         <Button
           onClick={open}
           className="h-full w-full bg-white text-[#000000]"

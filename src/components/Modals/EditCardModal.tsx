@@ -37,11 +37,11 @@ import Image from 'next/image';
 
 import ImageCropperModal from '@components/Modals/ImageCropperModal';
 import { DashBoardContext } from '@core/contexts/DashBoardContext';
-import { CreateCardRequestDto } from '@core/dtos/CardsDto';
+import {
+  CardServiceResponseDto,
+  CreateCardRequestDto,
+} from '@core/dtos/CardsDto';
 import addPurple from '@icons/add_purple.png';
-import calendar from '@icons/calendar.png';
-import convertStringToColorHex from '@lib/utils/convertStringToColorHex';
-import convertStringToRGBA from '@lib/utils/convertStringToRGBA';
 
 interface CreateCardModalProps {
   columnId: number;
@@ -53,12 +53,16 @@ interface CreateCardModalProps {
   setValue: UseFormSetValue<CreateCardRequestDto>;
   getValues: UseFormGetValues<CreateCardRequestDto>;
   watch: UseFormWatch<CreateCardRequestDto>;
-  onSubmitCreateCard: (fieldData: CreateCardRequestDto) => Promise<boolean>;
-  closeCreateCard: () => void;
+  onSubmitEditCard: (
+    cardId: number,
+    fieldData: CreateCardRequestDto
+  ) => Promise<boolean>;
+  closeEdit: () => void;
   reset: () => void;
   clearErrors: UseFormClearErrors<CreateCardRequestDto>;
+  card: CardServiceResponseDto;
 }
-export default function CreateCardModal({
+export default function EditCardModal({
   columnId,
   register,
   handleSubmit,
@@ -67,23 +71,26 @@ export default function CreateCardModal({
   setError,
   getValues,
   watch,
-  onSubmitCreateCard,
-  closeCreateCard,
+  onSubmitEditCard,
+  closeEdit,
   errors,
   reset,
   clearErrors,
+  card,
 }: CreateCardModalProps) {
-  const combobox = useCombobox({
-    onDropdownClose: () => combobox.resetSelectedOption(),
+  const assigneeCombobox = useCombobox({
+    onDropdownClose: () => assigneeCombobox.resetSelectedOption(),
   });
-
+  const columnCombobox = useCombobox({
+    onDropdownClose: () => assigneeCombobox.resetSelectedOption(),
+  });
+  const { columnList } = useContext(DashBoardContext);
   const [selectedAssignee, setSelectedAssignee] = useState('');
   const [selectedAssigneeImg, setSelectedAssigneeImg] = useState('');
-  const { members } = useContext(DashBoardContext);
+  const { members, dashboardColor } = useContext(DashBoardContext);
   // ---------태그인풋 로직
   const tagInputRef = useRef<HTMLInputElement>(null);
   const tags = watch('tags');
-  // 태그 인풋에 value가 없을 때 백스페이스바를 누르면 이전에 등록한 태그가 하나씩 지워진다.
   const handleKeyDownTag: KeyboardEventHandler<HTMLInputElement> = e => {
     if (!tagInputRef.current) {
       return;
@@ -143,7 +150,28 @@ export default function CreateCardModal({
     clearErrors('imageUrl');
   };
   const image = watch('imageUrl');
-  // 드롭다운에서 담당자 클릭시 유저 닉네임이 state에 저장되고 해당 정보로 userId를 저장, 프로필 이미지불러옴
+  //-----
+  const nowColumnId = watch('columnId');
+  const [selectedColumnTitle, setSelectedColumnTitle] = useState<string>('');
+  useEffect(() => {
+    setSelectedColumnTitle(prev => {
+      const select = columnList.find(column => column.id === nowColumnId);
+      return select ? select.title : prev;
+    });
+  }, [nowColumnId, columnList]);
+  const onClickColumnOption = (value: string) => {
+    const columnIdNum = Number(value);
+    setValue('columnId', columnIdNum);
+  };
+
+  const onSubmit = async (data: CreateCardRequestDto) => {
+    const result = await onSubmitEditCard(card.id, data);
+    if (!result) {
+      return;
+    }
+    closeEdit();
+    reset();
+  };
   const handleAssigneeUserIdValue = useCallback(
     (nickname: string) => {
       const selectedUser = members.find(member => member.nickname === nickname);
@@ -166,6 +194,8 @@ export default function CreateCardModal({
 
   useEffect(() => {
     clearErrors('assigneeUserId');
+
+    // 드롭다운 메뉴 클릭시 유저 닉네임이 state에 저장되고 해당 정보로 userId를 저장, 프로필 이미지불러옴
     handleAssigneeUserIdValue(selectedAssignee);
     const userImage = handleAssigneeUserImage(selectedAssignee);
     setSelectedAssigneeImg(userImage);
@@ -176,93 +206,152 @@ export default function CreateCardModal({
     handleAssigneeUserImage,
   ]);
 
-  const onSubmit = async (data: CreateCardRequestDto) => {
-    const result = await onSubmitCreateCard(data);
-    if (!result) {
-      return;
-    }
-    reset();
-    closeCreateCard();
-  };
   useEffect(() => {
-    setValue('assigneeUserId', 0);
-    setValue('title', '');
-    setValue('description', '');
-    setValue('dueDate', new Date().toString());
-    setValue('tags', []);
-    setValue('imageUrl', '');
-    setValue('columnId', 0);
-  }, [setValue]);
+    setValue('assigneeUserId', card.assignee?.id);
+    setValue('title', card.title);
+    setValue('description', card.description);
+    setValue('dueDate', card.dueDate?.toString());
+    setValue('tags', card.tags);
+    setValue('imageUrl', card.imageUrl!);
+    setValue('columnId', columnId);
+  }, [
+    card.assignee?.id,
+    card.description,
+    card.dueDate,
+    card.imageUrl,
+    card.tags,
+    card.title,
+    columnId,
+    setValue,
+  ]);
   return (
     <>
-      <form className="flex flex-col gap-8" onSubmit={handleSubmit(onSubmit)}>
-        <div>
-          <div className="flex items-center gap-1">
-            <span className="font-2lg-18px-medium">담당자</span>
-            <span className="mantine-inputWrapper-required text-[#FA5252] font-md-14px-medium">
-              *
-            </span>
-          </div>
-          <Combobox
-            store={combobox}
-            onOptionSubmit={value => {
-              setSelectedAssignee(value);
-              combobox.closeDropdown();
-            }}
-          >
-            <Combobox.Target>
-              <InputBase
-                className="pt-2.5"
-                component="button"
-                type="button"
-                rightSection={<Combobox.Chevron />}
-                onClick={() => combobox.toggleDropdown()}
-                pointer
-              >
-                {selectedAssignee ? (
-                  <div className="flex items-center gap-2">
-                    {selectedAssigneeImg ? (
-                      <Image
-                        className="rounded-full"
-                        src={selectedAssigneeImg}
-                        width={25}
-                        height={25}
-                        alt="멤버 프로필"
-                      />
-                    ) : (
-                      <span className="h-[25px] w-[25px]" />
-                    )}
-                    <span className="font-lg-16px-regular">
-                      {selectedAssignee}
-                    </span>
+      <form
+        className="flex flex-col gap-8"
+        onSubmit={handleSubmit(data => {
+          onSubmit(data);
+        })}
+      >
+        <div className="flex w-full gap-8">
+          <div className="grow">
+            <span className="font-2lg-18px-medium">상태</span>
+
+            <Combobox
+              store={columnCombobox}
+              onOptionSubmit={value => {
+                onClickColumnOption(value);
+                columnCombobox.closeDropdown();
+              }}
+            >
+              <Combobox.Target>
+                <InputBase
+                  className="pt-2.5"
+                  component="button"
+                  type="button"
+                  rightSection={<Combobox.Chevron />}
+                  onClick={() => columnCombobox.toggleDropdown()}
+                  pointer
+                >
+                  <div className="flex items-center gap-2 px-2.5">
+                    <span
+                      className="h-1.5 w-1.5 rounded-full"
+                      style={{ backgroundColor: dashboardColor }}
+                    />
+                    <span>{selectedColumnTitle}</span>
                   </div>
-                ) : (
-                  <Input.Placeholder>담당자를 선택하세요.</Input.Placeholder>
-                )}
-              </InputBase>
-            </Combobox.Target>
-            <p className="pt-1 text-red">{errors.assigneeUserId?.message}</p>
-            <Combobox.Dropdown>
-              {members.map(member => (
-                <Combobox.Option value={member.nickname} key={member.id}>
-                  <button className="flex items-center gap-2">
-                    {member.profileImageUrl ? (
-                      <Image
-                        className="rounded-full"
-                        src={member.profileImageUrl}
-                        width={25}
-                        height={25}
-                        alt="멤버 프로필"
+                </InputBase>
+              </Combobox.Target>
+              <p className="pt-1 text-red">{errors.assigneeUserId?.message}</p>
+              <Combobox.Dropdown>
+                {columnList.map(column => (
+                  <Combobox.Option value={column.id.toString()} key={column.id}>
+                    <button className="flex items-center gap-2 px-2.5">
+                      <span
+                        className="h-1.5 w-1.5 rounded-full"
+                        style={{ backgroundColor: dashboardColor }}
                       />
-                    ) : (
-                      <span className="h-[25px] w-[25px]" />
-                    )}
-                    <span>{member.nickname}</span>
-                  </button>
-                </Combobox.Option>
-              ))}
-            </Combobox.Dropdown>
-          </Combobox>
+                      <span>{column.title}</span>
+                    </button>
+                  </Combobox.Option>
+                ))}
+              </Combobox.Dropdown>
+            </Combobox>
+          </div>
+          <div className="grow">
+            <span className="font-2lg-18px-medium">담당자</span>
+
+            <Combobox
+              store={assigneeCombobox}
+              onOptionSubmit={value => {
+                setSelectedAssignee(value);
+                assigneeCombobox.closeDropdown();
+              }}
+            >
+              <Combobox.Target>
+                <InputBase
+                  className="pt-2.5"
+                  component="button"
+                  type="button"
+                  rightSection={<Combobox.Chevron />}
+                  onClick={() => assigneeCombobox.toggleDropdown()}
+                  pointer
+                >
+                  {selectedAssignee ? (
+                    <div className="flex items-center gap-2">
+                      {selectedAssigneeImg ? (
+                        <Image
+                          className="rounded-full"
+                          src={selectedAssigneeImg}
+                          width={25}
+                          height={25}
+                          alt="멤버 프로필"
+                        />
+                      ) : (
+                        <span className="h-[25px] w-[25px]" />
+                      )}
+                      <span className="font-lg-16px-regular">
+                        {selectedAssignee}
+                      </span>
+                    </div>
+                  ) : (
+                    <div className="flex h-[25px] items-center gap-2">
+                      {card?.assignee?.profileImageUrl && (
+                        <Image
+                          src={card.assignee.profileImageUrl}
+                          className="rounded-full"
+                          width={25}
+                          height={25}
+                          alt="멤버 프로필"
+                        />
+                      )}
+                      <span>{card?.assignee?.nickname}</span>
+                    </div>
+                  )}
+                </InputBase>
+              </Combobox.Target>
+              <p className="pt-1 text-red">{errors.assigneeUserId?.message}</p>
+              <Combobox.Dropdown>
+                {members.map(member => (
+                  <Combobox.Option value={member.nickname} key={member.id}>
+                    <button className="flex items-center gap-2">
+                      {member.profileImageUrl ? (
+                        <Image
+                          className="rounded-full"
+                          src={member.profileImageUrl}
+                          width={25}
+                          height={25}
+                          alt="멤버 프로필"
+                        />
+                      ) : (
+                        <span className="h-[25px] w-[25px]" />
+                      )}
+                      <span>{member.nickname}</span>
+                    </button>
+                  </Combobox.Option>
+                ))}
+              </Combobox.Dropdown>
+            </Combobox>
+          </div>
         </div>
 
         <Input.Wrapper
@@ -296,9 +385,6 @@ export default function CreateCardModal({
             control={control}
             render={({ field: { value, onChange } }) => (
               <DateInput
-                leftSection={
-                  <Image src={calendar} alt="마감일" width={22} height={22} />
-                }
                 value={
                   value
                     ? dayjs(value, 'YYYY. MM. DD HH:mm').toDate()
@@ -318,8 +404,8 @@ export default function CreateCardModal({
         <div>
           <span className="font-2lg-18px-medium">태그</span>
 
-          <div className="wrap mt-2 flex min-h-12 w-full items-center gap-2 border border-[#ced4da] px-2.5">
-            <div className="">
+          <div className="mt-2 flex h-12 w-full items-center gap-2 whitespace-nowrap border border-[#ced4da] px-2.5">
+            <div className="max-w-[50%] overflow-hidden">
               {tags &&
                 tags.map((tag, index) => {
                   const keyValue = `${tag}${index}`;
@@ -327,24 +413,19 @@ export default function CreateCardModal({
                     <span
                       key={keyValue}
                       className="mr-2 border px-0.5 py-1 font-md-14px-regular"
-                      style={{
-                        color: `#${convertStringToColorHex(tag)}`,
-                        backgroundColor: `${convertStringToRGBA(tag, 0.1)}`,
-                      }}
                     >
                       {tag}
                     </span>
                   );
                 })}
-              <input
-                ref={tagInputRef}
-                onKeyDown={handleKeyDownTag}
-                placeholder="입력 후 Enter"
-                className="placeholder:text-gray-300 placeholder:font-md-14px-regular"
-              />
             </div>
+            <input
+              ref={tagInputRef}
+              onKeyDown={handleKeyDownTag}
+              placeholder="입력 후 Enter"
+              className="placeholder:text-gray-300 placeholder:font-md-14px-regular"
+            />
           </div>
-          <p className="pt-1 text-red">{errors.tags?.message}</p>
         </div>
 
         <div className="flex flex-col">
@@ -397,12 +478,12 @@ export default function CreateCardModal({
           <Button
             type="button"
             className="h-full grow border-gray-200 bg-white text-gray-400"
-            onClick={closeCreateCard}
+            onClick={closeEdit}
           >
             취소
           </Button>
           <Button type="submit" className="h-full grow bg-violet">
-            생성
+            수정
           </Button>
         </div>
       </form>

@@ -31,7 +31,7 @@ export interface CreateCardRequestDto {
   title: string;
   description: string;
   dueDate?: string;
-  tags?: string[];
+  tags: string[];
   imageUrl?: string;
 }
 
@@ -46,7 +46,7 @@ export interface UpdateCardRequestDto {
   assigneeUserId?: number | null;
   title?: string;
   description?: string;
-  dueDate?: Date | null;
+  dueDate?: string | null;
   tags?: string[];
   imageUrl?: string | null;
 }

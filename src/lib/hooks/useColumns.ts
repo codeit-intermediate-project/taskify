@@ -1,23 +1,12 @@
-import { MouseEventHandler, useCallback, useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 import { useParams } from 'next/navigation';
 
-import {
-  deleteColumn,
-  getColumns,
-  getDashboardDetail,
-  postColumn,
-  putColumn,
-} from '@core/api/columnApis';
-
-import type { ColumnServiceResponseDto } from '@core/dtos/ColumnsDto';
+import { deleteColumn, postColumn, putColumn } from '@core/api/columnApis';
+import { DashBoardContext } from '@core/contexts/DashBoardContext';
 
 export default function useColumns() {
-  const [columnList, setColumnList] = useState<
-    ColumnServiceResponseDto[] | null
-  >(null);
-  const [dashboardColor, setDashboardColor] = useState('#000000');
   const [targetColumnId, setTargetColumnId] = useState(0);
   const { dashboardid } = useParams();
   const {
@@ -27,17 +16,7 @@ export default function useColumns() {
     handleSubmit,
     setValue,
   } = useForm({ mode: 'onTouched' });
-  const LoadColumns = useCallback(async () => {
-    const { data } = await getColumns(Number(dashboardid));
-    setColumnList(data);
-
-    // 컬럼 제목 옆에 표시되는 대시보드 색상 받아오기
-    const { color } = await getDashboardDetail(Number(dashboardid));
-    if (!color) {
-      return;
-    }
-    setDashboardColor(color);
-  }, [dashboardid]);
+  const { columnList, setColumnList } = useContext(DashBoardContext);
 
   // 컬럼 갯수 10개 제한 (백엔드에서 10개 이상 생성안됨)
   const validateColumnCount = () => {
@@ -62,13 +41,7 @@ export default function useColumns() {
       return;
     }
     // 생성한 컬럼은 로컬에서 바로 추가된다 (새로 패치해오는게 나을까)
-
-    setColumnList(prev => {
-      if (prev === null) {
-        return [createdColumn];
-      }
-      return [...prev, createdColumn];
-    });
+    setColumnList(prev => [...prev, createdColumn]);
   };
   // 컬럼 수정 로직
   const onSubmitEditColumnForm = async (editedTitle: string) => {
@@ -80,53 +53,21 @@ export default function useColumns() {
       columnId: targetColumnId,
       formData,
     });
-    const editedColumnIndex = columnList?.findIndex(
-      column => column.id === editedColumn?.id
+    const updatedColumnList = columnList.map(column =>
+      column.id === targetColumnId ? editedColumn : column
     );
-    if (editedColumnIndex !== undefined && editedColumnIndex !== -1) {
-      setColumnList(prev => {
-        if (prev === null || editedColumn === null) {
-          return [];
-        }
-        const updatedColumnList = [...prev];
-        updatedColumnList[editedColumnIndex] = editedColumn;
-        return updatedColumnList;
-      });
-    }
-  };
+    setColumnList(updatedColumnList);
+  }; // 다시확인
   // 컬럼 삭제 로직
-  const onClickDeleteAtEditModal: MouseEventHandler<
-    HTMLButtonElement
-  > = async () => {
-    const deletedColumnIndex = columnList?.findIndex(
-      column => column.id === targetColumnId
+  const onClickDeleteAtEditModal = async () => {
+    await deleteColumn(targetColumnId);
+    const deletedColumnList = columnList.filter(
+      column => column.id !== targetColumnId
     );
-    if (columnList === null) {
-      return;
-    }
-    const copyList = JSON.parse(JSON.stringify(columnList));
-    const backUpList = JSON.parse(JSON.stringify(columnList));
-    copyList.splice(deletedColumnIndex, 1);
-    setColumnList(copyList);
-    try {
-      await deleteColumn(targetColumnId);
-    } catch (err) {
-      // 로컬에서 삭제했다가 delete요청 실패시 다시 복원
-      setColumnList(backUpList);
-    }
+    setColumnList(deletedColumnList);
   };
-
-  // 초기 Columns 랜더링
-  useEffect(() => {
-    if (Number.isNaN(Number(dashboardid))) {
-      return;
-    }
-    LoadColumns();
-  }, [dashboardid, LoadColumns]);
 
   return {
-    columnList,
-    dashboardColor,
     onSubmitCreateColumnForm,
     register,
     errors,

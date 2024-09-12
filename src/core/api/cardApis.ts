@@ -1,5 +1,6 @@
 import {
   CardServiceResponseDto,
+  UpdateCardRequestDto,
   type CreateCardRequestDto,
   type GetCardsResponseDto,
 } from '@core/dtos/CardsDto';
@@ -12,11 +13,26 @@ export const getCards = async (columnId: number) => {
     `/cards?size=10&columnId=${columnId}`
   );
   const { data } = res;
+  return data.cards;
+};
+
+export const deleteCard = async (cardId: number) => {
+  await axios.delete<GetCardsResponseDto>(`/cards/${cardId}`);
+};
+export const postCard = async (formData: CreateCardRequestDto) => {
+  const res = await axios.post<CardServiceResponseDto>('/cards', formData);
+  const { data } = res;
   return data;
 };
 
-export const postCard = async (formData: CreateCardRequestDto) => {
-  const res = await axios.post<CardServiceResponseDto>('/cards', formData);
+export const putCard = async (
+  cardId: number,
+  formData: UpdateCardRequestDto
+) => {
+  const res = await axios.put<CardServiceResponseDto>(
+    `/cards/${cardId}`,
+    formData
+  );
   const { data } = res;
   return data;
 };

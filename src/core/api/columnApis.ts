@@ -36,16 +36,12 @@ interface PutColumnParams {
   formData: UpdateColumnRequestDto;
 }
 export const putColumn = async ({ columnId, formData }: PutColumnParams) => {
-  try {
-    const res = await axios.put<ColumnServiceResponseDto>(
-      `/columns/${columnId}`,
-      formData
-    );
-    const { data } = res;
-    return data;
-  } catch (error) {
-    return null;
-  }
+  const res = await axios.put<ColumnServiceResponseDto>(
+    `/columns/${columnId}`,
+    formData
+  );
+  const { data } = res;
+  return data;
 };
 
 export const deleteColumn = async (columnId: number) => {

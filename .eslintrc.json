@@ -28,6 +28,7 @@
     "prettier"
   ],
   "rules": {
+    "no-nested-ternary": "off",
     "import/order": [
       "error",
       {

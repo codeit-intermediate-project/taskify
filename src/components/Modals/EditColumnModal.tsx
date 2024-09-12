@@ -1,4 +1,3 @@
-import { MouseEventHandler } from 'react';
 import {
   FieldErrors,
   FieldValues,
@@ -16,7 +15,7 @@ interface EditColumnModalProps {
   register: UseFormRegister<FieldValues>;
   errors: FieldErrors<FieldValues>;
   handleSubmit: UseFormHandleSubmit<FieldValues>;
-  onClickDelete: MouseEventHandler<HTMLButtonElement>;
+  onClickDelete: () => void;
   confirmDeleteModal: boolean;
   openConfirm: () => void;
   closeConfirm: () => void;
@@ -32,6 +31,11 @@ export default function EditColumnModal({
   openConfirm,
   closeConfirm,
 }: EditColumnModalProps) {
+  const onClickDeleteButton = () => {
+    onClickDelete();
+    closeConfirm();
+    closeEdit();
+  };
   return (
     <>
       <form
@@ -78,10 +82,11 @@ export default function EditColumnModal({
         centered
       >
         <ConfirmDeleteModal
-          onClickDelete={onClickDelete}
-          closeEdit={closeEdit}
+          onClickDelete={onClickDeleteButton}
           closeConfirm={closeConfirm}
-        />
+        >
+          컬럼의 모든 카드가 삭제됩니다.
+        </ConfirmDeleteModal>
       </Modal>
     </>
   );
