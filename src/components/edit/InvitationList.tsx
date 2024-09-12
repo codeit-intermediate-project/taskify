@@ -2,7 +2,7 @@
 
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 import Image from 'next/image';
 
 import InviteModal from '@/src/components/edit/InviteModal';
@@ -15,7 +15,7 @@ import {
 } from '@core/api/columnApis';
 
 interface InvitationListProps {
-  dashboardId: number;
+  dashboardId: string;
 }
 
 interface EmailInvitation {
@@ -29,42 +29,52 @@ export default function InvitationList({ dashboardId }: InvitationListProps) {
   const itemsPerPage = 5;
   const hasLoadedInvitations = useRef(false);
 
-  const { currentPage, handlePageChange } = usePagination({
-    totalItems: invitations.length,
-    itemsPerPage,
-  });
-
-  const startIdx = (currentPage - 1) * itemsPerPage;
-  const currentItems = invitations.slice(startIdx, startIdx + itemsPerPage);
-
-  // 초대 리스트 불러오기
-  const loadInvitations = async () => {
+  // 초대 목록 불러오기 함수
+  const loadInvitations = useCallback(async () => {
     if (dashboardId && !hasLoadedInvitations.current) {
       hasLoadedInvitations.current = true;
-      const response = await getInvitations(dashboardId.toString());
+      const response = await getInvitations(dashboardId);
       setInvitations(response);
     }
-  };
+  }, [dashboardId]);
 
-  if (invitations.length === 0) {
+  // useEffect로 초기 데이터 로드
+  useEffect(() => {
     loadInvitations();
-  }
+  }, [loadInvitations]);
 
-  // 모달 열기
+  // 페이지네이션을 위한 데이터 가져오기 함수
+  const fetchInvitation = useCallback(
+    async (page: number, size: number): Promise<EmailInvitation[]> => {
+      const startIdx = (page - 1) * size;
+      return invitations.slice(startIdx, startIdx + size);
+    },
+    [invitations]
+  );
+
+  // usePagination 훅 사용
+  const {
+    currentPage,
+    handlePageChange,
+    data: currentItems,
+  } = usePagination<EmailInvitation>({
+    totalItems: invitations.length, // 항상 숫자 값으로 보장
+    itemsPerPage,
+    fetchData: fetchInvitation,
+  });
+
   const handleInviteClick = () => {
     setIsModalOpen(true);
   };
 
-  // 모달 닫기
   const handleCloseModal = () => {
     setIsModalOpen(false);
   };
 
-  // 초대 추가
   const handleAddInvitation = async (email: string) => {
     if (!dashboardId) return;
 
-    const newInvitation = await addInvitation(dashboardId.toString(), email);
+    const newInvitation = await addInvitation(dashboardId, email);
     if (newInvitation) {
       setInvitations(prevInvitations => [
         ...prevInvitations,
@@ -74,11 +84,10 @@ export default function InvitationList({ dashboardId }: InvitationListProps) {
     setIsModalOpen(false);
   };
 
-  // 초대 삭제
   const handleDeleteInvitation = async (id: number) => {
     if (!dashboardId) return;
 
-    await deleteInvitation(dashboardId.toString(), id);
+    await deleteInvitation(dashboardId, id);
     setInvitations(prevInvitations =>
       prevInvitations.filter(invitation => invitation.id !== id)
     );
@@ -86,13 +95,12 @@ export default function InvitationList({ dashboardId }: InvitationListProps) {
 
   return (
     <div className="max-w-[92%] rounded-lg bg-white p-6 shadow md:mx-0 md:max-w-[544px] xl:max-w-[620px]">
-      {/* 초대 내역 + 페이지네이션 + 초대하기 버튼 */}
       <div className="mb-4 flex items-center justify-between">
         <h2 className="font-lg-16px-bold md:font-xl-20px-bold">초대 내역</h2>
         <div className="flex items-center gap-4">
           <Pagination
             currentPage={currentPage}
-            totalItems={invitations.length}
+            totalItems={invitations.length} // 항상 숫자 값으로 보장
             itemsPerPage={itemsPerPage}
             onPageChange={handlePageChange}
           />
@@ -129,7 +137,6 @@ export default function InvitationList({ dashboardId }: InvitationListProps) {
         </button>
       </div>
 
-      {/* 초대된 이메일 리스트 */}
       <div>
         {currentItems.length > 0 ? (
           currentItems.map(item => (
@@ -152,7 +159,6 @@ export default function InvitationList({ dashboardId }: InvitationListProps) {
         )}
       </div>
 
-      {/* 초대 모달 */}
       <InviteModal
         isOpen={isModalOpen}
         onClose={handleCloseModal}

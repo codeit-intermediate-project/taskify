@@ -1,15 +1,17 @@
+/* eslint-disable import/order */
 /* eslint-disable no-bitwise */
 /* eslint-disable no-plusplus */
 
 'use client';
 
-import { useState, useRef } from 'react';
+import { useCallback } from 'react';
+
+import { getMembers, deleteMember } from '@core/api/columnApis';
 
 import Image from 'next/image';
 
 import Pagination from '@/src/components/edit/Pagination';
 import usePagination from '@/src/lib/hooks/usePagination';
-import { deleteMember, getMembers } from '@core/api/columnApis';
 
 interface MemberListProps {
   dashboardId: number;
@@ -19,7 +21,7 @@ interface MemberListProps {
 interface Member {
   id: number;
   nickname: string;
-  profileImageUrl?: string;
+  profileImageUrl?: string | null;
 }
 
 // 프로필 이미지가 없을 시 사용 할 컬러 팔레트
@@ -55,40 +57,35 @@ const getRandomColor = () => {
 
 export default function MemberList({ dashboardId }: MemberListProps) {
   const itemsPerPage = 4;
-  const [members, setMembers] = useState<Member[]>([]);
-  const hasLoadedMembers = useRef(false);
-  const { currentPage, handlePageChange } = usePagination({
-    totalItems: members.length,
+
+  // 데이터를 가져오는 함수 정의
+  const fetchMembers = useCallback(
+    async (page: number, size: number): Promise<Member[]> => {
+      const response = await getMembers(dashboardId);
+      const formattedMembers = response.members.map(member => ({
+        ...member,
+        profileImageUrl: member.profileImageUrl ?? undefined,
+      }));
+      return formattedMembers.slice((page - 1) * size, page * size);
+    },
+    [dashboardId]
+  );
+
+  // usePagination 훅 사용
+  const {
+    currentPage,
+    handlePageChange,
+    data: members,
+  } = usePagination<Member>({
+    fetchData: fetchMembers,
     itemsPerPage,
+    totalItems: 0, // 초기값
   });
 
-  const startIdx = (currentPage - 1) * itemsPerPage;
-  const currentItems = Array.isArray(members)
-    ? members.slice(startIdx, startIdx + itemsPerPage)
-    : [];
-
-  // 구성원 목록 불러오기
-  const loadMembers = async () => {
-    if (dashboardId && !hasLoadedMembers.current) {
-      hasLoadedMembers.current = true;
-      const response = await getMembers(dashboardId);
-
-      if (response && Array.isArray(response.members)) {
-        const formattedMembers: Member[] = response.members.map(member => ({
-          ...member,
-          profileImageUrl: member.profileImageUrl as string,
-        }));
-        setMembers(formattedMembers);
-      }
-    }
-  };
-  loadMembers();
   // 멤버 삭제
   const handleDeleteMember = async (memberId: number) => {
     await deleteMember(dashboardId, memberId);
-    setMembers(prevMembers =>
-      prevMembers.filter(member => member.id !== memberId)
-    );
+    handlePageChange(1);
   };
 
   return (
@@ -105,7 +102,7 @@ export default function MemberList({ dashboardId }: MemberListProps) {
 
       <div>
         <div className="mb-2 text-gray-600 font-lg-16px-regular">이름</div>
-        {currentItems.map(member => (
+        {members.map((member: Member) => (
           <div
             key={member.id}
             className="flex items-center justify-between border-b border-gray-100 py-2"
@@ -120,7 +117,6 @@ export default function MemberList({ dashboardId }: MemberListProps) {
                   className="mr-2 h-10 w-10 rounded-full"
                 />
               ) : (
-                // 프로필 이미지가 없는 경우 일정한 색상과 첫 글자를 사용한 기본 이미지
                 <div
                   className="flex h-10 w-10 items-center justify-center rounded-full text-white font-lg-14px-semibold"
                   style={{ backgroundColor: getColorFromName(member.nickname) }}

@@ -7,7 +7,7 @@ import type {
   ColumnServiceResponseDto,
   UpdateColumnRequestDto,
 } from '@core/dtos/ColumnsDto';
-import type { DashboardApplicationServiceResponseDto } from '@core/dtos/DashboardDto';
+import type { DashboardApplicationServiceResponseDto } from '@core/dtos/DashboardsDto';
 import { MemberApplicationServiceResponseDto } from '@core/dtos/MembersDto';
 
 export const getColumns = async (dashboardId: number) => {
@@ -106,8 +106,15 @@ export interface EmailInvitation {
 export const getInvitations = async (
   dashboardId: string
 ): Promise<EmailInvitation[]> => {
+  const token = localStorage.getItem('authToken');
+
   const { data } = await axios.get<InvitationResponse>(
-    `dashboards/${dashboardId}/invitations`
+    `dashboards/${dashboardId}/invitations`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
   );
 
   return data.invitations.map(invitation => ({

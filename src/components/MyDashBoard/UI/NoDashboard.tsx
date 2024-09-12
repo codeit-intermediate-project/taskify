@@ -1,6 +1,6 @@
 import Image from 'next/image';
 
-import DashboardEmpty from '@images/Dashboard_empty.png';
+import DashboardEmpty from '@images/dashboard_empty.png';
 
 interface NoDashboardProps {
   text: string;

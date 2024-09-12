@@ -1,3 +1,5 @@
+/* eslint-disable no-console */
+/* eslint-disable no-alert */
 import putInvitations from '@core/api/putInvitations';
 import { useMyDashboard } from '@core/contexts/MyDashboardContext';
 import { DashboardApplicationServiceResponseDto } from '@core/dtos/DashboardsDto';

@@ -11,7 +11,7 @@ interface PaginationProps {
   onPageChange: (pageNumber: number) => void;
 }
 
-export default function Pagination({
+export default function SideBarPagination({
   currentPage,
   totalItems,
   itemsPerPage,
@@ -35,9 +35,6 @@ export default function Pagination({
 
   return (
     <nav className="flex items-center gap-2">
-      <div className="font-md-14px-regular">
-        {totalPages} 페이지 중 {currentPage}
-      </div>
       <div>
         <button
           type="button"

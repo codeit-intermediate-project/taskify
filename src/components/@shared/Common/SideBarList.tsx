@@ -5,17 +5,22 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 
 import { useRoot } from '@core/contexts/RootContexts';
-import useDashboards from '@lib/hooks/useDashboards';
+import useDashboardsPagination from '@lib/hooks/useDashboardsPagination';
 import useDevice from '@lib/hooks/useDevice';
 import cn from '@lib/utils/cn';
 
+import SideBarPagination from './SideBarPagination';
+
 export default function SideBarList() {
+  const device = useDevice();
   const router = useRouter();
   const { dashboardid, setDashboardid } = useRoot();
-  const { dashboardList } = useDashboards();
-  const device = useDevice();
-
-  const { dashboards } = dashboardList;
+  const {
+    currentPage,
+    totalItems,
+    data: dashboards,
+    handlePageChange,
+  } = useDashboardsPagination();
 
   const isMobile = device === 'mobile';
 
@@ -68,6 +73,12 @@ export default function SideBarList() {
             )}
           </Flex>
         ))}
+      <SideBarPagination
+        currentPage={currentPage}
+        totalItems={totalItems}
+        onPageChange={handlePageChange}
+        itemsPerPage={10}
+      />
     </Stack>
   );
 }
