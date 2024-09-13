@@ -36,7 +36,7 @@ export const MyDashboardProvider = ({ children }: PropsWithChildren) => {
     'GET'
   );
 
-  // 컴포넌트가 마운트될 때 API 호출
+  // 초기 마운트 시 API 호출
   useEffect(() => {
     const fetchData = async () => {
       const config = {
