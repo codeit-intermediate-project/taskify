@@ -122,7 +122,6 @@ export default function AuthPage({ mode }: AuthPageProps) {
     setIsModalVisible(false);
     if (modalMessage === '가입이 완료되었습니다!') {
       router.push('/login');
-    }
   };
 
   const isFormValid = useMemo(() => {

@@ -129,7 +129,9 @@ export default function DashboardAddModal({
             ))}
           </Flex>
           <Flex className="mt-4 gap-2">
-            <SecondaryButton onClick={onClose}>취소</SecondaryButton>
+            <SecondaryButton disabled={false} onClick={onClose}>
+              취소
+            </SecondaryButton>
             <PrimaryButton disabled={!isValid} onClick={handleSubmit(onSubmit)}>
               확인
             </PrimaryButton>

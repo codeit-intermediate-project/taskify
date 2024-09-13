@@ -41,7 +41,7 @@ export default function Pagination({
         <button
           type="button"
           onClick={handlePrePage}
-          className="h-10 w-10 rounded-[4px] border-gray-200 bg-white text-gray-600 outline-1"
+          className={`h-10 w-10 rounded-[4px] border-gray-200 bg-white outline-1 ${currentPage === 1 ? 'opacity-50' : ''}`}
           disabled={currentPage === 1}
           aria-label="이전 페이지로 이동"
         >
@@ -56,7 +56,7 @@ export default function Pagination({
         <button
           type="button"
           onClick={handleNextPage}
-          className="h-10 w-10 rounded-[4px] border-gray-200 bg-white text-gray-600 outline-1"
+          className={`h-10 w-10 rounded-[4px] border-gray-200 bg-white outline-1 ${currentPage === totalPages ? 'opacity-50' : ''}`}
           disabled={currentPage === totalPages}
           aria-label="다음 페이지로 이동"
         >
