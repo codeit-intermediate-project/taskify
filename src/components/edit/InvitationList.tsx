@@ -13,6 +13,7 @@ import {
   deleteInvitation,
   getInvitations,
 } from '@core/api/columnApis';
+import DeleteModal from './DeleteModal';
 
 interface InvitationListProps {
   dashboardId: string;
@@ -24,8 +25,10 @@ interface EmailInvitation {
 }
 
 export default function InvitationList({ dashboardId }: InvitationListProps) {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
   const [invitations, setInvitations] = useState<EmailInvitation[]>([]);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [deleteId, setDeleteId] = useState<number | null>(null);
   const itemsPerPage = 5;
   const hasLoadedInvitations = useRef(false);
 
@@ -64,11 +67,11 @@ export default function InvitationList({ dashboardId }: InvitationListProps) {
   });
 
   const handleInviteClick = () => {
-    setIsModalOpen(true);
+    setIsInviteModalOpen(true);
   };
 
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
+  const handleCloseInviteModal = () => {
+    setIsInviteModalOpen(false);
   };
 
   const handleAddInvitation = async (email: string) => {
@@ -81,16 +84,28 @@ export default function InvitationList({ dashboardId }: InvitationListProps) {
         { id: newInvitation.id, email: newInvitation.email },
       ]);
     }
-    setIsModalOpen(false);
+    setIsInviteModalOpen(false);
   };
 
-  const handleDeleteInvitation = async (id: number) => {
-    if (!dashboardId) return;
+  const openDeleteModal = (id: number) => {
+    setIsDeleteModalOpen(true);
+    setDeleteId(id);
+  };
 
-    await deleteInvitation(dashboardId, id);
+  const closeDeleteModal = () => {
+    setIsDeleteModalOpen(false);
+  };
+
+  const handleDeleteInvitation = async () => {
+    if (!dashboardId || deleteId === null) return;
+
+    await deleteInvitation(dashboardId, deleteId);
     setInvitations(prevInvitations =>
-      prevInvitations.filter(invitation => invitation.id !== id)
+      prevInvitations.filter(invitation => invitation.id !== deleteId)
     );
+
+    closeDeleteModal();
+    window.location.reload();
   };
 
   return (
@@ -147,7 +162,7 @@ export default function InvitationList({ dashboardId }: InvitationListProps) {
               <div className="flex-1">{item.email}</div>
               <button
                 type="button"
-                onClick={() => handleDeleteInvitation(item.id)}
+                onClick={() => openDeleteModal(item.id)} // 삭제 모달 열기
                 className="flex h-8 w-20 items-center justify-center rounded border border-solid border-gray-200 text-violet font-md-14px-medium"
               >
                 삭제
@@ -160,9 +175,16 @@ export default function InvitationList({ dashboardId }: InvitationListProps) {
       </div>
 
       <InviteModal
-        isOpen={isModalOpen}
-        onClose={handleCloseModal}
+        isOpen={isInviteModalOpen}
+        onClose={handleCloseInviteModal}
         onAddInvitation={handleAddInvitation}
+      />
+
+      {/* 삭제 확인 모달 */}
+      <DeleteModal
+        isOpen={isDeleteModalOpen}
+        onClose={closeDeleteModal}
+        onDelete={handleDeleteInvitation}
       />
     </div>
   );

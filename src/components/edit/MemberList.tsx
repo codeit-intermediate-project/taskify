@@ -4,14 +4,12 @@
 
 'use client';
 
-import { useCallback } from 'react';
-
+import { useCallback, useState } from 'react';
 import { getMembers, deleteMember } from '@core/api/columnApis';
-
 import Image from 'next/image';
-
 import Pagination from '@/src/components/edit/Pagination';
 import usePagination from '@/src/lib/hooks/usePagination';
+import DeleteModal from './DeleteModal';
 
 interface MemberListProps {
   dashboardId: number;
@@ -57,6 +55,8 @@ const getRandomColor = () => {
 
 export default function MemberList({ dashboardId }: MemberListProps) {
   const itemsPerPage = 4;
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedMemberId, setSelectedMemberId] = useState<number | null>(null);
 
   // 데이터를 가져오는 함수 정의
   const fetchMembers = useCallback(
@@ -82,10 +82,26 @@ export default function MemberList({ dashboardId }: MemberListProps) {
     totalItems: 0, // 초기값
   });
 
+  // 모달 열기
+  const openDeleteModal = (memberId: number) => {
+    setSelectedMemberId(memberId);
+    setIsModalOpen(true);
+  };
+
+  // 모달 닫기
+  const closeDeleteModal = () => {
+    setIsModalOpen(false);
+    setSelectedMemberId(null);
+  };
+
   // 멤버 삭제
-  const handleDeleteMember = async (memberId: number) => {
-    await deleteMember(dashboardId, memberId);
+  const handleDeleteMember = async () => {
+    if (selectedMemberId === null) return;
+
+    await deleteMember(dashboardId, selectedMemberId);
     handlePageChange(1);
+    closeDeleteModal();
+    window.location.reload();
   };
 
   return (
@@ -128,7 +144,7 @@ export default function MemberList({ dashboardId }: MemberListProps) {
             </div>
             <button
               type="button"
-              onClick={() => handleDeleteMember(member.id)}
+              onClick={() => openDeleteModal(member.id)}
               className="flex h-8 w-20 items-center justify-center rounded border border-solid border-gray-200 text-violet font-md-14px-medium"
             >
               삭제
@@ -136,6 +152,12 @@ export default function MemberList({ dashboardId }: MemberListProps) {
           </div>
         ))}
       </div>
+      {/* 삭제 확인 모달 */}
+      <DeleteModal
+        isOpen={isModalOpen}
+        onClose={closeDeleteModal}
+        onDelete={handleDeleteMember}
+      />
     </div>
   );
 }
