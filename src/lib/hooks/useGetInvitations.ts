@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from 'react';
 
 import { INIT_INVITATIONS_REQUEST } from '@lib/constants/invitationsInit';
@@ -26,16 +27,12 @@ const useGetInvitations = () => {
       size: requestedSize,
     };
 
-    try {
-      await callApi(undefined, { params: config });
-    } catch (err) {
-      console.error('API 호출 오류:', err);
-    }
+    await callApi(undefined, { params: config });
   };
 
   useEffect(() => {
     fetchInvitations(size);
-  }, [callApi, size]);
+  }, [size]);
 
   // 초대 목록 업데이트
   useEffect(() => {
@@ -54,9 +51,8 @@ const useGetInvitations = () => {
     () => {
       const newSize = size + 10;
       setSize(newSize);
-      fetchInvitations(newSize);
     },
-    data && data.invitations && data.invitations.length > 0
+    data && data.invitations && data.invitations.length >= size
   );
 
   return { data, error, hasNoInvitations, invitations };
