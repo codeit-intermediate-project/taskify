@@ -406,7 +406,7 @@ export default function EditCardModal({
           <span className="font-2lg-18px-medium">태그</span>
 
           <div className="mt-2 flex h-12 w-full items-center gap-2 whitespace-nowrap border border-[#ced4da] px-2.5">
-            <div className="max-w-[50%] overflow-hidden">
+            <div>
               {tags &&
                 tags.map((tag, index) => {
                   const keyValue = `${tag}${index}`;
@@ -431,6 +431,7 @@ export default function EditCardModal({
               className="placeholder:text-gray-300 placeholder:font-md-14px-regular"
             />
           </div>
+          <p className="pt-1 text-red">{errors.tags?.message}</p>
         </div>
 
         <div className="flex flex-col">
@@ -449,6 +450,7 @@ export default function EditCardModal({
               }}
             >
               <Image
+                className="rounded-md"
                 src={image}
                 width={127}
                 height={76}
@@ -496,6 +498,7 @@ export default function EditCardModal({
         title={<div className="font-2lg-18px-semibold">이미지 업로드</div>}
         opened={cropperModal}
         onClose={closeCropper}
+        zIndex={202}
       >
         <ImageCropperModal
           closeCropper={closeCropper}

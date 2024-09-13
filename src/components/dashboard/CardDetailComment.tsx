@@ -103,7 +103,7 @@ export default function CardDetailComment({ card }: CommentProps) {
                     <div className="h-[34px] w-[34px] shrink-0 overflow-hidden rounded-full bg-yellow-100" />
                   )}
                   <div className="flex grow flex-col">
-                    <div className="flex items-center">
+                    <div className="flex items-center gap-2">
                       <span className="font-lg-14px-semibold">
                         {comment.author.nickname}
                       </span>

@@ -84,7 +84,7 @@ export default function CardDetailModal({
               </span>
             </div>
           </div>
-          <div className="flex flex-col justify-between">
+          <div className="flex flex-col justify-between gap-2">
             <span className="font-xs-12px-semibold">마감일</span>
             <span className="font-md-14px-regular md:font-xs-12px-regular">
               {dayjs(card.dueDate).format('YYYY.MM.DD HH:mm')}

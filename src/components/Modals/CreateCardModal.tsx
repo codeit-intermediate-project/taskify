@@ -318,7 +318,7 @@ export default function CreateCardModal({
           <span className="font-2lg-18px-medium">태그</span>
 
           <div className="wrap mt-2 flex min-h-12 w-full items-center gap-2 border border-[#ced4da] px-2.5">
-            <div className="">
+            <div>
               {tags &&
                 tags.map((tag, index) => {
                   const keyValue = `${tag}${index}`;
@@ -362,6 +362,7 @@ export default function CreateCardModal({
               }}
             >
               <Image
+                className="rounded-md"
                 src={image}
                 width={127}
                 height={76}
