@@ -5,8 +5,7 @@ import Image from 'next/image';
 
 import CardDetailModal from '@components/Modals/CardDetailModal';
 import calendar from '@icons/calendar.png';
-import convertStringToColorHex from '@lib/utils/convertStringToColorHex';
-import convertStringToRGBA from '@lib/utils/convertStringToRGBA';
+import { stringToHex, stringToRgba } from '@lib/utils/convertStringToColor';
 
 import type { CardServiceResponseDto } from '@core/dtos/CardsDto';
 
@@ -50,8 +49,8 @@ export default function Card({
                     key={`${tag},${index * card.id}`}
                     className="flex h-[26px] items-center rounded px-1.5 font-md-14px-regular md:h-[28px]"
                     style={{
-                      color: `#${convertStringToColorHex(tag)}`,
-                      backgroundColor: `${convertStringToRGBA(tag, 0.1)}`,
+                      color: `${stringToHex(tag)}`,
+                      backgroundColor: `${stringToRgba(tag, 0.1)}`,
                     }}
                   >
                     {tag}

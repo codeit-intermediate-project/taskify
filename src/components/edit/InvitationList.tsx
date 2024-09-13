@@ -5,14 +5,16 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
 import Image from 'next/image';
 
-import InviteModal from '@/src/components/edit/InviteModal';
-import Pagination from '@/src/components/edit/Pagination';
-import usePagination from '@/src/lib/hooks/usePagination';
+import InviteModal from '@components/edit/InviteModal';
+import Pagination from '@components/edit/Pagination';
+import usePagination from '@lib/hooks/usePagination';
 import {
   addInvitation,
   deleteInvitation,
   getInvitations,
 } from '@core/api/columnApis';
+import DeleteModal from './DeleteModal';
+import { AxiosError } from 'axios';
 
 interface InvitationListProps {
   dashboardId: string;
@@ -24,8 +26,12 @@ interface EmailInvitation {
 }
 
 export default function InvitationList({ dashboardId }: InvitationListProps) {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
   const [invitations, setInvitations] = useState<EmailInvitation[]>([]);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [deleteId, setDeleteId] = useState<number | null>(null);
+  const [alertDisplayed, setAlertDisplayed] = useState(false);
+  const [isDeleted, setIsDeleted] = useState(false);
   const itemsPerPage = 5;
   const hasLoadedInvitations = useRef(false);
 
@@ -58,40 +64,64 @@ export default function InvitationList({ dashboardId }: InvitationListProps) {
     handlePageChange,
     data: currentItems,
   } = usePagination<EmailInvitation>({
-    totalItems: invitations.length, // 항상 숫자 값으로 보장
+    totalItems: invitations.length,
     itemsPerPage,
     fetchData: fetchInvitation,
   });
 
   const handleInviteClick = () => {
-    setIsModalOpen(true);
+    setIsInviteModalOpen(true);
   };
 
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
+  const handleCloseInviteModal = () => {
+    setIsInviteModalOpen(false);
   };
 
   const handleAddInvitation = async (email: string) => {
     if (!dashboardId) return;
 
     const newInvitation = await addInvitation(dashboardId, email);
-    if (newInvitation) {
+    if (newInvitation && !(newInvitation instanceof AxiosError)) {
       setInvitations(prevInvitations => [
         ...prevInvitations,
         { id: newInvitation.id, email: newInvitation.email },
       ]);
     }
-    setIsModalOpen(false);
+    setIsInviteModalOpen(false);
   };
 
-  const handleDeleteInvitation = async (id: number) => {
-    if (!dashboardId) return;
+  const openDeleteModal = (id: number) => {
+    setIsDeleteModalOpen(true);
+    setDeleteId(id);
+    setAlertDisplayed(false);
+  };
 
-    await deleteInvitation(dashboardId, id);
+  const closeDeleteModal = () => {
+    setIsDeleteModalOpen(false);
+  };
+
+  const handleDeleteInvitation = async () => {
+    if (!dashboardId || deleteId === null) return;
+
+    await deleteInvitation(dashboardId, deleteId);
     setInvitations(prevInvitations =>
-      prevInvitations.filter(invitation => invitation.id !== id)
+      prevInvitations.filter(invitation => invitation.id !== deleteId)
     );
+
+    setIsDeleted(true);
+    closeDeleteModal();
   };
+
+  useEffect(() => {
+    if (isDeleted && !isDeleteModalOpen && !alertDisplayed) {
+      setTimeout(() => {
+        // eslint-disable-next-line no-alert
+        alert('삭제가 완료되었습니다.');
+        window.location.reload();
+      }, 300);
+      setAlertDisplayed(true);
+    }
+  }, [isDeleted, isDeleteModalOpen, alertDisplayed]);
 
   return (
     <div className="max-w-[92%] rounded-lg bg-white p-6 shadow md:mx-0 md:max-w-[544px] xl:max-w-[620px]">
@@ -100,7 +130,7 @@ export default function InvitationList({ dashboardId }: InvitationListProps) {
         <div className="flex items-center gap-4">
           <Pagination
             currentPage={currentPage}
-            totalItems={invitations.length} // 항상 숫자 값으로 보장
+            totalItems={invitations.length}
             itemsPerPage={itemsPerPage}
             onPageChange={handlePageChange}
           />
@@ -147,7 +177,7 @@ export default function InvitationList({ dashboardId }: InvitationListProps) {
               <div className="flex-1">{item.email}</div>
               <button
                 type="button"
-                onClick={() => handleDeleteInvitation(item.id)}
+                onClick={() => openDeleteModal(item.id)} // 삭제 모달 열기
                 className="flex h-8 w-20 items-center justify-center rounded border border-solid border-gray-200 text-violet font-md-14px-medium"
               >
                 삭제
@@ -160,9 +190,16 @@ export default function InvitationList({ dashboardId }: InvitationListProps) {
       </div>
 
       <InviteModal
-        isOpen={isModalOpen}
-        onClose={handleCloseModal}
+        isOpen={isInviteModalOpen}
+        onClose={handleCloseInviteModal}
         onAddInvitation={handleAddInvitation}
+      />
+
+      {/* 삭제 확인 모달 */}
+      <DeleteModal
+        isOpen={isDeleteModalOpen}
+        onClose={closeDeleteModal}
+        onDelete={handleDeleteInvitation}
       />
     </div>
   );

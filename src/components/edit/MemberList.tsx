@@ -1,17 +1,15 @@
 /* eslint-disable import/order */
-/* eslint-disable no-bitwise */
+
 /* eslint-disable no-plusplus */
 
 'use client';
 
-import { useCallback } from 'react';
-
+import { useCallback, useState, useEffect } from 'react';
 import { getMembers, deleteMember } from '@core/api/columnApis';
-
 import Image from 'next/image';
-
 import Pagination from '@/src/components/edit/Pagination';
 import usePagination from '@/src/lib/hooks/usePagination';
+import DeleteModal from './DeleteModal';
 
 interface MemberListProps {
   dashboardId: number;
@@ -57,6 +55,10 @@ const getRandomColor = () => {
 
 export default function MemberList({ dashboardId }: MemberListProps) {
   const itemsPerPage = 4;
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [selectedMemberId, setSelectedMemberId] = useState<number | null>(null);
+  const [alertDisplayed, setAlertDisplayed] = useState(false);
+  const [isDeleted, setIsDeleted] = useState(false);
 
   // 데이터를 가져오는 함수 정의
   const fetchMembers = useCallback(
@@ -82,11 +84,38 @@ export default function MemberList({ dashboardId }: MemberListProps) {
     totalItems: 0, // 초기값
   });
 
-  // 멤버 삭제
-  const handleDeleteMember = async (memberId: number) => {
-    await deleteMember(dashboardId, memberId);
-    handlePageChange(1);
+  // 모달 열기
+  const openDeleteModal = (memberId: number) => {
+    setSelectedMemberId(memberId);
+    setIsDeleteModalOpen(true);
+    setAlertDisplayed(false);
   };
+
+  // 모달 닫기
+  const closeDeleteModal = () => {
+    setIsDeleteModalOpen(false);
+  };
+
+  // 멤버 삭제
+  const handleDeleteMember = async () => {
+    if (selectedMemberId === null) return;
+
+    await deleteMember(dashboardId, selectedMemberId);
+    handlePageChange(1);
+    setIsDeleted(true);
+    closeDeleteModal();
+  };
+
+  useEffect(() => {
+    if (isDeleted && !isDeleteModalOpen && !alertDisplayed) {
+      setTimeout(() => {
+        // eslint-disable-next-line no-alert
+        alert('삭제가 완료되었습니다.');
+        window.location.reload();
+      }, 300);
+      setAlertDisplayed(true);
+    }
+  }, [isDeleted, isDeleteModalOpen, alertDisplayed]);
 
   return (
     <div className="max-w-[92%] rounded-md bg-white p-6 shadow md:mx-0 md:max-w-[544px] xl:max-w-[620px]">
@@ -128,7 +157,7 @@ export default function MemberList({ dashboardId }: MemberListProps) {
             </div>
             <button
               type="button"
-              onClick={() => handleDeleteMember(member.id)}
+              onClick={() => openDeleteModal(member.id)}
               className="flex h-8 w-20 items-center justify-center rounded border border-solid border-gray-200 text-violet font-md-14px-medium"
             >
               삭제
@@ -136,6 +165,12 @@ export default function MemberList({ dashboardId }: MemberListProps) {
           </div>
         ))}
       </div>
+      {/* 삭제 확인 모달 */}
+      <DeleteModal
+        isOpen={isDeleteModalOpen}
+        onClose={closeDeleteModal}
+        onDelete={handleDeleteMember}
+      />
     </div>
   );
 }

@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
 
-import { AxiosRequestConfig } from 'axios';
+import { AxiosError, AxiosRequestConfig } from 'axios';
 
 import instance from '@core/api/instance';
 import axiosError from '@lib/utils/axiosError';
@@ -31,9 +31,11 @@ export default function useApi<T>(url: string, method: Method) {
         const message = findAxiosErrorMessage(axiosErr);
         setError(message ?? 'Unknown error');
         showErrorNotification({ message });
+        return err as AxiosError<{ message: string }>;
       } finally {
         setIsLoading(false);
       }
+      return res;
     },
     [url, method]
   );

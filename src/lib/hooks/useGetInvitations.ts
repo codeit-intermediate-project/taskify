@@ -1,27 +1,61 @@
-import { useEffect } from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+import { useEffect, useState } from 'react';
 
+import { INIT_INVITATIONS_REQUEST } from '@lib/constants/invitationsInit';
 import useApi from '@lib/hooks/useApi';
+
+import useInfiniteScroll from './useInfiniteScroll';
 
 import type { InvitationsResponseDto } from '@core/dtos/InvitationsDto';
 
 const useGetInvitations = () => {
-  const { data, isLoading, error, callApi } = useApi<InvitationsResponseDto>(
+  const [size, setSize] = useState(INIT_INVITATIONS_REQUEST.size); // 데이터 수
+  const [invitations, setInvitations] = useState<
+    InvitationsResponseDto['invitations']
+  >([]);
+  const { data, error, callApi } = useApi<InvitationsResponseDto>(
     '/invitations',
     'GET'
   );
 
-  // 초대 데이터 유효성 검사
-  const hasNoInvitations = !data || !data.invitations?.length;
+  const hasNoInvitations = !data?.invitations || data.invitations.length === 0;
 
-  // 컴포넌트가 마운트될 때 API 호출
-  useEffect(() => {
-    const fetchData = async () => {
-      await callApi(undefined);
+  // API 호출 함수
+  const fetchInvitations = async (requestedSize: number) => {
+    const config = {
+      ...INIT_INVITATIONS_REQUEST,
+      size: requestedSize,
     };
-    fetchData();
-  }, [callApi]);
 
-  return { data, isLoading, error, callApi, hasNoInvitations };
+    await callApi(undefined, { params: config });
+  };
+
+  useEffect(() => {
+    fetchInvitations(size);
+  }, [size]);
+
+  // 초대 목록 업데이트
+  useEffect(() => {
+    if (data && data.invitations) {
+      setInvitations(prev => {
+        const uniqueInvitations = [...prev, ...data.invitations].filter(
+          (invitation, index, self) =>
+            index === self.findIndex(t => t.id === invitation.id)
+        );
+        return uniqueInvitations;
+      });
+    }
+  }, [data]);
+
+  useInfiniteScroll(
+    () => {
+      const newSize = size + 10;
+      setSize(newSize);
+    },
+    data && data.invitations && data.invitations.length >= size
+  );
+
+  return { data, error, hasNoInvitations, invitations };
 };
 
 export default useGetInvitations;

@@ -1,6 +1,7 @@
-import { useRef } from 'react';
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 
+import { Textarea } from '@mantine/core';
 import dayjs from 'dayjs';
 import Image from 'next/image';
 
@@ -17,21 +18,42 @@ export default function CardDetailComment({ card }: CommentProps) {
     onSubmitCreateCommentForm,
     onClickEditComment,
     user,
-    editingCommentId,
+    editingComment,
+    setEditingComment,
     onClickEditCancel,
     onClickEditComplete,
     onClickDeleteComment,
   } = useComments(card);
-  const { register, handleSubmit, setValue } = useForm();
-  const editTextAreaRef = useRef<HTMLTextAreaElement>(null);
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    watch,
+    formState: { errors },
+  } = useForm({ mode: 'onChange' });
+  const editedComment = watch('editedContent');
 
   const onClickComplete = (commentId: number) => {
-    if (!editTextAreaRef.current) {
+    if (!editedComment) {
+      // 댓글내용을 다 지우고 완료 시 원래 내용으로 돌아감
+      setValue('editedContent', editingComment?.content);
+      setEditingComment(null);
       return;
     }
-    const { value } = editTextAreaRef.current;
-    onClickEditComplete(commentId, value);
+    if (editedComment === editingComment?.content) {
+      // 수정된 내용이 같으면 패치안하고 완료
+      setEditingComment(null);
+      return;
+    }
+    onClickEditComplete(commentId, editedComment);
   };
+
+  // 수정하기 클릭하면 editingComment상태가 변경되고 effect로 이전 value값을 넣어줌
+  useEffect(() => {
+    if (editingComment?.id) {
+      setValue('editedContent', editingComment.content);
+    }
+  }, [editingComment?.id, editingComment?.content, setValue]);
 
   return (
     <>
@@ -43,16 +65,26 @@ export default function CardDetailComment({ card }: CommentProps) {
         className="pb-6"
       >
         <span className="mb-1 font-lg-16px-medium">댓글</span>
-        <div className="relative rounded-md border px-4 pb-10 pt-4">
-          <textarea
-            {...register('content')}
+        <div className="relative">
+          <Textarea
+            autosize
+            minRows={5}
+            styles={{ input: { width: '100%' } }}
+            {...register('content', {
+              maxLength: { value: 250, message: '내용이 너무 많습니다.' },
+            })}
             placeholder="댓글 작성하기"
-            className="w-full resize-none text-wrap border-none outline-none placeholder:font-md-14px-regular md:h-[110px]"
+            className="w-full resize-none text-wrap placeholder:font-md-14px-regular"
           />
           <button className="absolute bottom-3 right-3 flex h-[28px] w-[84px] items-center justify-center border text-violet md:h-[33px]">
             입력
           </button>
         </div>
+
+        {errors.content?.message &&
+          typeof errors.content.message === 'string' && (
+            <small className="text-red">{errors.content.message}</small>
+          )}
       </form>
       <div className="flex flex-col gap-4">
         {commentList.length > 0
@@ -79,11 +111,17 @@ export default function CardDetailComment({ card }: CommentProps) {
                         {dayjs(comment.createdAt).format('YYYY.MM.DD HH:mm')}
                       </span>
                     </div>
-                    {editingCommentId === comment.id ? (
-                      <textarea
-                        ref={editTextAreaRef}
-                        defaultValue={comment.content}
-                        className='font-md-14px-regular" h-[40px] w-full rounded-lg border outline-none'
+                    {editingComment?.id === comment.id ? (
+                      <Textarea
+                        autosize
+                        styles={{ input: { width: '100%' } }}
+                        {...register('editedContent', {
+                          maxLength: {
+                            value: 250,
+                            message: '내용이 너무 많습니다.',
+                          },
+                        })}
+                        className='font-md-14px-regular" w-full rounded-lg border outline-none'
                       />
                     ) : (
                       <p className="pb-1 font-md-14px-regular">
@@ -91,7 +129,7 @@ export default function CardDetailComment({ card }: CommentProps) {
                       </p>
                     )}
                     {user?.id === comment.author.id ? (
-                      editingCommentId === comment.id ? (
+                      editingComment?.id === comment.id ? (
                         <div className="flex gap-4">
                           <button
                             onClick={() => {
@@ -114,7 +152,7 @@ export default function CardDetailComment({ card }: CommentProps) {
                         <div className="flex gap-4">
                           <button
                             onClick={() => {
-                              onClickEditComment(comment.id);
+                              onClickEditComment(comment.id, comment.content);
                             }}
                             className="text-gray-300 underline font-xs-12px-regular"
                           >

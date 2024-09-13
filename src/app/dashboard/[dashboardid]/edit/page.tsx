@@ -1,13 +1,15 @@
-'use client';
+/* eslint-disable import/order */
 
-import Image from 'next/image';
-import { usePathname, useRouter } from 'next/navigation';
+'use client';
 
 import EditDashboard from '@components/edit/EditDashboard';
 import InvitationList from '@components/edit/InvitationList';
 import MemberList from '@components/edit/MemberList';
 import { deleteDashboard } from '@core/api/columnApis';
 import { useRoot } from '@core/contexts/RootContexts';
+
+import Image from 'next/image';
+import { usePathname, useRouter } from 'next/navigation';
 
 export default function DashBoardEditPage() {
   const pathname = usePathname();
