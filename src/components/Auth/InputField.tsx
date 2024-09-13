@@ -8,19 +8,12 @@ import {
 import { ErrorMessage } from '@hookform/error-message';
 import Image from 'next/image';
 
-// interface FormValues {
-//   nickname: string;
-//   email: string;
-//   password: string;
-//   passwordConfirm?: string;
-//   terms?: boolean;
-// }
-
 interface InputFieldProps<T extends FieldValues> {
   id: Path<T>;
   type?: string;
   placeholder: string;
   autoComplete?: string;
+  labelName?: string;
   register: UseFormRegister<T>;
   errors: FieldErrors;
   validation: object;
@@ -28,21 +21,10 @@ interface InputFieldProps<T extends FieldValues> {
   setShowPassword?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-// interface InputFieldProps<T extends FieldValues> {
-//   id: keyof FormValues;
-//   type?: string;
-//   placeholder: string;
-//   autoComplete?: string;
-//   register: UseFormRegister<FormValues>;
-//   errors: FieldErrors<FormValues>[keyof FormValues] | undefined;
-//   validation: object;
-//   showPassword?: boolean;
-//   setShowPassword?: React.Dispatch<React.SetStateAction<boolean>>;
-// }
-
 export default function InputField<T extends FieldValues>({
   id,
   type = 'text',
+  labelName,
   placeholder,
   autoComplete,
   showPassword,
@@ -55,7 +37,7 @@ export default function InputField<T extends FieldValues>({
   return (
     <div>
       <label htmlFor={id} className="block text-sm font-medium text-gray-700">
-        {placeholder}
+        {labelName}
       </label>
       <div className="relative">
         <input

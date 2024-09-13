@@ -169,8 +169,25 @@ export default function AuthPage({ mode }: AuthPageProps) {
 
         {/* 입력 필드 */}
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          <InputField
+            labelName="이메일"
+            id="email"
+            type="email"
+            placeholder="이메일을 입력해 주세요"
+            register={register}
+            errors={errors}
+            validation={{
+              required: '이메일은 필수 항목입니다.',
+              pattern: {
+                value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                message: '이메일 형식으로 작성해 주세요.',
+              },
+            }}
+          />
+
           {mode === 'signup' && (
             <InputField
+              labelName="닉네임"
               id="nickname"
               placeholder="닉네임을 입력해 주세요"
               register={register}
@@ -185,20 +202,7 @@ export default function AuthPage({ mode }: AuthPageProps) {
             />
           )}
           <InputField
-            id="email"
-            type="email"
-            placeholder="이메일을 입력해 주세요"
-            register={register}
-            errors={errors}
-            validation={{
-              required: '이메일은 필수 항목입니다.',
-              pattern: {
-                value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                message: '이메일 형식으로 작성해 주세요.',
-              },
-            }}
-          />
-          <InputField
+            labelName="비밀번호"
             id="password"
             type="password"
             placeholder={
@@ -218,6 +222,7 @@ export default function AuthPage({ mode }: AuthPageProps) {
           {mode === 'signup' && (
             <>
               <InputField
+                labelName="비밀번호 확인"
                 id="passwordConfirm"
                 type="password"
                 placeholder="비밀번호를 한번 더 입력해 주세요"
