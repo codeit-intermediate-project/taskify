@@ -5,14 +5,13 @@ import { useDisclosure } from '@mantine/hooks';
 import dayjs from 'dayjs';
 import Image from 'next/image';
 
-import CardDetailComment from '@components/dashboard/UI/CardDetailComment';
+import CardDetailComment from '@components/dashboard/CardDetailComment';
 import DropDownEditMenu from '@components/dashboard/UI/DropDownEditMenu';
 import { DashBoardContext } from '@core/contexts/DashBoardContext';
 import { CardServiceResponseDto } from '@core/dtos/CardsDto';
 import close from '@icons/x.png';
 import convertHexToRGBA from '@lib/utils/convertHexToRGBA';
-import convertStringToColorHex from '@lib/utils/convertStringToColorHex';
-import convertStringToRGBA from '@lib/utils/convertStringToRGBA';
+import { stringToHex, stringToRgba } from '@lib/utils/convertStringToColor';
 
 import ConfirmDeleteModal from './ConfirmDeleteModal';
 
@@ -114,8 +113,8 @@ export default function CardDetailModal({
                     key={`${tag},${index * card.id}`}
                     className="flex h-7 items-center rounded px-1.5 font-md-14px-regular md:h-[28px]"
                     style={{
-                      color: `#${convertStringToColorHex(tag)}`,
-                      backgroundColor: `${convertStringToRGBA(tag, 0.1)}`,
+                      color: `${stringToHex(tag)}`,
+                      backgroundColor: `${stringToRgba(tag, 0.1)}`,
                     }}
                   >
                     {tag}

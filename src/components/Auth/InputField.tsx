@@ -1,30 +1,30 @@
-import { FieldErrors, UseFormRegister } from 'react-hook-form';
+import {
+  FieldErrors,
+  FieldValues,
+  Path,
+  UseFormRegister,
+} from 'react-hook-form';
 
+import { ErrorMessage } from '@hookform/error-message';
 import Image from 'next/image';
 
-interface FormValues {
-  nickname: string;
-  email: string;
-  password: string;
-  passwordConfirm?: string;
-  terms?: boolean;
-}
-
-interface InputFieldProps {
-  id: keyof FormValues;
+interface InputFieldProps<T extends FieldValues> {
+  id: Path<T>;
   type?: string;
   placeholder: string;
   autoComplete?: string;
-  register: UseFormRegister<FormValues>;
-  errors: FieldErrors<FormValues>[keyof FormValues] | undefined;
+  labelName?: string;
+  register: UseFormRegister<T>;
+  errors: FieldErrors;
   validation: object;
   showPassword?: boolean;
   setShowPassword?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export default function InputField({
+export default function InputField<T extends FieldValues>({
   id,
   type = 'text',
+  labelName,
   placeholder,
   autoComplete,
   showPassword,
@@ -32,11 +32,12 @@ export default function InputField({
   register,
   errors,
   validation,
-}: InputFieldProps) {
+}: InputFieldProps<T>) {
+  const name = id as string;
   return (
     <div>
       <label htmlFor={id} className="block text-sm font-medium text-gray-700">
-        {placeholder}
+        {labelName}
       </label>
       <div className="relative">
         <input
@@ -46,7 +47,7 @@ export default function InputField({
           autoComplete={autoComplete}
           {...register(id, validation)}
           className={`mt-1 block w-full rounded-md border bg-white px-3 py-2 focus:outline-none ${
-            errors ? 'border-red' : 'border-[#D9D9D9]'
+            errors[id] ? 'border-red' : 'border-[#D9D9D9]'
           } focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
         />
         {type === 'password' && setShowPassword && (
@@ -67,7 +68,14 @@ export default function InputField({
           </button>
         )}
       </div>
-      {errors && <p className="mt-1 text-sm text-red">{errors.message}</p>}
+      {errors && (
+        <ErrorMessage
+          className="mt-1 text-sm text-red"
+          name={name}
+          errors={errors}
+          as="span"
+        />
+      )}
     </div>
   );
 }

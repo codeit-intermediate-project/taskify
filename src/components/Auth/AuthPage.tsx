@@ -1,6 +1,7 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
+import axios from 'axios';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 
@@ -8,6 +9,8 @@ import { useRoot } from '@core/contexts/RootContexts';
 
 import Modal from './AuthModal';
 import InputField from './InputField';
+
+import type { LoginRequestDto, LoginResponseDto } from '@core/dtos/AuthDto';
 
 interface AuthPageProps {
   mode: 'login' | 'signup';
@@ -20,6 +23,12 @@ interface FormValues {
   passwordConfirm?: string;
   terms?: boolean;
 }
+
+interface ErrorResponse {
+  message: string;
+}
+
+type LoginResponse = LoginResponseDto | ErrorResponse | undefined;
 
 export default function AuthPage({ mode }: AuthPageProps) {
   const { login, refreshUser } = useRoot();
@@ -40,6 +49,13 @@ export default function AuthPage({ mode }: AuthPageProps) {
   const emailValue = watch('email');
   const passwordValue = watch('password');
   const passwordConfirmValue = watch('passwordConfirm');
+
+  // 모달이 닫힐 때 리다이렉트를 처리하는 useEffect
+  useEffect(() => {
+    if (!isModalVisible && modalMessage === '로그인 성공!') {
+      router.push('/mydashboard');
+    }
+  }, [isModalVisible, modalMessage, router]);
 
   const onSubmit: SubmitHandler<FormValues> = async data => {
     try {
@@ -67,27 +83,38 @@ export default function AuthPage({ mode }: AuthPageProps) {
           throw new Error(result.message || '회원가입에 실패했습니다.');
         }
       } else {
-        const response = await login({
+        // 로그인 처리
+        const loginResponse: LoginResponse = await login({
           email: data.email.trim(),
           password: data.password.trim(),
-        });
+        } as LoginRequestDto);
 
-        if (response?.status === 201) {
-          refreshUser();
-          setModalMessage('로그인 성공!');
+        // 타입 좁히기를 사용하여 loginResponse가 AxiosResponse인지 확인
+        if (loginResponse && 'status' in loginResponse) {
+          if (loginResponse.status === 201) {
+            setModalMessage('로그인 성공!');
+            refreshUser(loginResponse.user);
+          }
         } else {
-          throw new Error(response?.data?.message || '로그인에 실패했습니다.');
+          // 서버에서 받은 메시지 사용
+          throw new Error('로그인에 실패했습니다.');
         }
       }
     } catch (error: unknown) {
-      if (error instanceof Error) {
-        const errorMessage = error.message || '로그인에 실패했습니다.';
+      // axios 에러 처리
+      if (axios.isAxiosError(error)) {
+        // 에러 응답에서 메시지를 가져오거나 기본 메시지를 설정
+        const errorMessage =
+          (error.response?.data as { message?: string })?.message ||
+          '로그인에 실패했습니다.';
         setModalMessage(errorMessage);
+      } else if (error instanceof Error) {
+        setModalMessage(error.message || '알 수 없는 오류가 발생했습니다.');
       } else {
         setModalMessage('알 수 없는 오류가 발생했습니다.');
       }
     } finally {
-      setIsModalVisible(true);
+      setIsModalVisible(true); // 성공이든 실패든 모달을 띄움
     }
   };
 
@@ -95,9 +122,6 @@ export default function AuthPage({ mode }: AuthPageProps) {
     setIsModalVisible(false);
     if (modalMessage === '가입이 완료되었습니다!') {
       router.push('/login');
-    } else if (modalMessage === '로그인 성공!') {
-      router.push('/mydashboard');
-    }
   };
 
   const isFormValid = useMemo(() => {
@@ -144,12 +168,29 @@ export default function AuthPage({ mode }: AuthPageProps) {
 
         {/* 입력 필드 */}
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          <InputField
+            labelName="이메일"
+            id="email"
+            type="email"
+            placeholder="이메일을 입력해 주세요"
+            register={register}
+            errors={errors}
+            validation={{
+              required: '이메일은 필수 항목입니다.',
+              pattern: {
+                value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                message: '이메일 형식으로 작성해 주세요.',
+              },
+            }}
+          />
+
           {mode === 'signup' && (
             <InputField
+              labelName="닉네임"
               id="nickname"
               placeholder="닉네임을 입력해 주세요"
               register={register}
-              errors={errors.nickname}
+              errors={errors}
               validation={{
                 required: '닉네임은 필수 항목입니다.',
                 maxLength: {
@@ -160,20 +201,7 @@ export default function AuthPage({ mode }: AuthPageProps) {
             />
           )}
           <InputField
-            id="email"
-            type="email"
-            placeholder="이메일을 입력해 주세요"
-            register={register}
-            errors={errors.email}
-            validation={{
-              required: '이메일은 필수 항목입니다.',
-              pattern: {
-                value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                message: '이메일 형식으로 작성해 주세요.',
-              },
-            }}
-          />
-          <InputField
+            labelName="비밀번호"
             id="password"
             type="password"
             placeholder={
@@ -184,7 +212,7 @@ export default function AuthPage({ mode }: AuthPageProps) {
             showPassword={showPassword}
             setShowPassword={setShowPassword}
             register={register}
-            errors={errors.password}
+            errors={errors}
             validation={{
               required: '비밀번호는 필수 항목입니다.',
               minLength: { value: 8, message: '8자 이상 입력해 주세요.' },
@@ -193,15 +221,16 @@ export default function AuthPage({ mode }: AuthPageProps) {
           {mode === 'signup' && (
             <>
               <InputField
+                labelName="비밀번호 확인"
                 id="passwordConfirm"
                 type="password"
                 placeholder="비밀번호를 한번 더 입력해 주세요"
                 showPassword={showConfirmPassword}
                 setShowPassword={setShowConfirmPassword}
                 register={register}
-                errors={errors.passwordConfirm}
+                errors={errors}
                 validation={{
-                  validate: value =>
+                  validate: (value: string) =>
                     value === passwordValue || '비밀번호가 일치하지 않습니다.',
                 }}
               />
