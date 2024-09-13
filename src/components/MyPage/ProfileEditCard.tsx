@@ -3,7 +3,9 @@
 import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 
+import findAxiosErrorMessage from '@lib/utils/findaxiosError';
 import { Stack } from '@mantine/core';
+import { AxiosError } from 'axios';
 
 import FileInput from '@components/@shared/Common/Inputs/FileInput';
 import Input from '@components/@shared/Common/Inputs/Input';
@@ -31,15 +33,12 @@ export default function ProfileEditCard() {
   });
 
   const onSubmit = async (data: FormData) => {
-    /** 수정할 프로필과 현재 프로필을 비교했을 때 완전히 같으면,
-     * 수정할 필요가 없으므로 return 시킨다.
-     */
-    if (
-      data.image === user?.profileImageUrl &&
-      data.nickname === user.nickname
-    ) {
+    const isSameImage = data.image === user?.profileImageUrl;
+    const isSameNickname = data.nickname === user?.nickname;
+    if (isSameImage && isSameNickname) {
+      // 에러: 현재 프로필 정보와 같습니다.
       // eslint-disable-next-line no-console
-      console.log('이전과 프로필 정보가 같습니다.');
+      console.log('현재 프로필 정보와 같습니다.');
       return;
     }
     const { nickname, image } = data;
@@ -51,15 +50,15 @@ export default function ProfileEditCard() {
     if (image instanceof File) {
       formData.append('image', image);
       imgURL = await postImageUpload(formData);
+      /** 이미지 업로드가 에러날 상황을 찾을 수 없음 === 에러 핸들링 불가 */
     }
     const res = await putMyProfile({
       nickname,
       profileImageUrl: imgURL,
     });
-    if ('message' in res) {
-      return;
-    }
-    refreshUser(res);
+    if (!(res instanceof AxiosError)) return refreshUser(res.data);
+    // eslint-disable-next-line no-console
+    console.log(findAxiosErrorMessage(res));
   };
 
   const watchImage = watch('image');

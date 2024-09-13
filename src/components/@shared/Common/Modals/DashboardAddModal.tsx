@@ -1,7 +1,9 @@
 import { MouseEvent, PropsWithChildren, useCallback, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
+import findAxiosErrorMessage from '@lib/utils/findaxiosError';
 import { Flex, Modal, Stack } from '@mantine/core';
+import { AxiosError } from 'axios';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 
@@ -69,15 +71,13 @@ export default function DashboardAddModal({
   );
 
   const onSubmit: SubmitHandler<Inputs> = async ({ title }) => {
-    let res;
-    try {
-      res = await postCreateDashboards({ title, color });
+    const res = await postCreateDashboards({ title, color });
+    if (!(res instanceof AxiosError)) {
       setDashboardsFlag(true);
-      redirectDashboard(res.data.id);
-    } catch {
-      // eslint-disable-next-line no-console
-      console.log('네트워크 에러가 발생하였습니다. 잠시 후 다시 시도해주세요');
+      return redirectDashboard(res.data.id);
     }
+    // eslint-disable-next-line no-console
+    console.log(findAxiosErrorMessage(res));
   };
 
   const handleColorClick = (e: MouseEvent<HTMLButtonElement>) => {

@@ -3,7 +3,9 @@
 import { PropsWithChildren } from 'react';
 import { useForm } from 'react-hook-form';
 
+import findAxiosErrorMessage from '@lib/utils/findaxiosError';
 import { Modal, Stack } from '@mantine/core';
+import { AxiosError } from 'axios';
 import Image from 'next/image';
 
 import { addInvitation } from '@core/api/columnApis';
@@ -63,10 +65,15 @@ export default function HeaderInviteModal({
 
     onClose();
     const { invitedEmail } = data;
-    await addInvitation(dashboardid, invitedEmail);
-    window.location.reload();
-    // 성공: 초대를 보냈습니다.
-    // 에러: 초대에 실패했습니다.
+    const res = await addInvitation(dashboardid, invitedEmail);
+    if (!(res instanceof AxiosError)) {
+      /** 초대 보내기 성공 시 로직 */
+      // 성공: 초대를 보냈습니다.
+      // more logic
+      return;
+    }
+    // eslint-disable-next-line no-console
+    console.log(findAxiosErrorMessage(res));
   };
 
   return (

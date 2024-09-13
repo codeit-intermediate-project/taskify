@@ -3,6 +3,7 @@ import { useCallback, useState } from 'react';
 import { AxiosRequestConfig } from 'axios';
 
 import instance from '@core/api/instance';
+import axiosError from '@lib/utils/axiosError';
 
 type Method = 'GET' | 'POST' | 'PUT' | 'DELETE';
 
@@ -24,7 +25,9 @@ export default function useApi<T>(url: string, method: Method) {
         });
         setData(res?.data);
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Unknown error');
+        const axiosErr = axiosError(err);
+        setError(axiosErr.message ?? 'Unknown error');
+        // toast 에러: 요청 실패
       } finally {
         setIsLoading(false);
       }

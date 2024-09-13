@@ -1,5 +1,6 @@
 import { ChangePasswordRequestDto } from '@core/dtos/AuthDto';
 import { ErrorResponsePayload } from '@core/dtos/CommonDto';
+import axiosError from '@lib/utils/axiosError';
 
 import instance from './instance';
 
@@ -11,6 +12,6 @@ export default async function putPassword(body: ChangePasswordRequestDto) {
     );
     return res;
   } catch (err) {
-    return err;
+    return axiosError(err);
   }
 }

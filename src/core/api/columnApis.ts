@@ -9,6 +9,7 @@ import type {
 } from '@core/dtos/ColumnsDto';
 import type { DashboardApplicationServiceResponseDto } from '@core/dtos/DashboardsDto';
 import { MemberApplicationServiceResponseDto } from '@core/dtos/MembersDto';
+import axiosError from '@lib/utils/axiosError';
 
 export const getColumns = async (dashboardId: number) => {
   const res = await axios.get<GetColumnsResponseDto>(
@@ -124,14 +125,17 @@ export const getInvitations = async (
 };
 
 // 초대 목록에 추가
-export const addInvitation = async (
-  dashboardId: string,
-  email: string
-): Promise<EmailInvitation> => {
-  const { data } = await axios.post<{
-    id: number;
-    invitee: { email: string };
-  }>(`dashboards/${dashboardId}/invitations`, { email });
+export const addInvitation = async (dashboardId: string, email: string) => {
+  let res;
+  try {
+    res = await axios.post<{
+      id: number;
+      invitee: { email: string };
+    }>(`dashboards/${dashboardId}/invitations`, { email });
+  } catch (err) {
+    return axiosError(err);
+  }
+  const { data } = res;
 
   return { id: data.id, email: data.invitee.email };
 };

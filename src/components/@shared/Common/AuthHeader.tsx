@@ -17,9 +17,9 @@ export default function AuthHeader() {
   const { dashboardid } = useRoot();
   const [opened, { open, close }] = useDisclosure();
 
-  const handleModalOpen = () => {
+  const handleInvitedModalOpen = () => {
     if (!dashboardid) {
-      // 에러: 지정된 대시보드가 없습니다.
+      // toast 에러: 지정된 대시보드가 없습니다.
       return;
     }
     open();
@@ -43,7 +43,7 @@ export default function AuthHeader() {
             </LinkButton>
             <HeaderInviteModal opened={opened} onClose={close}>
               <button
-                onClick={handleModalOpen}
+                onClick={handleInvitedModalOpen}
                 className="rounded-lg border border-border-gray bg-transparent px-3 py-[3px] text-gray-400 hover:bg-gray-200 md:px-4 md:py-[6px]"
               >
                 <Image

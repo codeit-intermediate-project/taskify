@@ -1,4 +1,5 @@
 import { DashboardsResponseDto } from '@core/dtos/DashboardsDto';
+import axiosError from '@lib/utils/axiosError';
 
 import instance from './instance';
 
@@ -10,10 +11,15 @@ interface GetDashboardsParams {
 
 const getDashboards = async (props?: GetDashboardsParams) => {
   const params = { ...props, navigationMethod: 'pagination' };
-  const response = await instance.get<DashboardsResponseDto>('/dashboards', {
-    params,
-  });
-  return response.data;
+  let res;
+  try {
+    res = await instance.get<DashboardsResponseDto>('/dashboards', {
+      params,
+    });
+  } catch (err) {
+    return axiosError(err);
+  }
+  return res.data;
 };
 
 export default getDashboards;
