@@ -5,6 +5,7 @@ import { useDisclosure } from '@mantine/hooks';
 import Image from 'next/image';
 
 import { useRoot } from '@core/contexts/RootContexts';
+import showErrorNotification from '@lib/utils/notifications/showErrorNotification';
 
 import LinkButton from '../UI/Button/LinkButton';
 
@@ -18,10 +19,8 @@ export default function AuthHeader() {
   const [opened, { open, close }] = useDisclosure();
 
   const handleInvitedModalOpen = () => {
-    if (!dashboardid) {
-      // toast 에러: 지정된 대시보드가 없습니다.
-      return;
-    }
+    if (!dashboardid)
+      return showErrorNotification({ message: '지정된 대시보드가 없습니다.' });
     open();
   };
 

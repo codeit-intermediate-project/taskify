@@ -1,14 +1,13 @@
-import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 import { Stack } from '@mantine/core';
-import { useDisclosure } from '@mantine/hooks';
 import { AxiosError } from 'axios';
 
 import Input from '@components/@shared/Common/Inputs/Input';
-import PasswordEditModal from '@components/@shared/Common/Modals/PasswordEditModal';
 import PrimaryButton from '@components/@shared/UI/Button/PrimaryButton';
 import putPassword from '@core/api/putPassword';
+import showErrorNotification from '@lib/utils/notifications/showErrorNotification';
+import showSuccessNotification from '@lib/utils/notifications/showSuccessNotification';
 
 interface FormData {
   currentPassword: string;
@@ -31,9 +30,6 @@ export default function PasswordConfirmCard() {
       newPasswordConfirm: '',
     },
   });
-  const [opened, { open, close }] = useDisclosure(false);
-  const [statusMessage, setStatusMessage] = useState('');
-
   const onTrigger = () => {
     trigger(['newPassword', 'newPasswordConfirm']);
   };
@@ -42,19 +38,18 @@ export default function PasswordConfirmCard() {
   const onSubmit = async ({ currentPassword, newPassword }: FormData) => {
     const res = await putPassword({ password: currentPassword, newPassword });
     if (res instanceof AxiosError) {
-      setStatusMessage(res.response?.data.message);
+      showErrorNotification({ message: res.response?.data.message });
     } else {
-      setStatusMessage('비밀번호가 변경되었습니다.');
+      showSuccessNotification({ message: '비밀번호가 변경되었습니다.' });
       reset();
     }
-    open();
   };
 
   return (
     <>
-      <PasswordEditModal opened={opened} onClose={close}>
-        {statusMessage}
-      </PasswordEditModal>
+      {/* <PasswordEditModal opened={opened} onClose={close}>
+        {statusMessage} 
+      </PasswordEditModal> */}
       <form className="z-10 flex flex-col gap-10 rounded-lg bg-white p-4">
         <h1 className="font-2lg-18px-bold md:font-2xl-24px-bold">
           비밀번호 변경

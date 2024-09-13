@@ -4,6 +4,8 @@ import { AxiosRequestConfig } from 'axios';
 
 import instance from '@core/api/instance';
 import axiosError from '@lib/utils/axiosError';
+import findAxiosErrorMessage from '@lib/utils/findAxiosErrorMessage';
+import showErrorNotification from '@lib/utils/notifications/showErrorNotification';
 
 type Method = 'GET' | 'POST' | 'PUT' | 'DELETE';
 
@@ -26,8 +28,9 @@ export default function useApi<T>(url: string, method: Method) {
         setData(res?.data);
       } catch (err) {
         const axiosErr = axiosError(err);
-        setError(axiosErr.message ?? 'Unknown error');
-        // toast 에러: 요청 실패
+        const message = findAxiosErrorMessage(axiosErr);
+        setError(message ?? 'Unknown error');
+        showErrorNotification({ message });
       } finally {
         setIsLoading(false);
       }

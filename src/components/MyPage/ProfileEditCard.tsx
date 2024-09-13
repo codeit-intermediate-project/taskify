@@ -3,7 +3,6 @@
 import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 
-import findAxiosErrorMessage from '@lib/utils/findaxiosError';
 import { Stack } from '@mantine/core';
 import { AxiosError } from 'axios';
 
@@ -13,6 +12,9 @@ import PrimaryButton from '@components/@shared/UI/Button/PrimaryButton';
 import postImageUpload from '@core/api/postImageUpload';
 import putMyProfile from '@core/api/putMyProfile';
 import { useRoot } from '@core/contexts/RootContexts';
+import findAxiosErrorMessage from '@lib/utils/findAxiosErrorMessage';
+import showErrorNotification from '@lib/utils/notifications/showErrorNotification';
+import showSuccessNotification from '@lib/utils/notifications/showSuccessNotification';
 
 interface FormData {
   email: string;
@@ -35,12 +37,8 @@ export default function ProfileEditCard() {
   const onSubmit = async (data: FormData) => {
     const isSameImage = data.image === user?.profileImageUrl;
     const isSameNickname = data.nickname === user?.nickname;
-    if (isSameImage && isSameNickname) {
-      // 에러: 현재 프로필 정보와 같습니다.
-      // eslint-disable-next-line no-console
-      console.log('현재 프로필 정보와 같습니다.');
-      return;
-    }
+    if (isSameImage && isSameNickname)
+      return showErrorNotification({ message: '현재 프로필 정보와 같습니다.' });
     const { nickname, image } = data;
     const formData = new FormData();
     let imgURL = image;
@@ -56,9 +54,11 @@ export default function ProfileEditCard() {
       nickname,
       profileImageUrl: imgURL,
     });
-    if (!(res instanceof AxiosError)) return refreshUser(res.data);
-    // eslint-disable-next-line no-console
-    console.log(findAxiosErrorMessage(res));
+    if (!(res instanceof AxiosError)) {
+      showSuccessNotification({ message: '프로필 수정이 완료되었습니다' });
+      return refreshUser(res.data);
+    }
+    showErrorNotification({ message: findAxiosErrorMessage(res) });
   };
 
   const watchImage = watch('image');

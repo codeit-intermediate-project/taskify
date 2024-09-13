@@ -3,7 +3,6 @@
 import { PropsWithChildren } from 'react';
 import { useForm } from 'react-hook-form';
 
-import findAxiosErrorMessage from '@lib/utils/findaxiosError';
 import { Modal, Stack } from '@mantine/core';
 import { AxiosError } from 'axios';
 import Image from 'next/image';
@@ -11,6 +10,9 @@ import Image from 'next/image';
 import { addInvitation } from '@core/api/columnApis';
 import { useRoot } from '@core/contexts/RootContexts';
 import useDevice, { DEVICE } from '@lib/hooks/useDevice';
+import findAxiosErrorMessage from '@lib/utils/findAxiosErrorMessage';
+import showErrorNotification from '@lib/utils/notifications/showErrorNotification';
+import showSuccessNotification from '@lib/utils/notifications/showSuccessNotification';
 
 import PrimaryButton from '../UI/Button/PrimaryButton';
 import SecondaryButton from '../UI/Button/SecondaryButton';
@@ -68,12 +70,11 @@ export default function HeaderInviteModal({
     const res = await addInvitation(dashboardid, invitedEmail);
     if (!(res instanceof AxiosError)) {
       /** 초대 보내기 성공 시 로직 */
-      // 성공: 초대를 보냈습니다.
-      // more logic
+      showSuccessNotification({ message: '초대를 보냈습니다.' });
+      // 초대하면 edit에 반영되도록 로직 추가
       return;
     }
-    // eslint-disable-next-line no-console
-    console.log(findAxiosErrorMessage(res));
+    showErrorNotification({ message: findAxiosErrorMessage(res) });
   };
 
   return (

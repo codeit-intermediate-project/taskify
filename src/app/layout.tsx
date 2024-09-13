@@ -1,7 +1,9 @@
 import '@mantine/core/styles.css';
+import '@mantine/notifications/styles.css';
 import './globals.css';
 
 import { MantineProvider } from '@mantine/core';
+import { Notifications } from '@mantine/notifications';
 import localFont from 'next/font/local';
 
 import DashboardLayout from '@components/@shared/Layout/DashboardLayout';
@@ -31,6 +33,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${pretandard.variable}`}>
         <MantineProvider>
+          <Notifications />
           <DeviceProvider>
             <RootProvider>
               <DashboardLayout>{children}</DashboardLayout>

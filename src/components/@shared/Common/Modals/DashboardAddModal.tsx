@@ -1,7 +1,6 @@
 import { MouseEvent, PropsWithChildren, useCallback, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
-import findAxiosErrorMessage from '@lib/utils/findaxiosError';
 import { Flex, Modal, Stack } from '@mantine/core';
 import { AxiosError } from 'axios';
 import Image from 'next/image';
@@ -13,6 +12,9 @@ import postCreateDashboards from '@core/api/postDashboards';
 import { useRoot } from '@core/contexts/RootContexts';
 import COLORS from '@lib/constants/themeConst';
 import useDevice, { DEVICE } from '@lib/hooks/useDevice';
+import findAxiosErrorMessage from '@lib/utils/findAxiosErrorMessage';
+import showErrorNotification from '@lib/utils/notifications/showErrorNotification';
+import showSuccessNotification from '@lib/utils/notifications/showSuccessNotification';
 
 import Input from '../Inputs/Input';
 
@@ -74,10 +76,12 @@ export default function DashboardAddModal({
     const res = await postCreateDashboards({ title, color });
     if (!(res instanceof AxiosError)) {
       setDashboardsFlag(true);
+      showSuccessNotification({
+        message: `${title} 대시보드를 생성하였습니다.`,
+      });
       return redirectDashboard(res.data.id);
     }
-    // eslint-disable-next-line no-console
-    console.log(findAxiosErrorMessage(res));
+    showErrorNotification({ message: findAxiosErrorMessage(res) });
   };
 
   const handleColorClick = (e: MouseEvent<HTMLButtonElement>) => {

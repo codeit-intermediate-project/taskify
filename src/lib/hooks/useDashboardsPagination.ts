@@ -5,6 +5,7 @@ import { AxiosError } from 'axios';
 import getDashboards from '@core/api/getDashboards';
 import { DashboardApplicationServiceResponseDto } from '@core/dtos/DashboardsDto';
 import findAxiosErrorMessage from '@lib/utils/findAxiosErrorMessage';
+import showErrorNotification from '@lib/utils/notifications/showErrorNotification';
 
 export default function useDashboardsPagination() {
   const [data, setData] = useState<DashboardApplicationServiceResponseDto[]>(
@@ -34,8 +35,7 @@ export default function useDashboardsPagination() {
       setData(dashboards);
       return;
     }
-    // eslint-disable-next-line no-console
-    console.log(findAxiosErrorMessage(res));
+    showErrorNotification({ message: findAxiosErrorMessage(res) });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, size]);
 
