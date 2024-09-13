@@ -40,7 +40,7 @@ export default function HeaderTitle() {
 
   return (
     <div
-      className={`grow items-center font-xl-20px-bold xl:flex xl:gap-2 ${isManagedPage ? 'flex' : 'hidden'}`}
+      className={`grow items-center truncate font-xl-20px-bold xl:flex xl:gap-2 ${isManagedPage ? 'flex' : 'hidden'}`}
     >
       <h1>{titleValue}</h1>
       {!isManagedPage && dashboardDetail?.createdByMe && (
