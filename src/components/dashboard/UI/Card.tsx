@@ -32,11 +32,16 @@ export default function Card({
           onClickCard(card);
           openDetail();
         }}
-        className="mt-4 flex w-full flex-col gap-1 rounded-md border border-gray-200 bg-white px-3 pb-[5px] pt-3 md:flex-row md:gap-5 md:px-5 md:py-5 xl:flex-col xl:gap-4"
+        className="mt-4 flex w-full flex-col gap-1 rounded-md border border-gray-200 bg-white px-3 pb-[5px] pt-3 transition-all duration-300 ease-in-out hover:shadow-lg md:flex-row md:gap-5 md:px-5 md:py-5 xl:flex-col xl:gap-4"
       >
         <div className="relative w-full pb-[60%] md:w-[90px] md:pb-[54px] xl:w-full xl:pb-[60%]">
           {card.imageUrl && (
-            <Image src={card.imageUrl} fill alt="카드 이미지" />
+            <Image
+              src={card.imageUrl}
+              className="rounded-md"
+              fill
+              alt="카드 이미지"
+            />
           )}
         </div>
         <div className="w-full flex-col">
