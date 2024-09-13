@@ -10,7 +10,7 @@ export const INIT_MYDASHBOARDS_CONTEXT = {
 export const INIT_DASHBOARDS_REQUEST = {
   navigationMethod: 'pagination',
   page: 1,
-  size: 100,
+  size: 1000,
 };
 
 export const INIT_DASHBOARDS_RESPONSE = {

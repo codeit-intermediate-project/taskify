@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
 
-import { AxiosRequestConfig } from 'axios';
+import { AxiosError, AxiosRequestConfig } from 'axios';
 
 import instance from '@core/api/instance';
 
@@ -22,12 +22,18 @@ export default function useApi<T>(url: string, method: Method) {
           data: body,
           ...config,
         });
+        // console.log(`res`);
+        // console.log(res);
         setData(res?.data);
       } catch (err) {
+        // console.log(`err`);
+        // console.log(err);
         setError(err instanceof Error ? err.message : 'Unknown error');
+        if (err instanceof AxiosError) return err;
       } finally {
         setIsLoading(false);
       }
+      return res;
     },
     [url, method]
   );
