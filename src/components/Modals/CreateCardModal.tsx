@@ -40,8 +40,7 @@ import { DashBoardContext } from '@core/contexts/DashBoardContext';
 import { CreateCardRequestDto } from '@core/dtos/CardsDto';
 import addPurple from '@icons/add_purple.png';
 import calendar from '@icons/calendar.png';
-import convertStringToColorHex from '@lib/utils/convertStringToColorHex';
-import convertStringToRGBA from '@lib/utils/convertStringToRGBA';
+import { stringToHex, stringToRgba } from '@lib/utils/convertStringToColor';
 
 interface CreateCardModalProps {
   columnId: number;
@@ -326,10 +325,10 @@ export default function CreateCardModal({
                   return (
                     <span
                       key={keyValue}
-                      className="mr-2 border px-0.5 py-1 font-md-14px-regular"
+                      className="mr-2 px-0.5 py-1 font-md-14px-regular"
                       style={{
-                        color: `#${convertStringToColorHex(tag)}`,
-                        backgroundColor: `${convertStringToRGBA(tag, 0.1)}`,
+                        color: `${stringToHex(tag)}`,
+                        backgroundColor: `${stringToRgba(tag, 0.1)}`,
                       }}
                     >
                       {tag}

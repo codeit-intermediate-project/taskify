@@ -12,9 +12,16 @@ import { useRoot } from '@core/contexts/RootContexts';
 import { CardServiceResponseDto } from '@core/dtos/CardsDto';
 import { CommentServiceDto } from '@core/dtos/CommentsDto';
 
+interface EditingComment {
+  id: number;
+  content: string;
+}
+
 function useComments(card: CardServiceResponseDto) {
   const [commentList, setCommentList] = useState<CommentServiceDto[]>([]);
-  const [editingCommentId, setEditingCommentId] = useState<number | null>(null);
+  const [editingComment, setEditingComment] = useState<EditingComment | null>(
+    null
+  );
   const { dashboardid } = useParams();
   const { user } = useRoot();
   const LoadComments = useCallback(async () => {
@@ -36,11 +43,11 @@ function useComments(card: CardServiceResponseDto) {
     setCommentList(prev => [data, ...prev]);
   };
 
-  const onClickEditComment = (commentId: number) => {
-    setEditingCommentId(commentId);
+  const onClickEditComment = (commentId: number, value: string) => {
+    setEditingComment({ id: commentId, content: value });
   };
   const onClickEditCancel = () => {
-    setEditingCommentId(null);
+    setEditingComment(null);
   };
   const onClickDeleteComment = async (commentId: number) => {
     await deleteComments(commentId);
@@ -57,7 +64,7 @@ function useComments(card: CardServiceResponseDto) {
     setCommentList(prev =>
       prev.map(comment => (comment.id === commentId ? data : comment))
     );
-    setEditingCommentId(null);
+    setEditingComment(null);
   };
 
   useEffect(() => {
@@ -67,7 +74,8 @@ function useComments(card: CardServiceResponseDto) {
     commentList,
     onSubmitCreateCommentForm,
     user,
-    editingCommentId,
+    editingComment,
+    setEditingComment,
     onClickEditComment,
     onClickEditCancel,
     onClickEditComplete,

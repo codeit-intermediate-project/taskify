@@ -102,10 +102,19 @@ export default function useCards(columnId: number) {
     if (!result) {
       return false;
     }
-
     const formattedDueDate = dayjs(fieldData.dueDate).format(
       'YYYY-MM-DD HH:mm'
     );
+    const beforeEdit = cards.find(card => cardId === card.id);
+    const beforeData = {
+      columnId: beforeEdit?.columnId,
+      assigneeUserId: beforeEdit?.assignee?.id,
+      title: beforeEdit?.title,
+      description: beforeEdit?.description,
+      dueDate: beforeEdit?.dueDate?.toString(),
+      tags: beforeEdit?.tags,
+      imageUrl: beforeEdit?.imageUrl,
+    };
     const formData: UpdateCardRequestDto = {
       columnId: Number(fieldData.columnId),
       assigneeUserId: Number(fieldData.assigneeUserId),
@@ -115,15 +124,12 @@ export default function useCards(columnId: number) {
       tags: fieldData.tags,
       imageUrl: fieldData.imageUrl,
     };
-
-    const data = await putCard(Number(cardId), formData);
-    // 컬럼을 옮긴경우
-    if (data.columnId !== columnId) {
-      moveCard(columnId, data);
-    } else {
-      setCards(prev => prev.map(card => (card.id === data.id ? data : card)));
+    if (JSON.stringify(beforeData) === JSON.stringify(formData)) {
+      return true;
     }
 
+    const data = await putCard(Number(cardId), formData);
+    moveCard(columnId, data);
     return true;
   };
 

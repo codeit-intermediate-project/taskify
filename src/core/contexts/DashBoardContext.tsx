@@ -101,23 +101,36 @@ function DashBoardProvider({ children }: PropsWithChildren) {
   const moveCard = useCallback(
     (beforeColumnId: number, afterMoveCard: CardServiceResponseDto) => {
       const { columnId: afterColumnId } = afterMoveCard;
-      setCardList2D(prevCardList2D => {
-        return prevCardList2D.map(prevCardList => {
-          if (prevCardList.columnId === beforeColumnId) {
-            const removedCardList = prevCardList.cardList.filter(
-              prevCard => prevCard.id !== afterMoveCard.id
-            );
-            return { ...prevCardList, cardList: removedCardList };
-          }
+      if (afterColumnId !== beforeColumnId) {
+        setCardList2D(prevCardList2D => {
+          return prevCardList2D.map(prevCardList => {
+            if (prevCardList.columnId === beforeColumnId) {
+              const removedCardList = prevCardList.cardList.filter(
+                prevCard => prevCard.id !== afterMoveCard.id
+              );
+              return { ...prevCardList, cardList: removedCardList };
+            }
+            if (prevCardList.columnId === afterColumnId) {
+              const addedCardList = [...prevCardList.cardList, afterMoveCard];
+              return { ...prevCardList, cardList: addedCardList };
+            }
 
-          if (prevCardList.columnId === afterColumnId) {
-            const addedCardList = [...prevCardList.cardList, afterMoveCard];
-            return { ...prevCardList, cardList: addedCardList };
-          }
-
-          return prevCardList;
+            return prevCardList;
+          });
         });
-      });
+      } else {
+        setCardList2D(prevCardList2D =>
+          prevCardList2D.map(prevCardList => {
+            if (prevCardList.columnId === afterColumnId) {
+              const updatedCardList = prevCardList.cardList.map(card =>
+                card.id === afterMoveCard.id ? afterMoveCard : card
+              );
+              return { ...prevCardList, cardList: updatedCardList };
+            }
+            return prevCardList;
+          })
+        );
+      }
     },
     [setCardList2D]
   );
