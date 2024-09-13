@@ -1,7 +1,9 @@
-import { useEffect, useCallback, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { INIT_INVITATIONS_REQUEST } from '@lib/constants/invitationsInit';
 import useApi from '@lib/hooks/useApi';
+
+import useInfiniteScroll from './useInfiniteScroll';
 
 import type { InvitationsResponseDto } from '@core/dtos/InvitationsDto';
 
@@ -31,7 +33,6 @@ const useGetInvitations = () => {
     }
   };
 
-  // 초기 마운트 시 API 호출
   useEffect(() => {
     fetchInvitations(size);
   }, [callApi, size]);
@@ -40,40 +41,25 @@ const useGetInvitations = () => {
   useEffect(() => {
     if (data && data.invitations) {
       setInvitations(prev => {
-        const newInvitations = data.invitations;
-        // 중복 데이터 제거
-        const uniqueInvitations = [...prev, ...newInvitations].filter(
+        const uniqueInvitations = [...prev, ...data.invitations].filter(
           (invitation, index, self) =>
-            index === self.findIndex(t => t.id === invitation.id) // id 기준 중복 체크
+            index === self.findIndex(t => t.id === invitation.id)
         );
         return uniqueInvitations;
       });
     }
   }, [data]);
 
-  // 스크롤 이벤트 핸들러
-  const handleScroll = useCallback(() => {
-    const isAtBottom =
-      window.innerHeight + document.documentElement.scrollTop >=
-      document.documentElement.offsetHeight - 100;
-
-    // 스크롤이 바닥에 닿았고, 추가 데이터가 존재할 경우
-    if (isAtBottom && invitations.length >= size) {
+  useInfiniteScroll(
+    () => {
       const newSize = size + 10;
       setSize(newSize);
       fetchInvitations(newSize);
-    }
-  }, [invitations.length, size]);
+    },
+    data && data.invitations && data.invitations.length > 0
+  );
 
-  // 스크롤 이벤트 리스너
-  useEffect(() => {
-    window.addEventListener('scroll', handleScroll);
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
-  }, [handleScroll]);
-
-  return { data, error, hasNoInvitations };
+  return { data, error, hasNoInvitations, invitations };
 };
 
 export default useGetInvitations;
