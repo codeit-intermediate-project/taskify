@@ -4,7 +4,7 @@
 
 'use client';
 
-import { useCallback, useState } from 'react';
+import { useCallback, useState, useEffect } from 'react';
 import { getMembers, deleteMember } from '@core/api/columnApis';
 import Image from 'next/image';
 import Pagination from '@/src/components/edit/Pagination';
@@ -55,8 +55,10 @@ const getRandomColor = () => {
 
 export default function MemberList({ dashboardId }: MemberListProps) {
   const itemsPerPage = 4;
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [selectedMemberId, setSelectedMemberId] = useState<number | null>(null);
+  const [alertDisplayed, setAlertDisplayed] = useState(false);
+  const [isDeleted, setIsDeleted] = useState(false);
 
   // 데이터를 가져오는 함수 정의
   const fetchMembers = useCallback(
@@ -85,12 +87,13 @@ export default function MemberList({ dashboardId }: MemberListProps) {
   // 모달 열기
   const openDeleteModal = (memberId: number) => {
     setSelectedMemberId(memberId);
-    setIsModalOpen(true);
+    setIsDeleteModalOpen(true);
+    setAlertDisplayed(false);
   };
 
   // 모달 닫기
   const closeDeleteModal = () => {
-    setIsModalOpen(false);
+    setIsDeleteModalOpen(false);
     setSelectedMemberId(null);
   };
 
@@ -100,9 +103,17 @@ export default function MemberList({ dashboardId }: MemberListProps) {
 
     await deleteMember(dashboardId, selectedMemberId);
     handlePageChange(1);
+    setIsDeleted(true);
     closeDeleteModal();
-    window.location.reload();
   };
+
+  useEffect(() => {
+    if (!isDeleteModalOpen && isDeleted && !alertDisplayed) {
+      setAlertDisplayed(true);
+      alert('삭제가 완료되었습니다.');
+      window.location.reload();
+    }
+  }, [isDeleteModalOpen, isDeleted, alertDisplayed]);
 
   return (
     <div className="max-w-[92%] rounded-md bg-white p-6 shadow md:mx-0 md:max-w-[544px] xl:max-w-[620px]">
@@ -154,7 +165,7 @@ export default function MemberList({ dashboardId }: MemberListProps) {
       </div>
       {/* 삭제 확인 모달 */}
       <DeleteModal
-        isOpen={isModalOpen}
+        isOpen={isDeleteModalOpen}
         onClose={closeDeleteModal}
         onDelete={handleDeleteMember}
       />

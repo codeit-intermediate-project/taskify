@@ -29,6 +29,8 @@ export default function InvitationList({ dashboardId }: InvitationListProps) {
   const [invitations, setInvitations] = useState<EmailInvitation[]>([]);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [deleteId, setDeleteId] = useState<number | null>(null);
+  const [alertDisplayed, setAlertDisplayed] = useState(false);
+  const [isDeleted, setIsDeleted] = useState(false);
   const itemsPerPage = 5;
   const hasLoadedInvitations = useRef(false);
 
@@ -90,6 +92,7 @@ export default function InvitationList({ dashboardId }: InvitationListProps) {
   const openDeleteModal = (id: number) => {
     setIsDeleteModalOpen(true);
     setDeleteId(id);
+    setAlertDisplayed(false);
   };
 
   const closeDeleteModal = () => {
@@ -104,9 +107,17 @@ export default function InvitationList({ dashboardId }: InvitationListProps) {
       prevInvitations.filter(invitation => invitation.id !== deleteId)
     );
 
+    setIsDeleted(true);
     closeDeleteModal();
-    window.location.reload();
   };
+
+  useEffect(() => {
+    if (!isDeleteModalOpen && isDeleted && !alertDisplayed) {
+      setAlertDisplayed(true);
+      alert('삭제가 완료되었습니다.');
+      window.location.reload();
+    }
+  }, [isDeleteModalOpen, isDeleted, alertDisplayed]);
 
   return (
     <div className="max-w-[92%] rounded-lg bg-white p-6 shadow md:mx-0 md:max-w-[544px] xl:max-w-[620px]">
