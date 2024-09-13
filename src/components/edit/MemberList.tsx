@@ -94,7 +94,6 @@ export default function MemberList({ dashboardId }: MemberListProps) {
   // 모달 닫기
   const closeDeleteModal = () => {
     setIsDeleteModalOpen(false);
-    setSelectedMemberId(null);
   };
 
   // 멤버 삭제
@@ -108,12 +107,14 @@ export default function MemberList({ dashboardId }: MemberListProps) {
   };
 
   useEffect(() => {
-    if (!isDeleteModalOpen && isDeleted && !alertDisplayed) {
+    if (isDeleted && !isDeleteModalOpen && !alertDisplayed) {
+      setTimeout(() => {
+        alert('삭제가 완료되었습니다.');
+        window.location.reload();
+      }, 300);
       setAlertDisplayed(true);
-      alert('삭제가 완료되었습니다.');
-      window.location.reload();
     }
-  }, [isDeleteModalOpen, isDeleted, alertDisplayed]);
+  }, [isDeleted, isDeleteModalOpen, alertDisplayed]);
 
   return (
     <div className="max-w-[92%] rounded-md bg-white p-6 shadow md:mx-0 md:max-w-[544px] xl:max-w-[620px]">

@@ -21,6 +21,14 @@ export default function DeleteModal({
     }
   };
 
+  const handleDelete = () => {
+    onDelete();
+
+    setTimeout(() => {
+      onClose();
+    }, 1000);
+  };
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       {/* 모달 배경 추가 */}
@@ -50,7 +58,7 @@ export default function DeleteModal({
             취소
           </button>
           <button
-            onClick={onDelete}
+            onClick={handleDelete}
             className="w-full rounded bg-violet px-4 py-2 text-white"
           >
             삭제
