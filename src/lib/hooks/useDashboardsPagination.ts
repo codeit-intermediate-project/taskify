@@ -42,5 +42,6 @@ export default function useDashboardsPagination() {
     totalItems,
     data,
     handlePageChange,
+    fetchData,
   };
 }

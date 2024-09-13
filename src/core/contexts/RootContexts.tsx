@@ -26,6 +26,8 @@ interface ContextValue {
   dashboardid: string | undefined;
   setDashboardid: Dispatch<SetStateAction<string | undefined>>;
   login: (body: LoginRequestDto) => Promise<void>;
+  dashboardsFlag: boolean;
+  setDashboardsFlag: Dispatch<SetStateAction<boolean>>;
 }
 
 const RootContext = createContext<ContextValue>({
@@ -34,6 +36,8 @@ const RootContext = createContext<ContextValue>({
   dashboardid: undefined,
   setDashboardid: () => {},
   login: async () => {},
+  dashboardsFlag: false,
+  setDashboardsFlag: () => {},
 });
 
 export default function RootProvider({ children }: PropsWithChildren) {
@@ -47,6 +51,7 @@ export default function RootProvider({ children }: PropsWithChildren) {
     setData: setUser,
     callApi: getMe,
   } = useApi<UserServiceResponseDto>('/users/me', 'GET');
+  const [dashboardsFlag, setDashboardsFlag] = useState(false);
 
   /** 유저 정보를 최신상태로 만들고 싶을 때 사용 */
   const refreshUser = useCallback(
@@ -81,8 +86,10 @@ export default function RootProvider({ children }: PropsWithChildren) {
       dashboardid,
       setDashboardid,
       login,
+      dashboardsFlag,
+      setDashboardsFlag,
     }),
-    [user, dashboardid, login, refreshUser]
+    [user, dashboardid, login, refreshUser, dashboardsFlag, setDashboardsFlag]
   );
 
   return <RootContext.Provider value={value}>{children}</RootContext.Provider>;

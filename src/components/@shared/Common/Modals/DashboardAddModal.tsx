@@ -36,18 +36,20 @@ const MODAL_RADIUS: DeviceKeyObject = {
   desktop: '16px',
 };
 
+interface Props {
+  opened: boolean;
+  onClose: () => void;
+}
+
 export default function DashboardAddModal({
   children,
   opened,
   onClose,
-}: PropsWithChildren<{
-  opened: boolean;
-  onClose: () => void;
-}>) {
+}: PropsWithChildren<Props>) {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isValid },
   } = useForm<Inputs>({
     defaultValues: {
       title: '',
@@ -56,7 +58,7 @@ export default function DashboardAddModal({
   const device = useDevice();
   const router = useRouter();
   const [color, setColor] = useState<ColorType>(COLORS.green);
-  const { setDashboardid } = useRoot();
+  const { setDashboardid, setDashboardsFlag } = useRoot();
 
   const redirectDashboard = useCallback(
     (id: number) => {
@@ -70,6 +72,7 @@ export default function DashboardAddModal({
     let res;
     try {
       res = await postCreateDashboards({ title, color });
+      setDashboardsFlag(true);
       redirectDashboard(res.data.id);
     } catch {
       // eslint-disable-next-line no-console
@@ -130,7 +133,9 @@ export default function DashboardAddModal({
           </Flex>
           <Flex className="mt-4 gap-2">
             <SecondaryButton onClick={onClose}>취소</SecondaryButton>
-            <PrimaryButton onClick={handleSubmit(onSubmit)}>확인</PrimaryButton>
+            <PrimaryButton disabled={!isValid} onClick={handleSubmit(onSubmit)}>
+              확인
+            </PrimaryButton>
           </Flex>
         </Stack>
       </Modal>

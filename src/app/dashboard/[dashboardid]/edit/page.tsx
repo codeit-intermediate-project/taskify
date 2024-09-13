@@ -7,10 +7,12 @@ import EditDashboard from '@components/edit/EditDashboard';
 import InvitationList from '@components/edit/InvitationList';
 import MemberList from '@components/edit/MemberList';
 import { deleteDashboard } from '@core/api/columnApis';
+import { useRoot } from '@core/contexts/RootContexts';
 
 export default function DashBoardEditPage() {
   const pathname = usePathname();
   const router = useRouter();
+  const { setDashboardsFlag } = useRoot();
 
   const dashboardId = pathname.split('/')[2];
 
@@ -22,9 +24,10 @@ export default function DashBoardEditPage() {
   // 대시보드 삭제
   const handleDeleteDashboard = async () => {
     await deleteDashboard(dashboardId);
+    setDashboardsFlag(true);
     // eslint-disable-next-line no-alert
     alert('대시보드 삭제 완료!');
-    router.push('/');
+    router.push('/mydashboard');
   };
 
   return (

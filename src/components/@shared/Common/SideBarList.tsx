@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 
 import { Flex, Stack } from '@mantine/core';
 import Image from 'next/image';
@@ -14,12 +14,14 @@ import SideBarPagination from './SideBarPagination';
 export default function SideBarList() {
   const device = useDevice();
   const router = useRouter();
-  const { dashboardid, setDashboardid } = useRoot();
+  const { dashboardid, setDashboardid, dashboardsFlag, setDashboardsFlag } =
+    useRoot();
   const {
     currentPage,
     totalItems,
     data: dashboards,
     handlePageChange,
+    fetchData,
   } = useDashboardsPagination();
 
   const isMobile = device === 'mobile';
@@ -36,6 +38,13 @@ export default function SideBarList() {
   const handleDashboardClick = (id: number) => {
     redirectDashboard(id);
   };
+
+  useEffect(() => {
+    if (dashboardsFlag) {
+      fetchData();
+      setDashboardsFlag(false);
+    }
+  }, [dashboardsFlag, fetchData, setDashboardsFlag]);
 
   return (
     <Stack className="items-center gap-2 md:items-stretch">

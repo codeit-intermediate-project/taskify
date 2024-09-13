@@ -103,12 +103,13 @@ export default function ProfileEditCard() {
         />
         <Stack className="w-full gap-6">
           <Input
+            className="text-gray-300"
             id="email"
-            label="이메일 (수정 불가능)"
+            label="이메일"
             type="email"
             placeholder="이메일을 입력해 주세요"
             register={register}
-            readOnly
+            disabled
             validation={{
               required: '이메일을 입력해주세요',
               pattern: {
