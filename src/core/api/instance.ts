@@ -2,7 +2,7 @@
 import axios from 'axios';
 
 const instance = axios.create({
-  baseURL: 'https://sp-taskify-api.vercel.app/8-3',
+  baseURL: process.env.NEXT_PUBLIC_SERVER_HOST,
   headers: {
     'Content-Type': 'application/json',
   },

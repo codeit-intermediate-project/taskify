@@ -14,6 +14,7 @@ import {
 
 import axios from 'axios';
 
+import localInstance from '@core/api/localInstance';
 import useApi from '@lib/hooks/useApi';
 
 import type {
@@ -68,7 +69,7 @@ export default function RootProvider({ children }: PropsWithChildren) {
   const login = useCallback(
     async (body: LoginRequestDto): Promise<LoginResponseDto | undefined> => {
       const response = await postAuthLogin(body);
-
+      await localInstance.post('http://localhost:3000/api/auth/login', body);
       if (response && 'data' in response) {
         const { data, status } = response; // 필요한 필드를 추출
         return { ...data, status } as LoginResponseDto; // 올바른 구조로 반환
@@ -90,8 +91,13 @@ export default function RootProvider({ children }: PropsWithChildren) {
     if (loginData?.accessToken) {
       localStorage.setItem('accessToken', loginData?.accessToken);
     }
-    getMe(undefined);
   }, [loginData, getMe]);
+
+  useEffect(() => {
+    if (localStorage.getItem('accessToken')) {
+      getMe(undefined);
+    }
+  }, [getMe]);
 
   const value = useMemo(
     () => ({
