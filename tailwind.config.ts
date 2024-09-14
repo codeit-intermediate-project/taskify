@@ -226,6 +226,30 @@ const config: Config = {
           lineHeight: '51px',
           textAlign: 'left',
         },
+        '.font-4xl-56px-bold': {
+          fontSize: '56px',
+          fontWeight: '700',
+          lineHeight: '100px',
+          textAlign: 'left',
+        },
+        '.font-4xl-70px-bold': {
+          fontSize: '70px',
+          fontWeight: '700',
+          lineHeight: '65px',
+          textAlign: 'left',
+        },
+        '.font-4xl-76px-bold': {
+          fontSize: '76px',
+          fontWeight: '700',
+          lineHeight: '100px',
+          textAlign: 'left',
+        },
+        '.font-4xl-90px-bold': {
+          fontSize: '90px',
+          fontWeight: '700',
+          lineHeight: '65px',
+          textAlign: 'left',
+        },
       });
     },
   ],
