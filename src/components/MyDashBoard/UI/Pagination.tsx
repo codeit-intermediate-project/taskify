@@ -1,7 +1,10 @@
+import { useState } from 'react';
+
 import Image from 'next/image';
 
 import arrowLeft from '@icons/arrow_left.png';
 import arrowRight from '@icons/arrow_right.png';
+import useResize from '@lib/hooks/useResize';
 
 interface PaginationProps {
   currentPage: number;
@@ -17,6 +20,11 @@ export default function Pagination({
   onPageChange,
 }: PaginationProps): JSX.Element {
   const totalPages = totalItems > 0 ? Math.ceil(totalItems / itemsPerPage) : 1;
+  const [isMobile, setIsMobile] = useState<boolean>(false);
+
+  useResize(() => {
+    setIsMobile(window.innerWidth < 768);
+  });
 
   // 이전 페이지 이동
   const handlePrePage = () => {
@@ -33,7 +41,12 @@ export default function Pagination({
   };
 
   return (
-    <div className="flex flex-col items-center justify-end gap-2">
+    <div className="flex items-center justify-end gap-2 md:flex-col md:items-center">
+      {isMobile && (
+        <p className="text-black-500 font-md-14px-regular">
+          {totalPages} 페이지 중 {currentPage}
+        </p>
+      )}
       <div className="flex gap-1">
         <button
           type="button"
@@ -66,9 +79,11 @@ export default function Pagination({
           />
         </button>
       </div>
-      <p className="text-black-500 font-md-14px-regular">
-        {totalPages} 페이지 중 {currentPage}
-      </p>
+      {!isMobile && (
+        <p className="text-black-500 font-md-14px-regular">
+          {totalPages} 페이지 중 {currentPage}
+        </p>
+      )}
     </div>
   );
 }
