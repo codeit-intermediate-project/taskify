@@ -1,9 +1,10 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 import DashboardAddModal from '@components/@shared/Common/Modals/DashboardAddModal';
 import { useMyDashboard } from '@core/contexts/MyDashboardContext';
+import useCountItemsByWidth from '@lib/hooks/useCountItems';
 
 import CreateDashboardButton from './UI/CreateDashboardButton';
 import DashboardCard from './UI/DashboardCard';
@@ -14,27 +15,8 @@ export default function JoinedDashboardList() {
   const [modalOpened, setModalOpened] = useState(false);
   const [createdByMeCurrentPage, setCreatedByMeCurrentPage] = useState(1);
   const [notCreatedByMeCurrentPage, setNotCreatedByMeCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(4);
 
-  useEffect(() => {
-    const updateItemsPerPage = () => {
-      const width = window.innerWidth;
-      if (width > 1280) {
-        setItemsPerPage(6);
-      } else if (width >= 768 && width <= 1280) {
-        setItemsPerPage(4);
-      } else {
-        setItemsPerPage(4);
-      }
-    };
-
-    updateItemsPerPage();
-    window.addEventListener('resize', updateItemsPerPage);
-
-    return () => {
-      window.removeEventListener('resize', updateItemsPerPage);
-    };
-  }, []);
+  const itemsPerPage = useCountItemsByWidth(3, 4, 6);
 
   const handleCreatedByMePageChange = (pageNumber: number) => {
     setCreatedByMeCurrentPage(pageNumber);
@@ -73,10 +55,10 @@ export default function JoinedDashboardList() {
       {!loading && !error && (
         <>
           <CreateDashboardButton onClick={() => setModalOpened(true)} />
-          <div className="flex flex-1 gap-6">
+          <div className="flex flex-1 flex-col gap-6 md:flex-row">
             <div className="flex w-full flex-col gap-4">
               <h2 className="font-2lg-18px-bold">내 대시보드</h2>
-              <div className="grid grid-flow-row-dense grid-cols-1 grid-rows-4 gap-3 md:grid-cols-1 md:grid-rows-4 xl:grid-cols-2 xl:grid-rows-3">
+              <div className="grid grid-flow-row-dense grid-cols-1 grid-rows-3 gap-3 md:grid-cols-1 md:grid-rows-4 xl:grid-cols-2 xl:grid-rows-3">
                 {createdByMeDashboards.map(dashboard => (
                   <DashboardCard key={dashboard.id} value={dashboard} />
                 ))}
@@ -91,7 +73,7 @@ export default function JoinedDashboardList() {
 
             <div className="flex w-full flex-col gap-4">
               <h2 className="font-2lg-18px-bold">참여 중인 대시보드</h2>
-              <div className="grid grid-flow-row-dense grid-cols-1 grid-rows-4 gap-3 md:grid-cols-1 md:grid-rows-4 xl:grid-cols-2 xl:grid-rows-3">
+              <div className="grid grid-flow-row-dense grid-cols-1 grid-rows-3 gap-3 md:grid-cols-1 md:grid-rows-4 xl:grid-cols-2 xl:grid-rows-3">
                 {notCreatedByMeDashboards.map(dashboard => (
                   <DashboardCard key={dashboard.id} value={dashboard} />
                 ))}
