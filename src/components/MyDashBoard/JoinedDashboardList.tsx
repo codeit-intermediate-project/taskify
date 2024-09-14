@@ -75,7 +75,7 @@ export default function JoinedDashboardList() {
           <CreateDashboardButton onClick={() => setModalOpened(true)} />
           <div className="flex flex-1 gap-6">
             <div className="flex w-full flex-col gap-4">
-              <h2 className="font-2lg-18px-semibold">내 대시보드</h2>
+              <h2 className="font-2lg-18px-bold">내 대시보드</h2>
               <div className="grid grid-flow-row-dense grid-cols-1 grid-rows-4 gap-3 md:grid-cols-1 md:grid-rows-4 xl:grid-cols-2 xl:grid-rows-3">
                 {createdByMeDashboards.map(dashboard => (
                   <DashboardCard key={dashboard.id} value={dashboard} />
@@ -90,7 +90,7 @@ export default function JoinedDashboardList() {
             </div>
 
             <div className="flex w-full flex-col gap-4">
-              <h2 className="font-2lg-18px-semibold">참여 중인 대시보드</h2>
+              <h2 className="font-2lg-18px-bold">참여 중인 대시보드</h2>
               <div className="grid grid-flow-row-dense grid-cols-1 grid-rows-4 gap-3 md:grid-cols-1 md:grid-rows-4 xl:grid-cols-2 xl:grid-rows-3">
                 {notCreatedByMeDashboards.map(dashboard => (
                   <DashboardCard key={dashboard.id} value={dashboard} />
