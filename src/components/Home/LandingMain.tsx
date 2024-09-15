@@ -4,19 +4,9 @@ import PointCard from '@components/Home/PointCard';
 export default function LandingMain() {
   return (
     <>
-      <div className="flex w-full flex-col items-center justify-center">
-        <PointCard
-          point="01"
-          title="일의 우선순위를 관리하세요"
-          image="/images/landing1.png"
-          alt="landing1"
-        />
-        <PointCard
-          point="02"
-          title="해야 할 일을 등록하세요"
-          image="/images/landing2.png"
-          alt="make a to do list"
-        />
+      <div className="flex w-full flex-col items-center justify-center p-[16px]">
+        <PointCard type="01" />
+        <PointCard type="02" />
       </div>
       <div className="mb-[120px] flex w-full flex-col items-center justify-center">
         <p className="mb-[42px] mt-[31px] font-2xl-22px-regular">
