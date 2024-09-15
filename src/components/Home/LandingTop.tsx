@@ -12,6 +12,7 @@ export default function LandingTop() {
           width={287}
           height={168}
           priority
+          quality={100}
         />
         <div className="mt-[26px] flex flex-col flex-wrap items-center justify-center gap-[24px] md:mt-[48px] md:flex-row">
           <h1 className="font-4xl-40px-bold md:font-4xl-56px-bold xl:font-4xl-76px-bold">
