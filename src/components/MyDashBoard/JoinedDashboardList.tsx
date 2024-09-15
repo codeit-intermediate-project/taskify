@@ -26,7 +26,7 @@ const JoinedDashboardList = () => {
 
   const itemsPerPage = useCountItemsByWidth(3, 4, 6);
 
-  // 작성자 기준으로 분류된 대시보드 가져오기
+  // 작성자 기준 분류된 대시보드 가져오기
   const dashboards = {
     createdByMe: getCurrentDashboards(true, createdByMeCurrentPage),
     notCreatedByMe: getCurrentDashboards(false, notCreatedByMeCurrentPage),
