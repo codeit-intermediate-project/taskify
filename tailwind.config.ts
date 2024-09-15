@@ -202,6 +202,12 @@ const config: Config = {
           lineHeight: '26.25px',
           textAlign: 'left',
         },
+        '.font-2xl-28px-bold': {
+          fontSize: '28px',
+          fontWeight: '700',
+          lineHeight: '26.25px',
+          textAlign: 'left',
+        },
         '.font-3xl-32px-semibold': {
           fontSize: '32px',
           fontWeight: '600',
