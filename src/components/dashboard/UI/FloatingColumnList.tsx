@@ -22,7 +22,7 @@ export default function FloatingColumnList({
     });
   }, [focusIndex]);
   return (
-    <div className="absolute right-10 top-[175px] hidden flex-col items-end gap-2 text-gray-300 xl:flex">
+    <div className="absolute right-10 top-[300px] hidden flex-col items-end gap-2 text-gray-300 xl:flex">
       {columnList.map((column, index) => (
         <button
           ref={el => {
@@ -32,7 +32,7 @@ export default function FloatingColumnList({
           onClick={() => {
             onClickMoveFloatingButton(index);
           }}
-          className="pointer hover:column-hover flex items-center gap-1 rounded-[20px] transition-all duration-300 ease-in-out"
+          className={`${index === focusIndex ? 'focused-column' : ''}pointer hover:column-hover flex items-center gap-1 rounded-[20px] transition-all duration-300 ease-in-out`}
         >
           <span className="pr-1font-lg-16px-semibold">{column.title}</span>
         </button>

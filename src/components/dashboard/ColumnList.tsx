@@ -12,6 +12,7 @@ import useColumns from '@lib/hooks/useColumns';
 
 import AddColumnButton from './UI/AddColumnButton';
 import Column from './UI/Column';
+import FloatingColumnList from './UI/FloatingColumnList';
 
 export default function ColumnList() {
   const {
@@ -20,6 +21,7 @@ export default function ColumnList() {
     handleSubmit,
     register,
     errors,
+    clearErrors,
     setValue,
     setTargetColumnId,
     onClickDeleteAtEditModal,
@@ -85,7 +87,7 @@ export default function ColumnList() {
         return;
       }
       setFocusIndex(nextFocusIndex);
-    }, 200);
+    }, 50);
   }, [debounceTimeoutRef, divRef, focusIndex, columnRefs, setFocusIndex]);
 
   useEffect(() => {
@@ -123,12 +125,12 @@ export default function ColumnList() {
                 />
               )
           )}
+        <AddColumnButton open={onClickCreateOpen} clearErrors={clearErrors} />
+        <FloatingColumnList
+          focusIndex={focusIndex}
+          onClickMoveFloatingButton={onClickMoveFloatingButton}
+        />
       </div>
-      <AddColumnButton
-        open={onClickCreateOpen}
-        onClickMoveFloatingButton={onClickMoveFloatingButton}
-        focusIndex={focusIndex}
-      />
       <Modal
         opened={createColumnModal}
         padding={24}
