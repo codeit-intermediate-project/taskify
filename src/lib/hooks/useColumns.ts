@@ -5,6 +5,7 @@ import { useParams } from 'next/navigation';
 
 import { deleteColumn, postColumn, putColumn } from '@core/api/columnApis';
 import { DashBoardContext } from '@core/contexts/DashBoardContext';
+import showSuccessNotification from '@lib/utils/notifications/showSuccessNotification';
 
 export default function useColumns() {
   const [targetColumnId, setTargetColumnId] = useState(0);
@@ -23,10 +24,14 @@ export default function useColumns() {
     const hasSameName = columnList.some(column => column.title === title);
     if (hasSameName) {
       setError('title', { message: '컬럼 명이 중복되었습니다.' });
+      setError('editedTitle', { message: '컬럼 명이 중복되었습니다.' });
       return false;
     }
     if (columnList && columnList.length >= 10) {
       setError('title', { message: '컬럼은 최대 10개까지만 생성 가능합니다.' });
+      setError('editedTitle', {
+        message: '컬럼은 최대 10개까지만 생성 가능합니다.',
+      });
       return false;
     }
     return true;
@@ -47,20 +52,21 @@ export default function useColumns() {
     }
     // 생성한 컬럼은 로컬에서 바로 추가된다 (새로 패치해오는게 나을까)
     setColumnList(prev => [...prev, createdColumn]);
+    showSuccessNotification({ message: '컬럼이 생성 되었습니다.' });
     return true;
   };
 
   // 컬럼 수정 로직
   const onSubmitEditColumnForm = async (editedTitle: string) => {
-    const validateResult = validateColumn(editedTitle);
-    if (!validateResult) {
-      return;
-    }
     const beforeColumn = columnList.find(
       column => column.id === targetColumnId
     );
     if (beforeColumn?.title === editedTitle) {
-      return;
+      return true;
+    }
+    const validateResult = validateColumn(editedTitle);
+    if (!validateResult) {
+      return false;
     }
 
     const formData = {
@@ -75,6 +81,8 @@ export default function useColumns() {
       column.id === targetColumnId ? editedColumn : column
     );
     setColumnList(updatedColumnList);
+    showSuccessNotification({ message: '컬럼이 수정 되었습니다.' });
+    return true;
   };
 
   // 컬럼 삭제 로직
@@ -84,6 +92,7 @@ export default function useColumns() {
       column => column.id !== targetColumnId
     );
     setColumnList(deletedColumnList);
+    showSuccessNotification({ message: '컬럼이 삭제 되었습니다.' });
   };
 
   return {

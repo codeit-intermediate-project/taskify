@@ -11,6 +11,7 @@ import {
   CreateCardRequestDto,
   UpdateCardRequestDto,
 } from '@core/dtos/CardsDto';
+import showSuccessNotification from '@lib/utils/notifications/showSuccessNotification';
 
 export default function useCards(columnId: number) {
   const [cards, setCards] = useState<CardServiceResponseDto[]>([]);
@@ -90,6 +91,7 @@ export default function useCards(columnId: number) {
 
     const data = await postCard(formData);
     setCards(prev => [...prev, data]);
+    showSuccessNotification({ message: '할 일이 생성 되었습니다.' });
     return true;
   };
 
@@ -130,12 +132,14 @@ export default function useCards(columnId: number) {
 
     const data = await putCard(Number(cardId), formData);
     moveCard(columnId, data);
+    showSuccessNotification({ message: '할 일이 수정 되었습니다.' });
     return true;
   };
 
   const onClickDeleteCard = async (cardId: number) => {
     await deleteCard(cardId);
     setCards(prev => prev.filter(card => card.id !== cardId));
+    showSuccessNotification({ message: '할 일이 삭제 되었습니다.' });
   };
   useEffect(() => {
     const nextCards = cardList2D.find(
