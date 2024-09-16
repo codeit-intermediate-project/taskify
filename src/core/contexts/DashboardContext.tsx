@@ -45,7 +45,7 @@ const DEFAULT_VALUE: DashBoardContextValue = {
           title: '',
           description: '',
           tags: [],
-          dueDate: null,
+          dueDate: new Date(),
           assignee: null,
           imageUrl: null,
           teamId: '',
