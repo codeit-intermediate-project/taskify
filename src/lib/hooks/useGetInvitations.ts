@@ -47,15 +47,24 @@ const useGetInvitations = () => {
     }
   }, [data]);
 
-  useInfiniteScroll(
+  const { targetRef, saveScrollPosition } = useInfiniteScroll(
     () => {
-      const newSize = size + 10;
-      setSize(newSize);
+      saveScrollPosition();
+      setSize(prevSize => prevSize + 10);
     },
     data && data.invitations && data.invitations.length >= size
   );
 
-  return { data, error, callApi, isLoading, hasNoInvitations, invitations };
+  return {
+    data,
+    error,
+    callApi,
+    isLoading,
+    hasNoInvitations,
+    invitations,
+    loadMoreRef: targetRef,
+    saveScrollPosition,
+  };
 };
 
 export default useGetInvitations;
