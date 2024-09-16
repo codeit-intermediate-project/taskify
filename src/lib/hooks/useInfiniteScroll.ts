@@ -18,7 +18,7 @@ const useInfiniteScroll = (
       entries => {
         entries.forEach(entry => {
           if (entry.isIntersecting && hasMore) {
-            loadMore(); // 추가 데이터 로드
+            loadMore();
           }
         });
       },
@@ -39,17 +39,16 @@ const useInfiniteScroll = (
     };
   }, [loadMore, hasMore]);
 
-  // 스크롤 위치 복원
   useEffect(() => {
-    window.scrollTo(0, scrollYRef.current); // 스크롤 위치 복원
+    window.scrollTo(0, scrollYRef.current);
   }, [loadMore]);
 
-  // 스크롤 위치 저장
+  // 데이터 로드 전 스크롤 위치 저장
   const saveScrollPosition = () => {
-    scrollYRef.current = window.scrollY; // 현재 스크롤 위치 저장
+    scrollYRef.current = window.scrollY;
   };
 
-  return { targetRef, saveScrollPosition }; // 감지할 요소의 ref와 스크롤 위치 저장 함수 반환
+  return { targetRef, saveScrollPosition };
 };
 
 export default useInfiniteScroll;
