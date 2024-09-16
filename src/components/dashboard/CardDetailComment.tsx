@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 
-import { Textarea } from '@mantine/core';
+import { Avatar, Textarea } from '@mantine/core';
 import dayjs from 'dayjs';
 import Image from 'next/image';
 
@@ -91,17 +91,17 @@ export default function CardDetailComment({ card }: CommentProps) {
           ? commentList.map(comment => {
               return (
                 <div className="flex gap-4" key={comment.id}>
-                  {comment.author.profileImageUrl ? (
-                    <div className="relative h-[34px] w-[34px] shrink-0 overflow-hidden rounded-full">
-                      <Image
-                        src={comment.author.profileImageUrl}
-                        alt="댓글 작성자 프로필"
-                        fill
-                      />
-                    </div>
-                  ) : (
-                    <div className="h-[34px] w-[34px] shrink-0 overflow-hidden rounded-full bg-yellow-100" />
-                  )}
+                  <Avatar>
+                    {comment.author.profileImageUrl && (
+                      <div className="relative h-[34px] w-[34px] shrink-0 overflow-hidden rounded-full">
+                        <Image
+                          src={comment.author.profileImageUrl}
+                          alt="댓글 작성자 프로필"
+                          fill
+                        />
+                      </div>
+                    )}
+                  </Avatar>
                   <div className="flex grow flex-col">
                     <div className="flex items-center gap-2">
                       <span className="font-lg-14px-semibold">

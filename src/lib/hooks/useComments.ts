@@ -30,11 +30,12 @@ function useComments(card: CardServiceResponseDto) {
   }, [card.id]);
 
   const onSubmitCreateCommentForm = async (content: string) => {
-    if (!content) {
+    if (!content.trim()) {
       return false;
     }
+    const trimContent = content.trim();
     const formData = {
-      content,
+      content: trimContent,
       cardId: card.id,
       columnId: card.columnId,
       dashboardId: Number(dashboardid),
@@ -54,11 +55,12 @@ function useComments(card: CardServiceResponseDto) {
     setCommentList(prev => prev.filter(comment => comment.id !== commentId));
   };
   const onClickEditComplete = async (commentId: number, value: string) => {
-    if (!value) {
+    if (!value.trim()) {
       return;
     }
+    const trimContent = value.trim();
     const formData = {
-      content: value,
+      content: trimContent,
     };
     const data = await putComment(commentId, formData);
     setCommentList(prev =>

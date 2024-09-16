@@ -22,6 +22,7 @@ import {
 } from 'react-hook-form';
 
 import {
+  Avatar,
   Button,
   Combobox,
   Input,
@@ -220,17 +221,17 @@ export default function CreateCardModal({
               >
                 {selectedAssignee ? (
                   <div className="flex items-center gap-2">
-                    {selectedAssigneeImg ? (
-                      <Image
-                        className="rounded-full"
-                        src={selectedAssigneeImg}
-                        width={25}
-                        height={25}
-                        alt="멤버 프로필"
-                      />
-                    ) : (
-                      <span className="h-[25px] w-[25px]" />
-                    )}
+                    <Avatar size="sm">
+                      {selectedAssigneeImg && (
+                        <Image
+                          className="rounded-full"
+                          src={selectedAssigneeImg}
+                          width={25}
+                          height={25}
+                          alt="멤버 프로필"
+                        />
+                      )}
+                    </Avatar>
                     <span className="font-lg-16px-regular">
                       {selectedAssignee}
                     </span>
@@ -245,17 +246,17 @@ export default function CreateCardModal({
               {members.map(member => (
                 <Combobox.Option value={member.nickname} key={member.id}>
                   <button className="flex items-center gap-2">
-                    {member.profileImageUrl ? (
-                      <Image
-                        className="rounded-full"
-                        src={member.profileImageUrl}
-                        width={25}
-                        height={25}
-                        alt="멤버 프로필"
-                      />
-                    ) : (
-                      <span className="h-[25px] w-[25px]" />
-                    )}
+                    <Avatar size="sm">
+                      {member.profileImageUrl && (
+                        <Image
+                          className="rounded-full"
+                          src={member.profileImageUrl}
+                          width={25}
+                          height={25}
+                          alt="멤버 프로필"
+                        />
+                      )}
+                    </Avatar>
                     <span>{member.nickname}</span>
                   </button>
                 </Combobox.Option>

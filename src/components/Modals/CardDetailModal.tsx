@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from 'react';
 
-import { Modal, Title } from '@mantine/core';
+import { Avatar, Modal, Title } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import dayjs from 'dayjs';
 import Image from 'next/image';
@@ -68,17 +68,17 @@ export default function CardDetailModal({
           <div className="flex flex-col gap-2">
             <span className="font-xs-12px-semibold">담당자</span>
             <div className="flex items-center gap-2">
-              {card.assignee?.profileImageUrl ? (
-                <span className="relative block h-[28px] w-[28px] overflow-hidden rounded-full md:h-[34px] md:w-[34px]">
-                  <Image
-                    src={card.assignee?.profileImageUrl}
-                    alt="담당자 프로필이미지"
-                    fill
-                  />
-                </span>
-              ) : (
-                <span>디폴트이미지</span>
-              )}
+              <Avatar>
+                {card.assignee?.profileImageUrl && (
+                  <span className="relative block h-[28px] w-[28px] overflow-hidden rounded-full md:h-[34px] md:w-[34px]">
+                    <Image
+                      src={card.assignee?.profileImageUrl}
+                      alt="담당자 프로필이미지"
+                      fill
+                    />
+                  </span>
+                )}
+              </Avatar>
               <span className="font-md-14px-regular md:font-xs-12px-regular">
                 {card.assignee?.nickname}
               </span>

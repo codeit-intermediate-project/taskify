@@ -1,4 +1,4 @@
-import { Modal } from '@mantine/core';
+import { Avatar, Modal } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import dayjs from 'dayjs';
 import Image from 'next/image';
@@ -69,15 +69,17 @@ export default function Card({
                   {formattedDueDate}
                 </span>
               </div>
-              {card.assignee?.profileImageUrl ? (
-                <Image
-                  src={card.assignee.profileImageUrl}
-                  alt="담당자 프로필 이미지"
-                  width={24}
-                  height={24}
-                  className="rounded-full"
-                />
-              ) : null}
+              <Avatar size="sm">
+                {card.assignee?.profileImageUrl && (
+                  <Image
+                    src={card.assignee.profileImageUrl}
+                    alt="담당자 프로필 이미지"
+                    width={24}
+                    height={24}
+                    className="rounded-full"
+                  />
+                )}
+              </Avatar>
             </div>
           </div>
         </div>
