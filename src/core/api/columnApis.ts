@@ -7,7 +7,7 @@ import type {
   ColumnServiceResponseDto,
   UpdateColumnRequestDto,
 } from '@core/dtos/ColumnsDto';
-import type { DashboardApplicationServiceResponseDto } from '@core/dtos/DashboardDto';
+import type { DashboardApplicationServiceResponseDto } from '@core/dtos/DashboardsDto';
 import { MemberApplicationServiceResponseDto } from '@core/dtos/MembersDto';
 
 export const getColumns = async (dashboardId: number) => {

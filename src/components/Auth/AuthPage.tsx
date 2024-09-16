@@ -158,15 +158,14 @@ export default function AuthPage({ mode }: AuthPageProps) {
             width={200}
             height={200}
             className="cursor-pointer"
-            onClick={() => router.push('/')}
+            onClick={() => router.push('/')} // 클라이언트 측에서만 작동
           />
-          <p className="mt-4 text-[18px] text-black-500 font-2lg-18px-medium">
+          <p className="mt-[8px] text-black-600 font-2lg-18px-medium md:mt-[10px] md:font-xl-20px-medium">
             {mode === 'login'
               ? '오늘도 만나서 반가워요!'
               : '첫 방문을 환영합니다!'}
           </p>
         </div>
-
         {/* 입력 필드 */}
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <InputField
