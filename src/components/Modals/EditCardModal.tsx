@@ -37,7 +37,7 @@ import dayjs from 'dayjs';
 import Image from 'next/image';
 
 import ImageCropperModal from '@components/Modals/ImageCropperModal';
-import { DashBoardContext } from '@core/contexts/DashBoardContext';
+import { DashBoardContext } from '@core/contexts/DashboardContext';
 import {
   CardServiceResponseDto,
   CreateCardRequestDto,

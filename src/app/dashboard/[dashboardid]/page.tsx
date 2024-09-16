@@ -1,7 +1,7 @@
 'use client';
 
 import ColumnList from '@components/dashboard/ColumnList';
-import DashBoardProvider from '@core/contexts/DashBoardContext';
+import DashBoardProvider from '@core/contexts/DashboardContext';
 
 export default function DashBoardPage() {
   return (

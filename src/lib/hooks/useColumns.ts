@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form';
 import { useParams } from 'next/navigation';
 
 import { deleteColumn, postColumn, putColumn } from '@core/api/columnApis';
-import { DashBoardContext } from '@core/contexts/DashBoardContext';
+import { DashBoardContext } from '@core/contexts/DashboardContext';
 import showSuccessNotification from '@lib/utils/notifications/showSuccessNotification';
 
 export default function useColumns() {

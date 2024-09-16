@@ -1,6 +1,6 @@
 import { useContext, useRef } from 'react';
 
-import { DashBoardContext } from '@core/contexts/DashBoardContext';
+import { DashBoardContext } from '@core/contexts/DashboardContext';
 
 interface FloatingColumnListProps {
   onClickMoveFloatingButton: (index: number) => void;

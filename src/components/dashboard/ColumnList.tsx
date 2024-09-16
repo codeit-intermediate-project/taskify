@@ -7,7 +7,7 @@ import { useDisclosure } from '@mantine/hooks';
 
 import CreateColumnModal from '@components/Modals/CreateColumnModal';
 import EditColumnModal from '@components/Modals/EditColumnModal';
-import { DashBoardContext } from '@core/contexts/DashBoardContext';
+import { DashBoardContext } from '@core/contexts/DashboardContext';
 import useColumns from '@lib/hooks/useColumns';
 import useScrollToColumn from '@lib/hooks/useScrollToColumn';
 

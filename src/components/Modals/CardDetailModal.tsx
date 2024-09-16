@@ -7,7 +7,7 @@ import Image from 'next/image';
 
 import CardDetailComment from '@components/dashboard/CardDetailComment';
 import DropDownEditMenu from '@components/dashboard/UI/DropDownEditMenu';
-import { DashBoardContext } from '@core/contexts/DashBoardContext';
+import { DashBoardContext } from '@core/contexts/DashboardContext';
 import { CardServiceResponseDto } from '@core/dtos/CardsDto';
 import close from '@icons/x.png';
 import convertHexToRGBA from '@lib/utils/convertHexToRGBA';

@@ -5,7 +5,7 @@ import dayjs from 'dayjs';
 import { useParams } from 'next/navigation';
 
 import { deleteCard, postCard, putCard } from '@core/api/cardApis';
-import { DashBoardContext } from '@core/contexts/DashBoardContext';
+import { DashBoardContext } from '@core/contexts/DashboardContext';
 import {
   CardServiceResponseDto,
   CreateCardRequestDto,
