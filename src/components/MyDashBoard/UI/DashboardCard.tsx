@@ -19,25 +19,28 @@ const DashboardCard = ({ value }: DashboardCardProps) => {
   return (
     <LinkButton
       href={`/dashboard/${dashboardId}`}
-      className="relative flex justify-between rounded-lg border border-gray-200 bg-white px-5 py-[22px] font-lg-16px-semibold"
+      className="relative my-auto flex flex-1 gap-3 rounded-lg border border-gray-200 bg-white px-5 py-[22px] font-lg-14px-semibold md:font-lg-16px-semibold"
     >
-      <div className="my-auto flex w-2/5 flex-1 gap-3">
-        <div
-          className="my-auto h-2 w-2 rounded-full"
-          style={{ backgroundColor: value.color }}
-          aria-label="link button"
-        />
-        <p className="truncate text-black-600">{value.title}</p>
-        {value.createdByMe && (
+      <div
+        className="my-auto h-2 w-2 rounded-full"
+        style={{ backgroundColor: value.color }}
+        aria-label="link button"
+      />
+      {value.createdByMe ? (
+        <div className="flex pr-5">
+          <p className="flex-1 truncate text-black-600">{value.title}</p>
           <Image
             src={crown}
             alt="왕관 아이콘"
             width={18}
             height={14}
-            className="my-auto"
+            className="my-auto ml-2 md:ml-3"
           />
-        )}
-      </div>
+        </div>
+      ) : (
+        <p className="flex-1 truncate pr-5 text-black-600">{value.title}</p>
+      )}
+
       <Image
         src={arrowRight}
         alt="오른쪽 화살표 아이콘"

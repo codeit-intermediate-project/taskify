@@ -68,7 +68,7 @@ export const MyDashboardProvider = ({ children }: PropsWithChildren) => {
       error,
       addDashboard,
     }),
-    [localDashboards, isLoading, Error]
+    [localDashboards, isLoading, error]
   );
 
   return (
