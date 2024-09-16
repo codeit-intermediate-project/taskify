@@ -7,8 +7,8 @@ export interface CreateCommentRequestDto {
 export interface CommentServiceDto {
   id: number;
   content: string;
-  createdAt: string;
-  updatedAt: string;
+  createdAt: Date;
+  updatedAt: Date;
   cardId: number;
   author: {
     profileImageUrl: string | null;

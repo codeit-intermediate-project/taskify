@@ -47,14 +47,12 @@ export default function CardDetailComment({ card }: CommentProps) {
     }
     onClickEditComplete(commentId, editedComment);
   };
-
   // 수정하기 클릭하면 editingComment상태가 변경되고 effect로 이전 value값을 넣어줌
   useEffect(() => {
     if (editingComment?.id) {
       setValue('editedContent', editingComment.content);
     }
   }, [editingComment?.id, editingComment?.content, setValue]);
-
   return (
     <>
       <form
@@ -108,7 +106,14 @@ export default function CardDetailComment({ card }: CommentProps) {
                         {comment.author.nickname}
                       </span>
                       <span className="text-gray-300 font-xs-12px-regular">
-                        {dayjs(comment.createdAt).format('YYYY.MM.DD HH:mm')}
+                        {dayjs(comment.updatedAt)
+                          .subtract(9, 'hour')
+                          .format('YYYY.MM.DD HH:mm')}
+                      </span>
+                      <span className="text-gray-300 font-xs-12px-regular">
+                        {comment.createdAt !== comment.updatedAt
+                          ? '(수정됨)'
+                          : null}
                       </span>
                     </div>
                     {editingComment?.id === comment.id ? (

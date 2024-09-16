@@ -4,8 +4,10 @@ import dayjs from 'dayjs';
 import Image from 'next/image';
 
 import CardDetailModal from '@components/Modals/CardDetailModal';
+import { useDashboardSideMenu } from '@core/contexts/DashboardSideMenuContext';
 import calendar from '@icons/calendar.png';
 import { stringToHex, stringToRgba } from '@lib/utils/convertStringToColor';
+import formatDDay from '@lib/utils/formatDDay';
 
 import type { CardServiceResponseDto } from '@core/dtos/CardsDto';
 
@@ -22,9 +24,11 @@ export default function Card({
   onClickCard,
   onClickDeleteCard,
 }: CardProps) {
+  const { restDayView } = useDashboardSideMenu();
   const formattedDueDate = dayjs(card.dueDate).format('YYYY.MM.DD');
   const [cardDetail, { open: openDetail, close: closeDetail }] =
     useDisclosure(false);
+  const formattedDDay = formatDDay(card.dueDate);
   return (
     <>
       <button
@@ -66,7 +70,7 @@ export default function Card({
               <div className="flex gap-1.5">
                 <Image src={calendar} alt="마감일" width={18} height={18} />
                 <span className="text-gray-400 font-xs-12px-medium">
-                  {formattedDueDate}
+                  {restDayView === '날짜' ? formattedDueDate : formattedDDay}
                 </span>
               </div>
               <Avatar size="sm">

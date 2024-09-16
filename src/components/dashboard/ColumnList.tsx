@@ -13,7 +13,7 @@ import useScrollToColumn from '@lib/hooks/useScrollToColumn';
 
 import AddColumnButton from './UI/AddColumnButton';
 import Column from './UI/Column';
-import FloatingColumnList from './UI/FloatingColumnList';
+import DashboardSideMenu from './UI/DashboardSideMenu';
 
 export default function ColumnList() {
   const {
@@ -48,6 +48,7 @@ export default function ColumnList() {
     setValue('title', '');
     openCreate();
   };
+
   return (
     <>
       <div
@@ -69,9 +70,10 @@ export default function ColumnList() {
               )
           )}
         <AddColumnButton open={onClickCreateOpen} clearErrors={clearErrors} />
-        <FloatingColumnList
+        <DashboardSideMenu
           focusIndex={focusIndex}
           onClickMoveFloatingButton={onClickMoveFloatingButton}
+          onClickCreateOpen={onClickCreateOpen}
         />
       </div>
       <Modal

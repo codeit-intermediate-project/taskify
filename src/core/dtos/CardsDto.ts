@@ -9,7 +9,7 @@ export interface CardServiceResponseDto {
   title: string;
   description: string;
   tags: string[];
-  dueDate: Date | null;
+  dueDate: Date;
   assignee: AssigneeDto | null;
   imageUrl: string | null;
   teamId: string;
