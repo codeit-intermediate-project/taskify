@@ -11,7 +11,7 @@ export default function AddColumnButton({
   clearErrors,
 }: AddColumnButtonProps) {
   return (
-    <div className="relative border-gray-100 px-3 md:px-5 xl:min-w-[354px] xl:border-l">
+    <div className="relative border-gray-100 px-3 md:px-5 xl:mr-[354px] xl:min-w-[354px] xl:border-l">
       <div className="mt-[58px] flex h-[66px] w-full items-center justify-center rounded-md border border-gray-200 md:h-[70px]">
         <Button
           onClick={() => {
