@@ -67,15 +67,13 @@ export default function InvitedDashboardList() {
                 </p>
                 <div className="mt-[14px] flex justify-center gap-[10px] md:mt-0 md:w-1/3 md:gap-0">
                   <AcceptButton
-                    divClassName="bg-violet"
-                    buttonClassName="text-white"
+                    className="bg-violet text-white"
                     onClick={() => handleInvitationResponse(invitation, true)}
                   >
                     수락
                   </AcceptButton>
                   <AcceptButton
-                    divClassName="border-1 md:ml-2 border border-gray-200"
-                    buttonClassName="text-violet"
+                    className="border-1 border border-gray-200 text-violet md:ml-2"
                     onClick={() => handleInvitationResponse(invitation, false)}
                   >
                     거절

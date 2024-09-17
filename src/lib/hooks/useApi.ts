@@ -1,8 +1,11 @@
 import { useCallback, useState } from 'react';
 
-import { AxiosRequestConfig } from 'axios';
+import { AxiosError, AxiosRequestConfig } from 'axios';
 
 import instance from '@core/api/instance';
+import axiosError from '@lib/utils/axiosError';
+import findAxiosErrorMessage from '@lib/utils/findAxiosErrorMessage';
+import showErrorNotification from '@lib/utils/notifications/showErrorNotification';
 
 type Method = 'GET' | 'POST' | 'PUT' | 'DELETE';
 
@@ -24,10 +27,15 @@ export default function useApi<T>(url: string, method: Method) {
         });
         setData(res?.data);
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Unknown error');
+        const axiosErr = axiosError(err);
+        const message = findAxiosErrorMessage(axiosErr);
+        setError(message ?? 'Unknown error');
+        showErrorNotification({ message });
+        return err as AxiosError<{ message: string }>;
       } finally {
         setIsLoading(false);
       }
+      return res;
     },
     [url, method]
   );

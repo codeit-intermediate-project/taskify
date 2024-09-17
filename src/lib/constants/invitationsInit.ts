@@ -1,4 +1,5 @@
 export const INIT_INVITATIONS_REQUEST = {
+  navigationMethod: 'infiniteScroll',
   size: 10,
 };
 

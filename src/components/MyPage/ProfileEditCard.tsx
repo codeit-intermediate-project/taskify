@@ -4,6 +4,7 @@ import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 
 import { Stack } from '@mantine/core';
+import { AxiosError } from 'axios';
 
 import FileInput from '@components/@shared/Common/Inputs/FileInput';
 import Input from '@components/@shared/Common/Inputs/Input';
@@ -11,6 +12,9 @@ import PrimaryButton from '@components/@shared/UI/Button/PrimaryButton';
 import postImageUpload from '@core/api/postImageUpload';
 import putMyProfile from '@core/api/putMyProfile';
 import { useRoot } from '@core/contexts/RootContexts';
+import findAxiosErrorMessage from '@lib/utils/findAxiosErrorMessage';
+import showErrorNotification from '@lib/utils/notifications/showErrorNotification';
+import showSuccessNotification from '@lib/utils/notifications/showSuccessNotification';
 
 interface FormData {
   email: string;
@@ -31,17 +35,10 @@ export default function ProfileEditCard() {
   });
 
   const onSubmit = async (data: FormData) => {
-    /** 수정할 프로필과 현재 프로필을 비교했을 때 완전히 같으면,
-     * 수정할 필요가 없으므로 return 시킨다.
-     */
-    if (
-      data.image === user?.profileImageUrl &&
-      data.nickname === user.nickname
-    ) {
-      // eslint-disable-next-line no-console
-      console.log('이전과 프로필 정보가 같습니다.');
-      return;
-    }
+    const isSameImage = data.image === user?.profileImageUrl;
+    const isSameNickname = data.nickname === user?.nickname;
+    if (isSameImage && isSameNickname)
+      return showErrorNotification({ message: '현재 프로필 정보와 같습니다.' });
     const { nickname, image } = data;
     const formData = new FormData();
     let imgURL = image;
@@ -51,15 +48,17 @@ export default function ProfileEditCard() {
     if (image instanceof File) {
       formData.append('image', image);
       imgURL = await postImageUpload(formData);
+      /** 이미지 업로드가 에러날 상황을 찾을 수 없음 === 에러 핸들링 불가 */
     }
     const res = await putMyProfile({
       nickname,
       profileImageUrl: imgURL,
     });
-    if ('message' in res) {
-      return;
+    if (!(res instanceof AxiosError)) {
+      showSuccessNotification({ message: '프로필 수정이 완료되었습니다' });
+      return refreshUser(res.data);
     }
-    refreshUser(res);
+    showErrorNotification({ message: findAxiosErrorMessage(res) });
   };
 
   const watchImage = watch('image');
@@ -103,12 +102,13 @@ export default function ProfileEditCard() {
         />
         <Stack className="w-full gap-6">
           <Input
+            className="text-gray-300"
             id="email"
-            label="이메일 (수정 불가능)"
+            label="이메일"
             type="email"
             placeholder="이메일을 입력해 주세요"
             register={register}
-            readOnly
+            disabled
             validation={{
               required: '이메일을 입력해주세요',
               pattern: {

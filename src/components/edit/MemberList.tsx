@@ -1,5 +1,5 @@
 /* eslint-disable import/order */
-/* eslint-disable no-bitwise */
+
 /* eslint-disable no-plusplus */
 
 'use client';
@@ -109,6 +109,7 @@ export default function MemberList({ dashboardId }: MemberListProps) {
   useEffect(() => {
     if (isDeleted && !isDeleteModalOpen && !alertDisplayed) {
       setTimeout(() => {
+        // eslint-disable-next-line no-alert
         alert('삭제가 완료되었습니다.');
         window.location.reload();
       }, 300);

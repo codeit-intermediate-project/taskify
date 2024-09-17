@@ -16,7 +16,7 @@ export default function SideBarPagination({
   totalItems,
   itemsPerPage,
   onPageChange,
-}: PaginationProps): JSX.Element {
+}: PaginationProps) {
   const totalPages = totalItems > 0 ? Math.ceil(totalItems / itemsPerPage) : 1;
 
   // 이전 페이지 이동

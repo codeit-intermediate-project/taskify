@@ -6,6 +6,7 @@ import EditDashboard from '@components/edit/EditDashboard';
 import InvitationList from '@components/edit/InvitationList';
 import MemberList from '@components/edit/MemberList';
 import { deleteDashboard } from '@core/api/columnApis';
+import { useRoot } from '@core/contexts/RootContexts';
 
 import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
@@ -15,6 +16,7 @@ import DeleteModal from '@components/edit/DeleteModal';
 export default function DashBoardEditPage() {
   const pathname = usePathname();
   const router = useRouter();
+  const { setDashboardsFlag } = useRoot();
 
   const dashboardId = pathname.split('/')[2];
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -40,8 +42,8 @@ export default function DashBoardEditPage() {
   // 대시보드 삭제
   const handleDeleteDashboard = async () => {
     await deleteDashboard(dashboardId);
+    setDashboardsFlag(true);
     setIsDeleted(true);
-    closeDeleteModal();
   };
 
   // 삭제 후 처리

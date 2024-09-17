@@ -87,6 +87,15 @@
   }
 }
 
+@layer components {
+  .focused-column {
+    @apply flex scale-125 items-center justify-center bg-violet py-1 pl-3 pr-2 text-white;
+  }
+  .column-hover {
+    @apply flex scale-125 items-center justify-center bg-violet-white py-1 pl-3 pr-2;
+  }
+}
+
 @layer utilities {
   .no-scrollbar::-webkit-scrollbar {
     display: none;

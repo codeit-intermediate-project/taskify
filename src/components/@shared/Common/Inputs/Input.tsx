@@ -22,7 +22,7 @@ type Props<T extends FieldValues> = {
   validation: RegisterOptions<T, Path<T>>;
   errors: FieldErrors;
   className?: string;
-  readOnly?: boolean;
+  disabled?: boolean;
 };
 
 function Input<T extends FieldValues>({
@@ -36,7 +36,7 @@ function Input<T extends FieldValues>({
   validation,
   errors,
   className = '',
-  readOnly = false,
+  disabled = false,
 }: Props<T>) {
   const { ref, ...rest } = register(id, validation);
   const name = id as string;
@@ -71,7 +71,7 @@ function Input<T extends FieldValues>({
         type={type}
         id={id}
         placeholder={placeholder}
-        readOnly={readOnly}
+        disabled={disabled}
         ref={ref}
         {...rest}
         onBlur={handleBlur}

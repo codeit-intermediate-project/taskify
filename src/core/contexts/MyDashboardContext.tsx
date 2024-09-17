@@ -7,10 +7,8 @@ import React, {
   useState,
   useMemo,
   PropsWithChildren,
-  useCallback,
 } from 'react';
 
-import getDashboards from '@core/api/getDashboards';
 import {
   INIT_MYDASHBOARDS_CONTEXT,
   INIT_DASHBOARDS_REQUEST,
@@ -36,7 +34,7 @@ export const MyDashboardProvider = ({ children }: PropsWithChildren) => {
     'GET'
   );
 
-  // 컴포넌트가 마운트될 때 API 호출
+  // 초기 마운트 시 API 호출
   useEffect(() => {
     const fetchData = async () => {
       const config = {
@@ -62,12 +60,6 @@ export const MyDashboardProvider = ({ children }: PropsWithChildren) => {
     setLocalDashboards(prev => [...prev, newDashboard]);
   };
 
-  // 대시보드 데이터 재패칭 함수
-  const fetchDashboards = useCallback(async () => {
-    const response = await getDashboards();
-    setLocalDashboards(response.dashboards);
-  }, []);
-
   // Context 값 메모이제이션
   const value = useMemo(
     () => ({
@@ -75,9 +67,8 @@ export const MyDashboardProvider = ({ children }: PropsWithChildren) => {
       loading: isLoading,
       error,
       addDashboard,
-      fetchDashboards,
     }),
-    [localDashboards, isLoading, error, fetchDashboards]
+    [localDashboards, isLoading, Error]
   );
 
   return (

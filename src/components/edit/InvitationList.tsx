@@ -14,6 +14,7 @@ import {
   getInvitations,
 } from '@core/api/columnApis';
 import DeleteModal from './DeleteModal';
+import { AxiosError } from 'axios';
 
 interface InvitationListProps {
   dashboardId: string;
@@ -80,7 +81,7 @@ export default function InvitationList({ dashboardId }: InvitationListProps) {
     if (!dashboardId) return;
 
     const newInvitation = await addInvitation(dashboardId, email);
-    if (newInvitation) {
+    if (newInvitation && !(newInvitation instanceof AxiosError)) {
       setInvitations(prevInvitations => [
         ...prevInvitations,
         { id: newInvitation.id, email: newInvitation.email },
@@ -114,6 +115,7 @@ export default function InvitationList({ dashboardId }: InvitationListProps) {
   useEffect(() => {
     if (isDeleted && !isDeleteModalOpen && !alertDisplayed) {
       setTimeout(() => {
+        // eslint-disable-next-line no-alert
         alert('삭제가 완료되었습니다.');
         window.location.reload();
       }, 300);

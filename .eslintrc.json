@@ -29,6 +29,7 @@
   ],
   "rules": {
     "no-nested-ternary": "off",
+    "no-bitwise": "off",
     "import/order": [
       "error",
       {

@@ -1,7 +1,11 @@
 import { useCallback, useEffect, useState } from 'react';
 
+import { AxiosError } from 'axios';
+
 import getDashboards from '@core/api/getDashboards';
 import { DashboardApplicationServiceResponseDto } from '@core/dtos/DashboardsDto';
+import findAxiosErrorMessage from '@lib/utils/findAxiosErrorMessage';
+import showErrorNotification from '@lib/utils/notifications/showErrorNotification';
 
 export default function useDashboardsPagination() {
   const [data, setData] = useState<DashboardApplicationServiceResponseDto[]>(
@@ -24,10 +28,14 @@ export default function useDashboardsPagination() {
 
   const fetchData = useCallback(async () => {
     const res = await getDashboards({ page, size, cursorId: cursor });
-    const { cursorId, totalCount, dashboards } = res;
-    setCursor(cursorId);
-    setTotalItems(totalCount);
-    setData(dashboards);
+    if (!(res instanceof AxiosError)) {
+      const { cursorId, totalCount, dashboards } = res;
+      setCursor(cursorId);
+      setTotalItems(totalCount);
+      setData(dashboards);
+      return;
+    }
+    showErrorNotification({ message: findAxiosErrorMessage(res) });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, size]);
 
@@ -42,5 +50,6 @@ export default function useDashboardsPagination() {
     totalItems,
     data,
     handlePageChange,
+    fetchData,
   };
 }

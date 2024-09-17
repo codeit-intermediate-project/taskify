@@ -1,5 +1,6 @@
 import { DashboardApplicationServiceResponseDto } from '@core/dtos/DashboardsDto';
 import COLORS from '@lib/constants/themeConst';
+import axiosError from '@lib/utils/axiosError';
 
 import instance from './instance';
 
@@ -9,10 +10,17 @@ type Body = {
 };
 
 async function postCreateDashboards(body: Body) {
-  return instance.post<DashboardApplicationServiceResponseDto>(
-    '/dashboards',
-    body
-  );
+  let res;
+  try {
+    res = instance.post<DashboardApplicationServiceResponseDto>(
+      '/dashboards',
+      body
+    );
+  } catch (err) {
+    return axiosError(err);
+  }
+
+  return res;
 }
 
 export default postCreateDashboards;

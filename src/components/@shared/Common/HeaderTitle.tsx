@@ -19,11 +19,14 @@ function getTitleValue(pathname: string) {
 export default function HeaderTitle() {
   const pathname = usePathname();
   const { user, dashboardid } = useRoot();
-  const { data: dashboardDetail = initialDetail, callApi: getDashboardDetail } =
-    useApi<DashboardApplicationServiceResponseDto>(
-      `/dashboards/${dashboardid}`,
-      'GET'
-    );
+  const {
+    data: dashboardDetail = initialDetail,
+    error,
+    callApi: getDashboardDetail,
+  } = useApi<DashboardApplicationServiceResponseDto>(
+    `/dashboards/${dashboardid}`,
+    'GET'
+  );
 
   const isManagedPage =
     pathname.includes('mydashboard') || pathname.includes('mypage');
@@ -40,10 +43,10 @@ export default function HeaderTitle() {
 
   return (
     <div
-      className={`grow items-center font-xl-20px-bold xl:flex xl:gap-2 ${isManagedPage ? 'flex' : 'hidden'}`}
+      className={`grow items-center truncate font-xl-20px-bold xl:flex xl:gap-2 ${isManagedPage ? 'flex' : 'hidden'}`}
     >
       <h1>{titleValue}</h1>
-      {!isManagedPage && dashboardDetail?.createdByMe && (
+      {!isManagedPage && !error && dashboardDetail?.createdByMe && (
         <Image width={20} height={16} src="/icons/crown.png" alt="createByMe" />
       )}
     </div>

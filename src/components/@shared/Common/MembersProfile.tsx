@@ -38,16 +38,20 @@ export default function MembersProfile() {
       )}
     >
       {dashboardMembers.members &&
-        dashboardMembers.members.slice(0, profileCount).map(member => (
-          <Avatar key={member.id}>
-            <Image
-              width={38}
-              height={38}
-              src={member.profileImageUrl ?? '/images/small_logo.png'}
-              alt="member profile"
-            />
-          </Avatar>
-        ))}
+        dashboardMembers.members
+          .slice(0, profileCount)
+          .map(member => (
+            <Avatar key={member.id}>
+              {member.profileImageUrl && (
+                <Image
+                  width={38}
+                  height={38}
+                  src={member.profileImageUrl}
+                  alt="member profile"
+                />
+              )}
+            </Avatar>
+          ))}
       {profileMore !== 0 && <Avatar>+{profileMore}</Avatar>}
     </Avatar.Group>
   );

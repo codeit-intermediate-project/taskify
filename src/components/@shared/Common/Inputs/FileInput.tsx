@@ -93,7 +93,12 @@ function FileInput<T extends FormData>({
         )}
         {preview && (
           <div className="absolute h-full w-full bg-white">
-            <Image className="bg-cover" fill src={preview} alt="preview" />
+            <Image
+              className="rounded-full bg-cover"
+              fill
+              src={preview}
+              alt="preview"
+            />
           </div>
         )}
         {isHover && (
