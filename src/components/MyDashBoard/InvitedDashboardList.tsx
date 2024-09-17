@@ -12,7 +12,7 @@ import SearchForm from './UI/SearchForm';
 
 import type { InvitationsDto } from '@core/dtos/InvitationsDto';
 
-export default function InvitedDashboardList() {
+function InvitedDashboardList() {
   const { data, isLoading, error, callApi, hasNoInvitations } =
     useGetInvitations();
   const deviceType = useDevice();
@@ -99,3 +99,5 @@ export default function InvitedDashboardList() {
     </section>
   );
 }
+
+export default InvitedDashboardList;
