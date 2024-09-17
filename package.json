@@ -21,7 +21,7 @@
   },
   "dependencies": {
     "@hookform/error-message": "^2.0.1",
-    "@mantine/core": "^7.12.1",
+    "@mantine/core": "^7.12.2",
     "@mantine/dates": "^7.12.1",
     "@mantine/hooks": "^7.12.2",
     "@mantine/modals": "^7.12.1",
