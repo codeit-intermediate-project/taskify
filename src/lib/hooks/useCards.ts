@@ -6,7 +6,10 @@ import { useParams } from 'next/navigation';
 
 import { deleteCard, postCard, putCard } from '@core/api/cardApis';
 import { DashBoardContext } from '@core/contexts/DashboardContext';
-import { useDashboardSideMenu } from '@core/contexts/DashboardSideMenuContext';
+import {
+  SortCardType,
+  useDashboardSideMenu,
+} from '@core/contexts/DashboardSideMenuContext';
 import {
   CardServiceResponseDto,
   CreateCardRequestDto,
@@ -151,26 +154,31 @@ export default function useCards(columnId: number) {
   }, [cardList2D, columnId]);
 
   // 카드 정렬 변경 로직
-  const handleCardsSort = useCallback(() => {
-    const sortedCards: CardServiceResponseDto[] = [...cards];
+  const handleCardsSort = useCallback(
+    (sortBy: SortCardType) => {
+      if (sortBy === '생성일 순') {
+        setCards(prev => {
+          return prev.sort((card, nextCard) => {
+            const first = new Date(card.createdAt).getTime();
+            const second = new Date(nextCard.createdAt).getTime();
+            return first - second;
+          });
+        });
+      } else if (sortBy === '마감일 순') {
+        setCards(prev => {
+          return prev.sort((card, nextCard) => {
+            const first = new Date(card.dueDate).getTime();
+            const second = new Date(nextCard.dueDate).getTime();
+            return first - second;
+          });
+        });
+      }
+    },
+    [setCards]
+  );
 
-    if (sortCard === '생성일 순') {
-      sortedCards.sort((card, nextCard) => {
-        const createdAt1 = new Date(card.createdAt).getTime();
-        const createdAt2 = new Date(nextCard.createdAt).getTime();
-        return createdAt1 - createdAt2;
-      });
-    } else if (sortCard === '마감일 순') {
-      sortedCards.sort((card, nextCard) => {
-        const dueDate1 = new Date(card.dueDate).getTime();
-        const dueDate2 = new Date(nextCard.dueDate).getTime();
-        return dueDate1 - dueDate2;
-      });
-    }
-    setCards(sortedCards);
-  }, [sortCard, setCards, cards]);
   useEffect(() => {
-    handleCardsSort();
+    handleCardsSort(sortCard);
   }, [sortCard, handleCardsSort]);
 
   return {
