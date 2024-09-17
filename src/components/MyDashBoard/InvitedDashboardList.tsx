@@ -13,7 +13,7 @@ import SearchForm from './UI/SearchForm';
 import type { InvitationsDto } from '@core/dtos/InvitationsDto';
 
 function InvitedDashboardList() {
-  const { data, isLoading, error, callApi, hasNoInvitations } =
+  const { data, isLoading, error, callApi, hasNoInvitations, loadMoreRef } =
     useGetInvitations();
   const deviceType = useDevice();
   const { handleInvitationResponse } = useHandleInvitationResponse(() =>
@@ -83,6 +83,7 @@ function InvitedDashboardList() {
             ))
           )}
         </ul>
+        <div ref={loadMoreRef} style={{ height: '20px' }} />
       </>
     );
   };

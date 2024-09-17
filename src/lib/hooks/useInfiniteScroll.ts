@@ -40,6 +40,7 @@ const useInfiniteScroll = (
   }, [loadMore, hasMore]);
 
   useEffect(() => {
+
     const currentTarget = targetRef.current;
     if (!hasMore) {
       if (currentTarget) {

@@ -196,6 +196,18 @@ const config: Config = {
           lineHeight: '32px',
           textAlign: 'left',
         },
+        '.font-2xl-26px-bold': {
+          fontSize: '26px',
+          fontWeight: '700',
+          lineHeight: '26.25px',
+          textAlign: 'left',
+        },
+        '.font-2xl-28px-bold': {
+          fontSize: '28px',
+          fontWeight: '700',
+          lineHeight: '26.25px',
+          textAlign: 'left',
+        },
         '.font-3xl-32px-semibold': {
           fontSize: '32px',
           fontWeight: '600',
@@ -224,6 +236,36 @@ const config: Config = {
           fontSize: '42px',
           fontWeight: '700',
           lineHeight: '51px',
+          textAlign: 'left',
+        },
+        '.font-4xl-48px-bold': {
+          fontSize: '48px',
+          fontWeight: '700',
+          lineHeight: '64px',
+          textAlign: 'left',
+        },
+        '.font-4xl-56px-bold': {
+          fontSize: '56px',
+          fontWeight: '700',
+          lineHeight: '100px',
+          textAlign: 'left',
+        },
+        '.font-4xl-70px-bold': {
+          fontSize: '70px',
+          fontWeight: '700',
+          lineHeight: '65px',
+          textAlign: 'left',
+        },
+        '.font-4xl-76px-bold': {
+          fontSize: '76px',
+          fontWeight: '700',
+          lineHeight: '100px',
+          textAlign: 'left',
+        },
+        '.font-4xl-90px-bold': {
+          fontSize: '90px',
+          fontWeight: '700',
+          lineHeight: '65px',
           textAlign: 'left',
         },
       });
