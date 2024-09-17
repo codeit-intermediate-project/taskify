@@ -9,7 +9,7 @@ interface DashboardCardProps {
     id: number;
     title: string;
     color: string;
-    createdByMe: boolean; // createdByMe 속성 추가
+    createdByMe: boolean;
   };
 }
 
@@ -19,7 +19,7 @@ const DashboardCard = ({ value }: DashboardCardProps) => {
   return (
     <LinkButton
       href={`/dashboard/${dashboardId}`}
-      className="relative my-auto flex flex-1 gap-3 rounded-lg border border-gray-200 bg-white px-5 py-[22px] font-lg-14px-semibold md:font-lg-16px-semibold"
+      className="relative my-auto flex flex-1 gap-3 rounded-lg border border-gray-200 bg-white px-5 py-[22px] font-lg-14px-semibold hover:bg-violet-white md:font-lg-16px-semibold"
     >
       <div
         className="my-auto h-2 w-2 rounded-full"
