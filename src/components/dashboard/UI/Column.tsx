@@ -61,6 +61,7 @@ export default function Column({
     clearErrors,
     onSubmitEditCard,
     onClickDeleteCard,
+    targetRef,
   } = useCards(column.id);
   const [selectedCard, setSelectedCard] =
     useState<CardServiceResponseDto>(INITIAL_CARD);
@@ -125,6 +126,7 @@ export default function Column({
                 card={card}
               />
             ))}
+          <div ref={targetRef} />
         </div>
       )}
       <Modal

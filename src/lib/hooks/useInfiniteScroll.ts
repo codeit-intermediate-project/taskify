@@ -40,6 +40,16 @@ const useInfiniteScroll = (
   }, [loadMore, hasMore]);
 
   useEffect(() => {
+    const currentTarget = targetRef.current;
+    if (!hasMore) {
+      if (currentTarget) {
+        observerRef.current?.unobserve(currentTarget);
+      }
+      observerRef.current?.disconnect();
+    }
+  }, [hasMore]);
+
+  useEffect(() => {
     window.scrollTo(0, scrollYRef.current);
   }, [loadMore]);
 

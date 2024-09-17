@@ -17,10 +17,13 @@ import {
 } from '@core/dtos/CardsDto';
 import showSuccessNotification from '@lib/utils/notifications/showSuccessNotification';
 
+import useInfiniteScroll from './useInfiniteScroll';
+
 export default function useCards(columnId: number) {
   const { sortCard } = useDashboardSideMenu();
   const [cards, setCards] = useState<CardServiceResponseDto[]>([]);
-  const { cardList2D, moveCard } = useContext(DashBoardContext);
+  const [cursorId, setCursorId] = useState<number | null>(null);
+  const { cardList2D, moveCard, loadMoreCards } = useContext(DashBoardContext);
   const { dashboardid } = useParams();
   const {
     register,
@@ -39,6 +42,9 @@ export default function useCards(columnId: number) {
       dueDate: new Date().toString(),
     },
   });
+  const { targetRef } = useInfiniteScroll(() => {
+    loadMoreCards(columnId, cursorId);
+  }, Boolean(cursorId));
 
   // 카드 생성, 수정시 폼데이터 검사
   const requestCardFormValidator = (fieldData: CreateCardRequestDto) => {
@@ -150,7 +156,10 @@ export default function useCards(columnId: number) {
     const nextCards = cardList2D.find(
       cardList => cardList.columnId === columnId
     );
-    if (nextCards) setCards(nextCards.cardList);
+    if (nextCards) {
+      setCards(nextCards.cardList);
+      setCursorId(nextCards.cursorId);
+    }
   }, [cardList2D, columnId]);
 
   // 카드 정렬 변경 로직
@@ -196,5 +205,6 @@ export default function useCards(columnId: number) {
     onClickDeleteCard,
     reset,
     clearErrors,
+    targetRef,
   };
 }
