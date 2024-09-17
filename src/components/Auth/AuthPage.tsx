@@ -149,7 +149,7 @@ export default function AuthPage({ mode }: AuthPageProps) {
 
   return (
     <div className="flex min-h-screen items-center justify-center p-4">
-      <div className="w-full max-w-sm rounded-lg p-6">
+      <div className="w-[351px] rounded-lg md:w-[520px] xl:w-[520px] xl:p-6">
         {/* 상단 로고와 텍스트 */}
         <div className="mb-6 flex flex-col items-center">
           <Image
@@ -167,7 +167,7 @@ export default function AuthPage({ mode }: AuthPageProps) {
           </p>
         </div>
         {/* 입력 필드 */}
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-[16px]">
           <InputField
             labelName="이메일"
             id="email"
@@ -255,10 +255,10 @@ export default function AuthPage({ mode }: AuthPageProps) {
           <button
             type="submit"
             disabled={!isFormValid}
-            className={`w-full rounded-lg px-4 py-2 font-semibold text-white ${
+            className={`h-[50px] w-full rounded-[8px] px-4 py-2 font-semibold text-white ${
               isFormValid
                 ? 'bg-indigo-600 hover:bg-indigo-700'
-                : 'cursor-not-allowed bg-gray-400'
+                : 'cursor-not-allowed bg-gray-300'
             } focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2`}
           >
             {mode === 'login' ? '로그인' : '가입하기'}
@@ -273,7 +273,7 @@ export default function AuthPage({ mode }: AuthPageProps) {
           <button
             type="button"
             onClick={() => router.push(mode === 'login' ? '/signup' : '/login')}
-            className="font-semibold text-indigo-600 underline hover:text-indigo-800"
+            className="font-semibold text-violet underline hover:text-indigo-800"
           >
             {mode === 'login' ? '회원가입하기' : '로그인하기'}
           </button>
