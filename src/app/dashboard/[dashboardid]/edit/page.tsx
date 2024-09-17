@@ -13,6 +13,8 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import DeleteModal from '@components/edit/DeleteModal';
 
+import showSuccessNotification from '@lib/utils/notifications/showSuccessNotification';
+
 export default function DashBoardEditPage() {
   const pathname = usePathname();
   const router = useRouter();
@@ -50,7 +52,7 @@ export default function DashBoardEditPage() {
   useEffect(() => {
     if (isDeleted && !isDeleteModalOpen && !alertDisplayed) {
       setTimeout(() => {
-        alert('대시보드 삭제 완료!');
+        showSuccessNotification({ message: '대시보드 삭제 완료!' });
         router.push('/mydashboard');
       }, 300);
       setAlertDisplayed(true);
