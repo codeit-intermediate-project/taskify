@@ -8,6 +8,7 @@ import { useRoot } from '@core/contexts/RootContexts';
 import showErrorNotification from '@lib/utils/notifications/showErrorNotification';
 
 import LinkButton from '../UI/Button/LinkButton';
+import Rotate from '../animations/Rotate';
 
 import HeaderInviteModal from './HeaderInviteModal';
 import HeaderTitle from './HeaderTitle';
@@ -30,28 +31,35 @@ export default function AuthHeader() {
       {dashboardid && (
         <>
           <Group className="shrink-0 gap-[6px] font-md-14px-medium">
-            <LinkButton href={`/dashboard/${dashboardid}/edit`}>
-              <Image
-                className="hidden md:mr-2 md:inline"
-                width={20}
-                height={20}
-                src="/icons/settings.png"
-                alt="settings"
-              />
+            <LinkButton
+              href={`/dashboard/${dashboardid}/edit`}
+              className="flex items-center md:gap-2"
+            >
+              <Rotate className="flex">
+                <Image
+                  className="hidden md:inline"
+                  width={20}
+                  height={20}
+                  src="/icons/settings.png"
+                  alt="settings"
+                />
+              </Rotate>
               관리
             </LinkButton>
             <HeaderInviteModal opened={opened} onClose={close}>
               <button
                 onClick={handleInvitedModalOpen}
-                className="rounded-lg border border-border-gray bg-transparent px-3 py-[3px] text-gray-400 hover:bg-gray-200 md:px-4 md:py-[6px]"
+                className="flex items-center rounded-lg border border-border-gray bg-transparent px-3 py-[3px] text-gray-400 hover:bg-gray-200 md:gap-2 md:px-4 md:py-[6px]"
               >
-                <Image
-                  className="hidden md:mr-2 md:inline"
-                  width={20}
-                  height={20}
-                  src="/icons/add_box.png"
-                  alt="settings"
-                />
+                <Rotate className="flex">
+                  <Image
+                    className="hidden md:inline"
+                    width={20}
+                    height={20}
+                    src="/icons/add_box.png"
+                    alt="settings"
+                  />
+                </Rotate>
                 초대하기
               </button>
             </HeaderInviteModal>
