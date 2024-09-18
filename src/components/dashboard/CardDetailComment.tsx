@@ -5,6 +5,7 @@ import { Avatar, Textarea } from '@mantine/core';
 import dayjs from 'dayjs';
 import Image from 'next/image';
 
+import { useTheme } from '@core/contexts/ThemeContext';
 import { CardServiceResponseDto } from '@core/dtos/CardsDto';
 import useComments from '@lib/hooks/useComments';
 
@@ -54,6 +55,7 @@ export default function CardDetailComment({ card }: CommentProps) {
       setValue('editedContent', editingComment.content);
     }
   }, [editingComment?.id, editingComment?.content, setValue]);
+  const { darkMode } = useTheme();
   return (
     <>
       <form
@@ -68,14 +70,18 @@ export default function CardDetailComment({ card }: CommentProps) {
           <Textarea
             autosize
             minRows={5}
-            styles={{
-              input: {
-                width: '100%',
-                backgroundColor: '#4B4B4B',
-                border: '#4B4B4B',
-                color: '#D9D9D9',
-              },
-            }}
+            styles={
+              darkMode
+                ? {
+                    input: {
+                      width: '100%',
+                      backgroundColor: '#4B4B4B',
+                      border: '#4B4B4B',
+                      color: '#D9D9D9',
+                    },
+                  }
+                : {}
+            }
             {...register('content', {
               maxLength: { value: 250, message: '내용이 너무 많습니다.' },
             })}
@@ -127,14 +133,18 @@ export default function CardDetailComment({ card }: CommentProps) {
                     {editingComment?.id === comment.id ? (
                       <Textarea
                         autosize
-                        styles={{
-                          input: {
-                            width: '100%',
-                            backgroundColor: '#4B4B4B',
-                            border: '#4B4B4B',
-                            color: '#D9D9D9',
-                          },
-                        }}
+                        styles={
+                          darkMode
+                            ? {
+                                input: {
+                                  width: '100%',
+                                  backgroundColor: '#4B4B4B',
+                                  border: '#4B4B4B',
+                                  color: '#D9D9D9',
+                                },
+                              }
+                            : {}
+                        }
                         {...register('editedContent', {
                           maxLength: {
                             value: 250,

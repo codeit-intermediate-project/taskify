@@ -59,10 +59,17 @@ export default function Card({
                   <span
                     key={`${tag},${index * card.id}`}
                     className="flex h-[26px] items-center rounded px-1.5 font-md-14px-regular md:h-[28px]"
-                    style={{
-                      color: `${stringToHex(tag)}`,
-                      backgroundColor: `${stringToRgba(tag, 0.1)}`,
-                    }}
+                    style={
+                      darkMode
+                        ? {
+                            color: `#cccccc`,
+                            backgroundColor: `${stringToRgba(tag, 0.5)}`,
+                          }
+                        : {
+                            color: `${stringToHex(tag)}`,
+                            backgroundColor: `${stringToRgba(tag, 0.1)}`,
+                          }
+                    }
                   >
                     {tag}
                   </span>

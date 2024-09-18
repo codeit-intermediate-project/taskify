@@ -384,10 +384,17 @@ export default function CreateCardModal({
                     <span
                       key={keyValue}
                       className="mr-2 px-0.5 py-1 font-md-14px-regular"
-                      style={{
-                        color: `${stringToHex(tag)}`,
-                        backgroundColor: `${stringToRgba(tag, 0.1)}`,
-                      }}
+                      style={
+                        darkMode
+                          ? {
+                              color: `#cccccc`,
+                              backgroundColor: `${stringToRgba(tag, 0.5)}`,
+                            }
+                          : {
+                              color: `${stringToHex(tag)}`,
+                              backgroundColor: `${stringToRgba(tag, 0.1)}`,
+                            }
+                      }
                     >
                       {tag}
                     </span>

@@ -1,3 +1,5 @@
+'use client';
+
 import {
   createContext,
   PropsWithChildren,
@@ -9,16 +11,19 @@ import {
 } from 'react';
 
 interface ThemeContextType {
-  darkMode: boolean;
+  darkMode: boolean | null;
   toggleDarkMode: () => void;
 }
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export default function ThemeProvider({ children }: PropsWithChildren) {
-  const [darkMode, setDarkMode] = useState<boolean>(true);
+  const [darkMode, setDarkMode] = useState<boolean | null>(null);
 
   useEffect(() => {
+    if (darkMode === null) {
+      return;
+    }
     if (darkMode) {
       document.documentElement.classList.add('dark');
       localStorage.setItem('theme', 'dark');
@@ -30,6 +35,15 @@ export default function ThemeProvider({ children }: PropsWithChildren) {
 
   const toggleDarkMode = useCallback(() => {
     setDarkMode(prev => !prev);
+  }, []);
+
+  useEffect(() => {
+    const loadTheme = localStorage.getItem('theme');
+    if (loadTheme === 'dark') {
+      setDarkMode(true);
+    } else {
+      setDarkMode(false);
+    }
   }, []);
 
   const value = useMemo(
