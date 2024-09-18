@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion';
 import Image from 'next/image';
 
 interface PointCardProps {
@@ -31,24 +32,22 @@ export default function PointCard({ type }: MyComponentProps) {
   const { point, title1, title2, image, alt } = type === '01' ? type1 : type2;
 
   return (
-    <div
+    <motion.div
       className={`mb-[59px] flex h-[686px] w-full flex-col items-center justify-between rounded-lg bg-[rgba(23,23,23,1)] md:h-[972px] md:items-start xl:h-[600px] xl:w-[1200px] xl:items-start ${type === '01' ? 'xl:flex-row' : 'xl:flex-row-reverse xl:justify-end'}`}
     >
-      <div className="md:pl-[60px]">
-        <div className="flex flex-col items-center md:items-start">
-          <h2 className="mt-[60px] text-gray-300 font-2lg-18px-medium md:mt-[63px] md:font-2xl-26px-bold xl:mt-[123px]">
+      <motion.div className="md:pl-[60px]">
+        <motion.div className="flex flex-col items-center md:items-start">
+          <motion.h2 className="mt-[60px] text-gray-300 font-2lg-18px-medium md:mt-[63px] md:font-2xl-26px-bold xl:mt-[123px]">
             {`Point ${point} `}
-          </h2>
-          <div className="mt-[61px] flex flex-col items-center text-white font-4xl-36px-bold md:mt-[100px] md:items-start md:font-4xl-48px-bold">
-            <p>{title1}</p>
-            <p>{title2}</p>
-          </div>
-        </div>
-      </div>
-      <div
-        className={`mt-[194px] flex h-[250px] w-full items-end xl:m-0 xl:h-full xl:w-[594px] ${
-          type === '01' ? 'justify-end' : 'justify-center'
-        }`}
+          </motion.h2>
+          <motion.div className="mt-[61px] flex flex-col items-center text-white font-4xl-36px-bold md:mt-[100px] md:items-start md:font-4xl-48px-bold">
+            <motion.p>{title1}</motion.p>
+            <motion.p>{title2}</motion.p>
+          </motion.div>
+        </motion.div>
+      </motion.div>
+      <motion.div
+        className={`mt-[194px] flex h-[250px] w-full items-end xl:m-0 xl:h-full xl:w-[594px] ${type === '01' ? 'justify-end' : 'justify-center'}`}
       >
         <Image
           className={
@@ -62,7 +61,7 @@ export default function PointCard({ type }: MyComponentProps) {
           height={248}
           priority
         />
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 }
