@@ -1,6 +1,7 @@
 import { Menu } from '@mantine/core';
 import Image from 'next/image';
 
+import { useTheme } from '@core/contexts/ThemeContext';
 import kebob from '@icons/kebab.png';
 
 interface EditMenuProps {
@@ -12,8 +13,21 @@ export default function DropDownEditMenu({
   openEdit,
   openConfirm,
 }: EditMenuProps) {
+  const { darkMode } = useTheme();
   return (
-    <Menu>
+    <Menu
+      styles={
+        darkMode
+          ? {
+              dropdown: {
+                backgroundColor: '#4B4B4B',
+                border: '#4B4B4B',
+                color: '#D9D9D9',
+              },
+            }
+          : {}
+      }
+    >
       <Menu.Target>
         <button className="relative h-5 w-5 md:h-[28px] md:w-[28px]">
           <Image src={kebob} alt="카드관리메뉴" fill />

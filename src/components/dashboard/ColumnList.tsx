@@ -8,6 +8,7 @@ import { useDisclosure } from '@mantine/hooks';
 import CreateColumnModal from '@components/Modals/CreateColumnModal';
 import EditColumnModal from '@components/Modals/EditColumnModal';
 import { DashBoardContext } from '@core/contexts/DashboardContext';
+import { useTheme } from '@core/contexts/ThemeContext';
 import useColumns from '@lib/hooks/useColumns';
 import useScrollToColumn from '@lib/hooks/useScrollToColumn';
 
@@ -48,12 +49,12 @@ export default function ColumnList() {
     setValue('title', '');
     openCreate();
   };
-
+  const { darkMode } = useTheme();
   return (
     <>
       <div
         ref={divRef}
-        className="no-scrollbar flex snap-x flex-col overflow-hidden md:mx-0 md:max-w-full xl:min-h-[100vh] xl:flex-row xl:overflow-scroll"
+        className="no-scrollbar flex snap-x flex-col overflow-hidden dark:bg-black-700 md:mx-0 md:max-w-full xl:min-h-[100vh] xl:flex-row xl:overflow-scroll"
       >
         {Boolean(columnList?.length) &&
           columnList.map(
@@ -82,6 +83,19 @@ export default function ColumnList() {
         title={<div className="font-2xl-24px-bold">새 컬럼 생성</div>}
         onClose={closeCreate}
         centered
+        styles={
+          darkMode
+            ? {
+                header: {
+                  backgroundColor: '#333236',
+                },
+
+                content: {
+                  backgroundColor: '#333236',
+                },
+              }
+            : {}
+        }
       >
         <CreateColumnModal
           onClose={closeCreate}
@@ -98,6 +112,19 @@ export default function ColumnList() {
         title={<div className="font-2xl-24px-bold">컬럼 관리</div>}
         onClose={closeEdit}
         centered
+        styles={
+          darkMode
+            ? {
+                header: {
+                  backgroundColor: '#333236',
+                },
+
+                content: {
+                  backgroundColor: '#333236',
+                },
+              }
+            : {}
+        }
       >
         <EditColumnModal
           closeEdit={closeEdit}

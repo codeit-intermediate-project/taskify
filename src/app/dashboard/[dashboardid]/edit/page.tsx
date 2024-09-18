@@ -60,7 +60,7 @@ export default function DashBoardEditPage() {
   }, [isDeleted, isDeleteModalOpen, alertDisplayed, router]);
 
   return (
-    <div className="relative left-12 mt-14 flex-1 overflow-y-auto overflow-x-hidden bg-gray-50 p-4 md:left-40 md:mt-16 lg:mt-14 xl:left-[300px]">
+    <div className="relative left-12 mt-14 flex-1 overflow-y-auto overflow-x-hidden bg-gray-50 p-4 dark:bg-black-700 md:left-40 md:mt-16 lg:mt-14 xl:left-[300px]">
       {/* 돌아가기 버튼 */}
       <button
         onClick={handleGoBack}
@@ -76,14 +76,14 @@ export default function DashBoardEditPage() {
       </button>
 
       {/* 메인 콘텐츠 */}
-      <div className="mt-8 space-y-6 px-4 md:mt-14">
+      <div className="mt-8 space-y-6 px-4 dark:bg-black-700 md:mt-14">
         <EditDashboard dashboardId={Number(dashboardId)} />
         <MemberList dashboardId={Number(dashboardId)} />
         <InvitationList dashboardId={dashboardId} />
         <button
           onClick={openDeleteModal}
           type="button"
-          className="flex h-[52px] w-full max-w-[92%] items-center justify-center rounded-lg border border-solid border-gray-200 shadow font-lg-16px-medium md:w-[320px]"
+          className="flex h-[52px] w-full max-w-[92%] items-center justify-center rounded-lg border border-solid border-gray-200 shadow font-lg-16px-medium dark:border-black-600 dark:bg-black-600 md:w-[320px]"
         >
           대시보드 삭제하기
         </button>

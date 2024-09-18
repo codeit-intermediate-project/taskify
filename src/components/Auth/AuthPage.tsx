@@ -160,7 +160,7 @@ export default function AuthPage({ mode }: AuthPageProps) {
             className="cursor-pointer"
             onClick={() => router.push('/')} // 클라이언트 측에서만 작동
           />
-          <p className="mt-[8px] text-black-600 font-2lg-18px-medium md:mt-[10px] md:font-xl-20px-medium">
+          <p className="mt-[8px] text-black-600 font-2lg-18px-medium dark:text-gray-100 md:mt-[10px] md:font-xl-20px-medium">
             {mode === 'login'
               ? '오늘도 만나서 반가워요!'
               : '첫 방문을 환영합니다!'}
@@ -245,7 +245,7 @@ export default function AuthPage({ mode }: AuthPageProps) {
                 />
                 <label
                   htmlFor="terms"
-                  className="text-sm font-medium text-gray-700"
+                  className="text-sm font-medium text-gray-700 dark:text-gray-200"
                 >
                   이용약관에 동의합니다.
                 </label>
@@ -267,7 +267,7 @@ export default function AuthPage({ mode }: AuthPageProps) {
 
         {/* 하단 회원가입/로그인 링크 */}
         <div className="mt-4 flex items-center justify-center text-sm text-gray-600">
-          <p className="mr-2 text-gray-700">
+          <p className="mr-2 text-gray-700 dark:text-gray-500">
             {mode === 'login' ? '회원이 아니신가요?' : '이미 회원이신가요?'}
           </p>
           <button

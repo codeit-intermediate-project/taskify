@@ -48,7 +48,7 @@ export default function DescriptonCard({ card }: CardType) {
           <Image src={image} alt={alt} width={296} height={248} priority />
         </motion.div>
       </motion.div>
-      <motion.div className="flex h-[113px] w-full flex-col items-start rounded-b-lg rounded-t-none bg-black-700 p-[27px_32px_28px] md:h-[124px]">
+      <motion.div className="flex h-[113px] w-full flex-col items-start rounded-b-lg rounded-t-none bg-black-700 p-[27px_32px_28px] dark:bg-[#000] md:h-[124px]">
         <motion.h3 className="text-white font-2lg-18px-bold">{title}</motion.h3>
         <motion.p className="mt-[16px] text-white font-lg-16px-medium">
           {des}

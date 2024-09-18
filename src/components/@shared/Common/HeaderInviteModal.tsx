@@ -9,6 +9,7 @@ import Image from 'next/image';
 
 import { addInvitation } from '@core/api/columnApis';
 import { useRoot } from '@core/contexts/RootContexts';
+import { useTheme } from '@core/contexts/ThemeContext';
 import useDevice, { DEVICE } from '@lib/hooks/useDevice';
 import findAxiosErrorMessage from '@lib/utils/findAxiosErrorMessage';
 import showErrorNotification from '@lib/utils/notifications/showErrorNotification';
@@ -74,7 +75,7 @@ export default function HeaderInviteModal({
     }
     showErrorNotification({ message: findAxiosErrorMessage(res) });
   };
-
+  const { darkMode } = useTheme();
   return (
     <>
       <Modal
@@ -84,6 +85,15 @@ export default function HeaderInviteModal({
         onClose={onClose}
         withCloseButton={false}
         centered
+        styles={
+          darkMode
+            ? {
+                content: {
+                  backgroundColor: '#333236',
+                },
+              }
+            : {}
+        }
       >
         <Stack className="gap-4 md:p-4">
           <div className="mb-4 flex items-center justify-between">
@@ -97,6 +107,7 @@ export default function HeaderInviteModal({
           </div>
           <div className="flex flex-col gap-2">
             <Input
+              className="dark:border-black-500 dark:bg-black-500"
               id="invitedEmail"
               label="이메일"
               type="email"

@@ -36,7 +36,7 @@ export default function InputField<T extends FieldValues>({
   const name = id as string;
   return (
     <div className="mt-0">
-      <label htmlFor={id} className="font-lg-16px-regular">
+      <label htmlFor={id} className="font-lg-16px-regular dark:text-gray-100">
         {labelName}
       </label>
       <div className="relative">
@@ -46,7 +46,7 @@ export default function InputField<T extends FieldValues>({
           placeholder={placeholder}
           autoComplete={autoComplete}
           {...register(id, validation)}
-          className={`mt-[8px] block w-full rounded-[8px] border bg-white px-3 py-2 focus:outline-none ${
+          className={`mt-[8px] block w-full rounded-[8px] border bg-white px-3 py-2 focus:outline-none dark:border-gray-500 dark:bg-black-600 dark:placeholder:text-gray-100 ${
             errors[id] ? 'border-red' : 'border-[#D9D9D9]'
           } font-lg-16px-regular focus:border-violet focus:ring-indigo-500`}
         />

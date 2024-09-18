@@ -7,6 +7,8 @@ import {
 
 import { Button, Input } from '@mantine/core';
 
+import { useTheme } from '@core/contexts/ThemeContext';
+
 interface CreateColumnModalProps {
   onClose: () => void;
   onSubmit: (title: string) => Promise<boolean>;
@@ -26,6 +28,7 @@ export default function CreateColumnModal({
     const result = await onSubmit(title);
     if (result) onClose();
   };
+  const { darkMode } = useTheme();
   return (
     <form
       className="relative flex flex-col"
@@ -41,9 +44,20 @@ export default function CreateColumnModal({
           required: '컬럼 제목을 입력해 주세요.',
           maxLength: { value: 13, message: '13자 이하로 입력해주세요' },
         })}
-        className="pb-6"
+        className="mb-6"
         placeholder="컬럼 제목을 입력하세요."
         id="title"
+        styles={
+          darkMode
+            ? {
+                input: {
+                  backgroundColor: '#4B4B4B',
+                  border: '#4B4B4B',
+                  color: '#D9D9D9',
+                },
+              }
+            : {}
+        }
       />
       <p className="absolute top-[68px] text-red">
         {typeof errors.title?.message === 'string'
@@ -53,7 +67,7 @@ export default function CreateColumnModal({
       <div className="flex h-[54px] justify-stretch gap-2 font-2lg-18px-medium">
         <Button
           type="button"
-          className="h-full grow border-gray-200 bg-white text-gray-400"
+          className="h-full grow border-gray-200 bg-white text-gray-400 dark:border-black-500 dark:bg-black-500 dark:text-gray-200"
           onClick={onClose}
         >
           취소

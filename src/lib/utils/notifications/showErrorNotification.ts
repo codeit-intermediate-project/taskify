@@ -11,7 +11,7 @@ export default function showErrorNotification({
     color: 'red',
     message,
     position: 'bottom-right',
-    autoClose: 3000,
+    autoClose: 1000,
     className:
       '[&_*]:font-xl-20px-regular bg-white border my-4 [&_*]:text-black py-5 px-10',
   });

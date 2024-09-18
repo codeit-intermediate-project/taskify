@@ -7,6 +7,7 @@ import Image from 'next/image';
 import PurpleAddIcon from '@components/@shared/UI/PurpleAddIcon';
 import CreateCardModal from '@components/Modals/CreateCardModal';
 import EditCardModal from '@components/Modals/EditCardModal';
+import { useTheme } from '@core/contexts/ThemeContext';
 import { CardServiceResponseDto } from '@core/dtos/CardsDto';
 import setting from '@icons/settings.png';
 import useCards from '@lib/hooks/useCards';
@@ -70,6 +71,7 @@ export default function Column({
   };
 
   const [edit, { open: openEdit, close: closeEdit }] = useDisclosure(false);
+  const { darkMode } = useTheme();
 
   return (
     <>
@@ -81,7 +83,7 @@ export default function Column({
               columnRefs[index] = el;
             }
           }}
-          className="no-scrollbar mb-4 w-full border-b border-gray-100 px-3 pb-6 md:px-5 xl:mb-0 xl:h-full xl:max-h-[90vh] xl:min-w-[354px] xl:overflow-scroll xl:border-b-0 xl:border-r xl:pb-[100px]"
+          className="no-scrollbar mb-4 w-full border-b border-gray-100 px-3 pb-6 dark:border-b-black-600 dark:border-r-black-600 md:px-5 xl:mb-0 xl:h-full xl:max-h-[90vh] xl:min-w-[354px] xl:overflow-scroll xl:border-b-0 xl:border-r xl:pb-[100px]"
         >
           <div className="mb-6 mt-4 flex h-[22px] justify-between">
             <div className="flex items-center gap-2 rounded-md">
@@ -90,7 +92,7 @@ export default function Column({
                 style={{ backgroundColor: `${dashboardColor}` }}
               />
               <span className="pr-1 font-2lg-18px-bold">{column.title}</span>
-              <div className="flex h-5 w-5 items-center justify-center rounded bg-gray-100 text-gray-400 font-xs-12px-medium">
+              <div className="flex h-5 w-5 items-center justify-center rounded bg-gray-100 text-gray-400 font-xs-12px-medium dark:bg-black-500 dark:text-gray-200">
                 {cards.length}
               </div>
             </div>
@@ -112,7 +114,7 @@ export default function Column({
               openCreateCard();
             }}
             color="#fff"
-            className="flex h-8 w-full items-center justify-center border border-gray-200 md:h-10"
+            className="flex h-8 w-full items-center justify-center border border-gray-200 dark:border-black-500 dark:bg-black-500 md:h-10"
           >
             <PurpleAddIcon />
           </Button>
@@ -134,6 +136,19 @@ export default function Column({
         title={<div className="font-2xl-24px-bold">할 일 생성</div>}
         opened={createCardModal}
         onClose={closeCreateCard}
+        styles={
+          darkMode
+            ? {
+                header: {
+                  backgroundColor: '#333236',
+                },
+
+                content: {
+                  backgroundColor: '#333236',
+                },
+              }
+            : {}
+        }
       >
         <CreateCardModal
           columnId={column.id}
@@ -151,7 +166,25 @@ export default function Column({
           clearErrors={clearErrors}
         />
       </Modal>
-      <Modal opened={edit} onClose={closeEdit} zIndex={201}>
+      <Modal
+        opened={edit}
+        onClose={closeEdit}
+        zIndex={201}
+        title={<div className="font-2xl-24px-bold">할 일 수정</div>}
+        styles={
+          darkMode
+            ? {
+                header: {
+                  backgroundColor: '#333236',
+                },
+
+                content: {
+                  backgroundColor: '#333236',
+                },
+              }
+            : {}
+        }
+      >
         <EditCardModal
           columnId={column.id}
           register={register}
