@@ -1,5 +1,7 @@
 import React, { MouseEvent, PropsWithChildren } from 'react';
 
+import { motion } from 'framer-motion';
+
 import cn from '@lib/utils/cn';
 
 interface Props {
@@ -17,7 +19,8 @@ export default function Button({
   disabled = true,
 }: PropsWithChildren<Props>) {
   return (
-    <button
+    <motion.button
+      whileTap={{ scale: 0.96 }}
       className={cn(
         'flex h-[54px] w-36 items-center justify-center rounded-lg font-md-14px-medium md:w-64',
         className
@@ -27,6 +30,6 @@ export default function Button({
       onClick={onClick}
     >
       {children}
-    </button>
+    </motion.button>
   );
 }
