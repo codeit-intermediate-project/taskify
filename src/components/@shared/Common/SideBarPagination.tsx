@@ -2,6 +2,7 @@
 
 import React from 'react';
 
+import { motion } from 'framer-motion';
 import Image from 'next/image';
 
 interface PaginationProps {
@@ -34,15 +35,18 @@ export default function SideBarPagination({
   };
   const theme = localStorage.getItem('theme');
   return (
-    <nav className="flex items-center gap-2">
+    <nav className="flex items-center justify-center pt-3">
       <div>
-        <button
+        <motion.button
+          whileTap={{ scale: 0.8 }}
           type="button"
           onClick={handlePrePage}
           aria-label="이전 페이지로 이동"
+          className={`${currentPage === 1 ? 'opacity-50' : ''}`}
+          disabled={currentPage === 1}
         >
           <div
-            className="flex h-8 w-8 items-center justify-center border border-gray-200 dark:border-black-700 md:h-10 md:w-10"
+            className="flex h-7 w-7 items-center justify-center border border-gray-200 dark:border-black-700 md:h-10 md:w-10"
             style={{
               borderTopLeftRadius: '4px',
               borderTopRightRadius: '0px',
@@ -66,14 +70,17 @@ export default function SideBarPagination({
               />
             )}
           </div>
-        </button>
-        <button
+        </motion.button>
+        <motion.button
+          whileTap={{ scale: 0.8 }}
           type="button"
           onClick={handleNextPage}
           aria-label="다음 페이지로 이동"
+          className={`${currentPage === totalPages ? 'opacity-50' : ''}`}
+          disabled={currentPage === totalPages}
         >
           <div
-            className="flex h-8 w-8 items-center justify-center border border-l-0 border-gray-200 dark:border-black-700 md:h-10 md:w-10"
+            className="flex h-7 w-7 items-center justify-center border border-gray-200 dark:border-black-700 md:h-10 md:w-10"
             style={{
               borderTopLeftRadius: '0px',
               borderTopRightRadius: '4px',
@@ -97,7 +104,7 @@ export default function SideBarPagination({
               />
             )}
           </div>
-        </button>
+        </motion.button>
       </div>
     </nav>
   );

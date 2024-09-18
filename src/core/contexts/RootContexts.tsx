@@ -85,12 +85,15 @@ export default function RootProvider({ children }: PropsWithChildren) {
     [postAuthLogin]
   );
 
+  useEffect(() => {
+    if (localStorage.getItem('accessToken')) getMe(undefined);
+  }, [getMe]);
+
   /** 유저 정보 유지: 새로고침하거나, url입력을 통해 이동할 때 유저정보가 유지되도록 구현 */
   useEffect(() => {
     if (loginData?.accessToken) {
       localStorage.setItem('accessToken', loginData?.accessToken);
     }
-    getMe(undefined);
   }, [loginData, getMe]);
 
   const value = useMemo(

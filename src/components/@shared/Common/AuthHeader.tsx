@@ -30,7 +30,7 @@ export default function AuthHeader() {
       <HeaderTitle />
       {dashboardid && (
         <>
-          <Group className="shrink-0 gap-[6px] font-md-14px-medium">
+          <Group className="shrink-0 gap-[6px] pl-4 font-md-14px-medium">
             <LinkButton
               href={`/dashboard/${dashboardid}/edit`}
               className="flex items-center dark:border-gray-400 dark:text-gray-300 dark:hover:bg-black-600 md:gap-2"
@@ -57,7 +57,7 @@ export default function AuthHeader() {
                     width={20}
                     height={20}
                     src="/icons/add_box.png"
-                    alt="settings"
+                    alt="invitation"
                   />
                 </Rotate>
                 초대하기

@@ -8,6 +8,8 @@ import logoImg from '@images/logo_img_white.png';
 import logo from '@images/logo_white.png';
 import useDevice from '@lib/hooks/useDevice';
 
+import Rotate from '../animations/Rotate';
+
 import Logo from './Logo';
 import DashboardAddModal from './Modals/DashboardAddModal';
 import SideBarList from './SideBarList';
@@ -41,7 +43,14 @@ export default function SideBar() {
             className="relative flex h-5 w-5 items-center justify-center"
             onClick={open}
           >
-            <Image fill src="/icons/add_box.png" alt="Dashboard create" />
+            <Rotate className="flex">
+              <Image
+                width={20}
+                height={20}
+                src="/icons/add_box.png"
+                alt="Dashboard create"
+              />
+            </Rotate>
           </UnstyledButton>
         </Flex>
       </DashboardAddModal>

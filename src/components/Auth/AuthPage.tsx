@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
 import axios from 'axios';
@@ -35,9 +35,9 @@ export default function AuthPage({ mode }: AuthPageProps) {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isValid },
     watch,
-  } = useForm<FormValues>({ mode: 'onBlur' });
+  } = useForm<FormValues>({ mode: 'onChange' });
 
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
@@ -46,9 +46,9 @@ export default function AuthPage({ mode }: AuthPageProps) {
   const [isModalVisible, setIsModalVisible] = useState(false); // 모달 상태
   const [modalMessage, setModalMessage] = useState(''); // 모달 메시지
 
-  const emailValue = watch('email');
+  // const emailValue = watch('email');
   const passwordValue = watch('password');
-  const passwordConfirmValue = watch('passwordConfirm');
+  // const passwordConfirmValue = watch('passwordConfirm');
 
   // 모달이 닫힐 때 리다이렉트를 처리하는 useEffect
   useEffect(() => {
@@ -125,31 +125,31 @@ export default function AuthPage({ mode }: AuthPageProps) {
     }
   };
 
-  const isFormValid = useMemo(() => {
-    if (mode === 'signup') {
-      return (
-        termsAccepted &&
-        !Object.keys(errors).length &&
-        passwordValue === passwordConfirmValue
-      );
-    }
-    return (
-      Boolean(emailValue) &&
-      Boolean(passwordValue) &&
-      !Object.keys(errors).length
-    );
-  }, [
-    emailValue,
-    passwordValue,
-    passwordConfirmValue,
-    errors,
-    termsAccepted,
-    mode,
-  ]);
+  // const isFormValid = useMemo(() => {
+  //  if (mode === 'signup') {
+  //    return (
+  //      termsAccepted &&
+  //      !Object.keys(errors).length &&
+  //      passwordValue === passwordConfirmValue
+  //    );
+  //  }
+  //  return (
+  //    Boolean(emailValue) &&
+  //    Boolean(passwordValue) &&
+  //    !Object.keys(errors).length
+  //  );
+  // }, [
+  //  emailValue,
+  //  passwordValue,
+  //  passwordConfirmValue,
+  //  errors,
+  //  termsAccepted,
+  //  mode,
+  // ]);
 
   return (
     <div className="flex min-h-screen items-center justify-center p-4">
-      <div className="w-full max-w-sm rounded-lg p-6">
+      <div className="w-[351px] rounded-lg md:w-[520px] xl:w-[520px] xl:p-6">
         {/* 상단 로고와 텍스트 */}
         <div className="mb-6 flex flex-col items-center">
           <Image
@@ -158,17 +158,16 @@ export default function AuthPage({ mode }: AuthPageProps) {
             width={200}
             height={200}
             className="cursor-pointer"
-            onClick={() => router.push('/')}
+            onClick={() => router.push('/')} // 클라이언트 측에서만 작동
           />
-          <p className="mt-4 text-[18px] text-black-500 font-2lg-18px-medium dark:text-gray-100">
+          <p className="mt-[8px] text-black-600 font-2lg-18px-medium dark:text-gray-100 md:mt-[10px] md:font-xl-20px-medium">
             {mode === 'login'
               ? '오늘도 만나서 반가워요!'
               : '첫 방문을 환영합니다!'}
           </p>
         </div>
-
         {/* 입력 필드 */}
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-[16px]">
           <InputField
             labelName="이메일"
             id="email"
@@ -255,11 +254,11 @@ export default function AuthPage({ mode }: AuthPageProps) {
           )}
           <button
             type="submit"
-            disabled={!isFormValid}
-            className={`w-full rounded-lg px-4 py-2 font-semibold text-white ${
-              isFormValid
+            disabled={!isValid}
+            className={`h-[50px] w-full rounded-[8px] px-4 py-2 font-semibold text-white ${
+              isValid
                 ? 'bg-indigo-600 hover:bg-indigo-700'
-                : 'cursor-not-allowed bg-gray-400'
+                : 'cursor-not-allowed bg-gray-300'
             } focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2`}
           >
             {mode === 'login' ? '로그인' : '가입하기'}
@@ -274,7 +273,7 @@ export default function AuthPage({ mode }: AuthPageProps) {
           <button
             type="button"
             onClick={() => router.push(mode === 'login' ? '/signup' : '/login')}
-            className="font-semibold text-indigo-600 underline hover:text-indigo-800"
+            className="font-semibold text-violet underline hover:text-indigo-800"
           >
             {mode === 'login' ? '회원가입하기' : '로그인하기'}
           </button>

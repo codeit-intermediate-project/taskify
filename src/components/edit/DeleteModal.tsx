@@ -1,6 +1,28 @@
+/* eslint-disable import/order */
+
 'use client';
 
 import Image from 'next/image';
+
+import { Modal, Stack } from '@mantine/core';
+
+import useDevice, { DEVICE } from '@lib/hooks/useDevice';
+
+type DeviceKeyObject = {
+  [key in keyof typeof DEVICE]: string;
+};
+
+const MODAL_SIZE: DeviceKeyObject = {
+  mobile: '327px',
+  tablet: '584px',
+  desktop: '584px',
+};
+
+const MODAL_RADIUS: DeviceKeyObject = {
+  mobile: '8px',
+  tablet: '16px',
+  desktop: '16px',
+};
 
 interface DeleteModalProps {
   isOpen: boolean;
@@ -13,34 +35,23 @@ export default function DeleteModal({
   onClose,
   onDelete,
 }: DeleteModalProps) {
-  if (!isOpen) return null;
-
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
-    if (event.key === 'Escape') {
-      onClose();
-    }
-  };
-
   const handleDelete = () => {
     onDelete();
-
-    setTimeout(() => {
-      onClose();
-    }, 1000);
+    onClose();
   };
 
+  const device = useDevice();
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
-      {/* 모달 배경 추가 */}
-      <div
-        className="fixed inset-0 bg-black-700 bg-opacity-80"
-        onClick={onClose}
-        onKeyDown={handleKeyDown}
-        role="button"
-        tabIndex={0}
-        aria-label="닫기"
-      />
-      <div className="relative z-10 w-[327px] max-w-md rounded-lg bg-white p-6 md:w-[568px]">
+    <Modal
+      opened={isOpen}
+      onClose={onClose}
+      centered
+      withCloseButton={false}
+      size={MODAL_SIZE[device]}
+      radius={MODAL_RADIUS[device]}
+    >
+      <Stack className="gap-4 md:p-4">
         <div className="mb-4 flex items-center justify-between">
           <h2 className="text-xl font-bold">삭제 확인</h2>
           <button onClick={onClose} className="text-xl font-bold text-gray-500">
@@ -64,7 +75,7 @@ export default function DeleteModal({
             삭제
           </button>
         </div>
-      </div>
-    </div>
+      </Stack>
+    </Modal>
   );
 }

@@ -10,6 +10,7 @@ import Image from 'next/image';
 import Pagination from '@/src/components/edit/Pagination';
 import usePagination from '@/src/lib/hooks/usePagination';
 import DeleteModal from './DeleteModal';
+import showSuccessNotification from '@lib/utils/notifications/showSuccessNotification';
 
 interface MemberListProps {
   dashboardId: number;
@@ -109,8 +110,7 @@ export default function MemberList({ dashboardId }: MemberListProps) {
   useEffect(() => {
     if (isDeleted && !isDeleteModalOpen && !alertDisplayed) {
       setTimeout(() => {
-        // eslint-disable-next-line no-alert
-        alert('삭제가 완료되었습니다.');
+        showSuccessNotification({ message: '삭제 완료!' });
         window.location.reload();
       }, 300);
       setAlertDisplayed(true);
