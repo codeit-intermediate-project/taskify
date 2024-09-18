@@ -9,6 +9,8 @@ import useDashboardsPagination from '@lib/hooks/useDashboardsPagination';
 import useDevice from '@lib/hooks/useDevice';
 import cn from '@lib/utils/cn';
 
+import SlideInList from '../animations/SlideInList';
+
 import SideBarPagination from './SideBarPagination';
 
 export default function SideBarList() {
@@ -49,38 +51,45 @@ export default function SideBarList() {
   return (
     <Stack className="items-center gap-2 md:items-stretch">
       {dashboards &&
-        dashboards?.map(dashboard => (
-          <Flex
+        dashboards?.map((dashboard, index) => (
+          <SlideInList
             key={dashboard.id}
-            className={cn(
-              'h-[43px] items-center rounded hover:border-2 hover:border-blue',
-              dashboard.id === Number(dashboardid) && 'bg-violet-white'
-            )}
-            onClick={() => handleDashboardClick(dashboard.id)}
+            index={index}
+            duration={0.11}
+            delayMultiplier={0.1}
           >
-            <button className="flex h-10 w-10 items-center justify-center">
-              <div
-                className="h-2 w-2 rounded-full"
-                style={{ backgroundColor: dashboard.color }}
-                aria-label="link button"
-              />
-            </button>
-            {!isMobile && (
-              <Flex className="items-center gap-2">
-                <span className="h-[26px] max-w-[75px] overflow-hidden text-ellipsis whitespace-nowrap font-lg-16px-medium xl:max-w-[200px] xl:font-2lg-18px-medium">
-                  {dashboard.title}
-                </span>
-                {dashboard.createdByMe && (
-                  <Image
-                    width={16}
-                    height={12}
-                    src="/icons/crown.png"
-                    alt="createdByMe"
-                  />
-                )}
-              </Flex>
-            )}
-          </Flex>
+            <Flex
+              key={dashboard.id}
+              className={cn(
+                'h-[43px] items-center rounded hover:border-2 hover:border-blue',
+                dashboard.id === Number(dashboardid) && 'bg-violet-white'
+              )}
+              onClick={() => handleDashboardClick(dashboard.id)}
+            >
+              <button className="flex h-10 w-10 items-center justify-center">
+                <div
+                  className="h-2 w-2 rounded-full"
+                  style={{ backgroundColor: dashboard.color }}
+                  aria-label="link button"
+                />
+              </button>
+              {!isMobile && (
+                <Flex className="items-center gap-2">
+                  <span className="h-[26px] max-w-[75px] overflow-hidden text-ellipsis whitespace-nowrap font-lg-16px-medium xl:max-w-[200px] xl:font-2lg-18px-medium">
+                    {dashboard.title}
+                  </span>
+                  {dashboard.createdByMe && (
+                    <Image
+                      width={16}
+                      height={12}
+                      src="/icons/crown.png"
+                      alt="createdByMe"
+                    />
+                  )}
+                </Flex>
+              )}
+            </Flex>
+          </SlideInList>
         ))}
       <SideBarPagination
         currentPage={currentPage}
