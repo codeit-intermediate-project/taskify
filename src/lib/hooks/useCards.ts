@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 import dayjs from 'dayjs';
@@ -6,10 +6,6 @@ import { useParams } from 'next/navigation';
 
 import { deleteCard, postCard, putCard } from '@core/api/cardApis';
 import { DashBoardContext } from '@core/contexts/DashboardContext';
-import {
-  SortCardType,
-  useDashboardSideMenu,
-} from '@core/contexts/DashboardSideMenuContext';
 import {
   CardServiceResponseDto,
   CreateCardRequestDto,
@@ -20,7 +16,6 @@ import showSuccessNotification from '@lib/utils/notifications/showSuccessNotific
 import useInfiniteScroll from './useInfiniteScroll';
 
 export default function useCards(columnId: number) {
-  const { sortCard } = useDashboardSideMenu();
   const [cards, setCards] = useState<CardServiceResponseDto[]>([]);
   const [cursorId, setCursorId] = useState<number | null>(null);
   const { cardList2D, moveCard, loadMoreCards } = useContext(DashBoardContext);
@@ -161,34 +156,6 @@ export default function useCards(columnId: number) {
       setCursorId(nextCards.cursorId);
     }
   }, [cardList2D, columnId]);
-
-  // 카드 정렬 변경 로직
-  const handleCardsSort = useCallback(
-    (sortBy: SortCardType) => {
-      if (sortBy === '생성일 순') {
-        setCards(prev => {
-          return prev.sort((card, nextCard) => {
-            const first = new Date(card.createdAt).getTime();
-            const second = new Date(nextCard.createdAt).getTime();
-            return first - second;
-          });
-        });
-      } else if (sortBy === '마감일 순') {
-        setCards(prev => {
-          return prev.sort((card, nextCard) => {
-            const first = new Date(card.dueDate).getTime();
-            const second = new Date(nextCard.dueDate).getTime();
-            return first - second;
-          });
-        });
-      }
-    },
-    [setCards]
-  );
-
-  useEffect(() => {
-    handleCardsSort(sortCard);
-  }, [sortCard, handleCardsSort]);
 
   return {
     cards,
