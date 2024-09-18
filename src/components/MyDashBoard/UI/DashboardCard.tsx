@@ -1,8 +1,11 @@
+import { useCallback } from 'react';
+
 import { motion } from 'framer-motion';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 
-import LinkButton from '@components/@shared/UI/Button/LinkButton';
 import SlideRight from '@components/@shared/animations/SlideRight';
+import { useRoot } from '@core/contexts/RootContexts';
 import arrowRight from '@icons/arrow_right.png';
 import crown from '@icons/crown.png';
 
@@ -17,12 +20,19 @@ interface DashboardCardProps {
 
 const DashboardCard = ({ value }: DashboardCardProps) => {
   const { id: dashboardId } = value;
+  const router = useRouter();
+  const { setDashboardid } = useRoot();
+
+  const redirectDashboard = useCallback(() => {
+    setDashboardid(String(dashboardId));
+    router.push(`/dashboard/${dashboardId}`);
+  }, [router, dashboardId, setDashboardid]);
 
   return (
     <motion.div whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.99 }}>
-      <LinkButton
-        href={`/dashboard/${dashboardId}`}
-        className="relative my-auto flex flex-1 gap-3 rounded-lg border border-gray-200 bg-white px-5 py-[22px] font-lg-14px-semibold hover:bg-violet-white md:font-lg-16px-semibold"
+      <button
+        onClick={redirectDashboard}
+        className="relative my-auto flex w-full flex-1 gap-3 rounded-lg border border-gray-200 bg-white px-5 py-[22px] font-lg-14px-semibold hover:bg-violet-white md:font-lg-16px-semibold"
       >
         <div
           className="my-auto h-2 w-2 rounded-full"
@@ -52,7 +62,7 @@ const DashboardCard = ({ value }: DashboardCardProps) => {
             height={18}
           />
         </SlideRight>
-      </LinkButton>
+      </button>
     </motion.div>
   );
 };

@@ -30,7 +30,7 @@ export default function AuthHeader() {
       <HeaderTitle />
       {dashboardid && (
         <>
-          <Group className="shrink-0 gap-[6px] font-md-14px-medium">
+          <Group className="shrink-0 gap-[6px] pl-4 font-md-14px-medium">
             <LinkButton
               href={`/dashboard/${dashboardid}/edit`}
               className="flex items-center md:gap-2"
