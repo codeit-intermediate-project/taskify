@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion';
 import Image from 'next/image';
 
 interface DescriptionCard {
@@ -41,16 +42,18 @@ export default function DescriptonCard({ card }: CardType) {
   const { title, des, image, alt } = cardMap[card] || cardData03;
 
   return (
-    <div className="mb-[45px] flex h-[349px] w-[343px] flex-col items-center justify-between rounded-lg bg-black-500 md:h-[384px] md:w-[378px]">
-      <div className="m-[auto]">
-        <div>
+    <motion.div className="mb-[45px] flex h-[349px] w-[343px] flex-col items-center justify-between rounded-lg bg-black-500 md:h-[384px] md:w-[378px]">
+      <motion.div className="m-[auto]">
+        <motion.div>
           <Image src={image} alt={alt} width={296} height={248} priority />
-        </div>
-      </div>
-      <div className="flex h-[113px] w-full flex-col items-start rounded-b-lg rounded-t-none bg-black-700 p-[27px_32px_28px] md:h-[124px]">
-        <h3 className="text-white font-2lg-18px-bold">{title}</h3>
-        <p className="mt-[16px] text-white font-lg-16px-medium">{des}</p>
-      </div>
-    </div>
+        </motion.div>
+      </motion.div>
+      <motion.div className="flex h-[113px] w-full flex-col items-start rounded-b-lg rounded-t-none bg-black-700 p-[27px_32px_28px] md:h-[124px]">
+        <motion.h3 className="text-white font-2lg-18px-bold">{title}</motion.h3>
+        <motion.p className="mt-[16px] text-white font-lg-16px-medium">
+          {des}
+        </motion.p>
+      </motion.div>
+    </motion.div>
   );
 }
