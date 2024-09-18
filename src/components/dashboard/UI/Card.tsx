@@ -5,6 +5,7 @@ import Image from 'next/image';
 
 import CardDetailModal from '@components/Modals/CardDetailModal';
 import { useDashboardSideMenu } from '@core/contexts/DashboardSideMenuContext';
+import { useTheme } from '@core/contexts/ThemeContext';
 import calendar from '@icons/calendar.png';
 import { stringToHex, stringToRgba } from '@lib/utils/convertStringToColor';
 import formatDDay from '@lib/utils/formatDDay';
@@ -29,6 +30,7 @@ export default function Card({
   const [cardDetail, { open: openDetail, close: closeDetail }] =
     useDisclosure(false);
   const formattedDDay = formatDDay(card.dueDate);
+  const { darkMode } = useTheme();
   return (
     <>
       <button
@@ -93,11 +95,19 @@ export default function Card({
         withCloseButton={false}
         size="80%"
         onClose={closeDetail}
-        styles={{
-          content: {
-            backgroundColor: '#333236',
-          },
-        }}
+        styles={
+          darkMode
+            ? {
+                header: {
+                  backgroundColor: '#333236',
+                },
+
+                content: {
+                  backgroundColor: '#333236',
+                },
+              }
+            : {}
+        }
       >
         <CardDetailModal
           onClickDeleteCard={onClickDeleteCard}
