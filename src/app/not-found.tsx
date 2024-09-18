@@ -30,7 +30,7 @@ const NotFoundPage = () => {
           alt="없는 문서 이미지"
           className="h-16 w-16 md:h-24 md:w-24"
         />
-        <h1 className="md:font-4xl-56px-bold mt-3 text-gray-700 font-3xl-32px-bold md:mt-0">
+        <h1 className="mt-3 text-gray-700 font-3xl-32px-bold md:mt-0 md:font-4xl-56px-bold">
           404
         </h1>
         <p className="text-gray-400 font-lg-16px-semibold md:font-2xl-24px-semibold">
