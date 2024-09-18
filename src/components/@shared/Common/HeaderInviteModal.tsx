@@ -69,9 +69,7 @@ export default function HeaderInviteModal({
     const { invitedEmail } = data;
     const res = await addInvitation(dashboardid, invitedEmail);
     if (!(res instanceof AxiosError)) {
-      /** 초대 보내기 성공 시 로직 */
       showSuccessNotification({ message: '초대를 보냈습니다.' });
-      // 초대하면 edit에 반영되도록 로직 추가
       return;
     }
     showErrorNotification({ message: findAxiosErrorMessage(res) });

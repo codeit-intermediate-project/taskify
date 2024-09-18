@@ -1,3 +1,4 @@
+/* eslint-disable import/order */
 import '@mantine/core/styles.css';
 import '@mantine/notifications/styles.css';
 import './globals.css';
@@ -11,6 +12,8 @@ import DeviceProvider from '@core/contexts/DeviceContext';
 import RootProvider from '@core/contexts/RootContexts';
 
 import type { Metadata } from 'next';
+
+import AuthProvider from '@lib/next-auth';
 
 const pretandard = localFont({
   src: '../assets/fonts/PretendardVariable.woff2',
@@ -36,7 +39,9 @@ export default function RootLayout({
           <Notifications />
           <DeviceProvider>
             <RootProvider>
-              <DashboardLayout>{children}</DashboardLayout>
+              <AuthProvider>
+                <DashboardLayout>{children}</DashboardLayout>
+              </AuthProvider>
             </RootProvider>
           </DeviceProvider>
         </MantineProvider>
