@@ -1,6 +1,6 @@
 import Image from 'next/image';
 
-import addPurple from '@icons/add_purple.png';
+import addPurple from '@icons/add_purple.svg';
 
 import Rotate from '../animations/Rotate';
 

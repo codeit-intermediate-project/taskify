@@ -75,7 +75,7 @@ export default function ProfileEditCard() {
   }, [user, setValue]);
 
   return (
-    <form className="z-10 flex flex-col gap-10 rounded-lg bg-white p-4">
+    <form className="z-10 flex flex-col gap-10 rounded-lg bg-white p-4 dark:bg-black-600">
       <h1 className="font-2lg-18px-bold md:font-2xl-24px-bold">프로필</h1>
       <Stack className="gap-10 md:flex-row">
         <FileInput

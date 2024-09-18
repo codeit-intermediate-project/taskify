@@ -39,7 +39,7 @@ import Image from 'next/image';
 import ImageCropperModal from '@components/Modals/ImageCropperModal';
 import { DashBoardContext } from '@core/contexts/DashboardContext';
 import { CreateCardRequestDto } from '@core/dtos/CardsDto';
-import addPurple from '@icons/add_purple.png';
+import addPurple from '@icons/add_purple.svg';
 import calendar from '@icons/calendar.png';
 import { stringToHex, stringToRgba } from '@lib/utils/convertStringToColor';
 

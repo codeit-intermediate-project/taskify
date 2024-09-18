@@ -42,7 +42,7 @@ import {
   CardServiceResponseDto,
   CreateCardRequestDto,
 } from '@core/dtos/CardsDto';
-import addPurple from '@icons/add_purple.png';
+import addPurple from '@icons/add_purple.svg';
 import { stringToHex, stringToRgba } from '@lib/utils/convertStringToColor';
 
 interface CreateCardModalProps {

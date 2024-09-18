@@ -19,8 +19,8 @@ export default function PrimaryButton({
   return (
     <Button
       className={cn(
-        'cursor-pointer border border-border-gray bg-purple text-white',
-        disabled && 'bg-gray-200',
+        'cursor-pointer border border-border-gray bg-purple text-white dark:border-[#525252]',
+        disabled && 'bg-gray-200 dark:border-none dark:bg-[#424141]',
         className
       )}
       onClick={onClick}

@@ -57,15 +57,16 @@ function Input<T extends FieldValues>({
   return (
     <div className="relative flex flex-col gap-2">
       <label
-        className="text-black-600 font-md-14px-regular md:font-lg-16px-regular"
+        className="text-black-600 font-md-14px-regular dark:text-gray-200 md:font-lg-16px-regular"
         htmlFor={id}
       >
         {label}
       </label>
       <input
         className={cn(
-          'bg-secondary-100 rounded-xl border border-border-gray px-4 py-[13px] font-lg-16px-regular placeholder:text-gray-300 placeholder:font-lg-16px-regular',
+          'bg-secondary-100 rounded-xl border border-border-gray px-4 py-[13px] font-lg-16px-regular placeholder:text-gray-300 placeholder:font-lg-16px-regular dark:border-[#757575]',
           errors[name] ? 'border-red' : '',
+          disabled ? 'dark:bg-[#616161]' : 'dark:bg-[#525252]',
           className
         )}
         type={type}
