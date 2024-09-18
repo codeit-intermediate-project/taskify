@@ -13,8 +13,6 @@ import RootProvider from '@core/contexts/RootContexts';
 
 import type { Metadata } from 'next';
 
-import { SessionProvider } from 'next-auth/react';
-
 const pretandard = localFont({
   src: '../assets/fonts/PretendardVariable.woff2',
   display: 'swap',
@@ -37,13 +35,11 @@ export default function RootLayout({
       <body className={`${pretandard.variable}`}>
         <MantineProvider>
           <Notifications />
-          <SessionProvider>
-            <DeviceProvider>
-              <RootProvider>
-                <DashboardLayout>{children}</DashboardLayout>
-              </RootProvider>
-            </DeviceProvider>
-          </SessionProvider>
+          <DeviceProvider>
+            <RootProvider>
+              <DashboardLayout>{children}</DashboardLayout>
+            </RootProvider>
+          </DeviceProvider>
         </MantineProvider>
       </body>
     </html>
