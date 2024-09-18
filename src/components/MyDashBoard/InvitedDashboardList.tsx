@@ -12,8 +12,8 @@ import SearchForm from './UI/SearchForm';
 
 import type { InvitationsDto } from '@core/dtos/InvitationsDto';
 
-export default function InvitedDashboardList() {
-  const { data, isLoading, error, callApi, hasNoInvitations } =
+function InvitedDashboardList() {
+  const { data, isLoading, error, callApi, hasNoInvitations, loadMoreRef } =
     useGetInvitations();
   const deviceType = useDevice();
   const { handleInvitationResponse } = useHandleInvitationResponse(() =>
@@ -83,6 +83,7 @@ export default function InvitedDashboardList() {
             ))
           )}
         </ul>
+        <div ref={loadMoreRef} style={{ height: '20px' }} />
       </>
     );
   };
@@ -99,3 +100,5 @@ export default function InvitedDashboardList() {
     </section>
   );
 }
+
+export default InvitedDashboardList;

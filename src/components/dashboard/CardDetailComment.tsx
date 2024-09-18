@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 
-import { Textarea } from '@mantine/core';
+import { Avatar, Textarea } from '@mantine/core';
 import dayjs from 'dayjs';
 import Image from 'next/image';
 
@@ -23,6 +23,7 @@ export default function CardDetailComment({ card }: CommentProps) {
     onClickEditCancel,
     onClickEditComplete,
     onClickDeleteComment,
+    targetRef,
   } = useComments(card);
   const {
     register,
@@ -47,14 +48,12 @@ export default function CardDetailComment({ card }: CommentProps) {
     }
     onClickEditComplete(commentId, editedComment);
   };
-
   // 수정하기 클릭하면 editingComment상태가 변경되고 effect로 이전 value값을 넣어줌
   useEffect(() => {
     if (editingComment?.id) {
       setValue('editedContent', editingComment.content);
     }
   }, [editingComment?.id, editingComment?.content, setValue]);
-
   return (
     <>
       <form
@@ -91,24 +90,31 @@ export default function CardDetailComment({ card }: CommentProps) {
           ? commentList.map(comment => {
               return (
                 <div className="flex gap-4" key={comment.id}>
-                  {comment.author.profileImageUrl ? (
-                    <div className="relative h-[34px] w-[34px] shrink-0 overflow-hidden rounded-full">
-                      <Image
-                        src={comment.author.profileImageUrl}
-                        alt="댓글 작성자 프로필"
-                        fill
-                      />
-                    </div>
-                  ) : (
-                    <div className="h-[34px] w-[34px] shrink-0 overflow-hidden rounded-full bg-yellow-100" />
-                  )}
+                  <Avatar>
+                    {comment.author.profileImageUrl && (
+                      <div className="relative h-[34px] w-[34px] shrink-0 overflow-hidden rounded-full">
+                        <Image
+                          src={comment.author.profileImageUrl}
+                          alt="댓글 작성자 프로필"
+                          fill
+                        />
+                      </div>
+                    )}
+                  </Avatar>
                   <div className="flex grow flex-col">
-                    <div className="flex items-center">
+                    <div className="flex items-center gap-2">
                       <span className="font-lg-14px-semibold">
                         {comment.author.nickname}
                       </span>
                       <span className="text-gray-300 font-xs-12px-regular">
-                        {dayjs(comment.createdAt).format('YYYY.MM.DD HH:mm')}
+                        {dayjs(comment.updatedAt)
+                          .subtract(9, 'hour')
+                          .format('YYYY.MM.DD HH:mm')}
+                      </span>
+                      <span className="text-gray-300 font-xs-12px-regular">
+                        {comment.createdAt !== comment.updatedAt
+                          ? '(수정됨)'
+                          : null}
                       </span>
                     </div>
                     {editingComment?.id === comment.id ? (
@@ -176,6 +182,7 @@ export default function CardDetailComment({ card }: CommentProps) {
               );
             })
           : null}
+        <div ref={targetRef} />
       </div>
     </>
   );

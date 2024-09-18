@@ -7,11 +7,13 @@ import { useDisclosure } from '@mantine/hooks';
 
 import CreateColumnModal from '@components/Modals/CreateColumnModal';
 import EditColumnModal from '@components/Modals/EditColumnModal';
-import { DashBoardContext } from '@core/contexts/DashBoardContext';
+import { DashBoardContext } from '@core/contexts/DashboardContext';
 import useColumns from '@lib/hooks/useColumns';
+import useScrollToColumn from '@lib/hooks/useScrollToColumn';
 
 import AddColumnButton from './UI/AddColumnButton';
 import Column from './UI/Column';
+import DashboardSideMenu from './UI/DashboardSideMenu';
 
 export default function ColumnList() {
   const {
@@ -20,10 +22,14 @@ export default function ColumnList() {
     handleSubmit,
     register,
     errors,
+    clearErrors,
     setValue,
     setTargetColumnId,
     onClickDeleteAtEditModal,
   } = useColumns();
+
+  const { divRef, columnRefs, focusIndex, onClickMoveFloatingButton } =
+    useScrollToColumn();
   const { columnList, dashboardColor: columnColor } =
     useContext(DashBoardContext);
   const [createColumnModal, { open: openCreate, close: closeCreate }] =
@@ -45,12 +51,17 @@ export default function ColumnList() {
 
   return (
     <>
-      <div className="no-scrollbar flex flex-col md:mx-0 md:max-w-full xl:min-h-[100vh] xl:max-w-[1062px] xl:flex-row xl:overflow-scroll">
+      <div
+        ref={divRef}
+        className="no-scrollbar flex snap-x flex-col overflow-hidden md:mx-0 md:max-w-full xl:min-h-[100vh] xl:max-w-[1062px] xl:flex-row xl:overflow-scroll"
+      >
         {Boolean(columnList?.length) &&
           columnList.map(
-            column =>
+            (column, index) =>
               Boolean(column.id) && (
                 <Column
+                  columnRef={columnRefs}
+                  index={index}
                   onClickEditOpen={onClickEditOpen}
                   key={column.id}
                   column={column}
@@ -58,8 +69,13 @@ export default function ColumnList() {
                 />
               )
           )}
+        <AddColumnButton open={onClickCreateOpen} clearErrors={clearErrors} />
+        <DashboardSideMenu
+          focusIndex={focusIndex}
+          onClickMoveFloatingButton={onClickMoveFloatingButton}
+          onClickCreateOpen={onClickCreateOpen}
+        />
       </div>
-      <AddColumnButton open={onClickCreateOpen} />
       <Modal
         opened={createColumnModal}
         padding={24}

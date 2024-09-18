@@ -87,6 +87,15 @@
   }
 }
 
+@layer components {
+  .focused-column {
+    @apply flex items-center rounded-md bg-violet text-white;
+  }
+  .column-hover {
+    @apply flex items-center rounded-md bg-violet-white;
+  }
+}
+
 @layer utilities {
   .no-scrollbar::-webkit-scrollbar {
     display: none;

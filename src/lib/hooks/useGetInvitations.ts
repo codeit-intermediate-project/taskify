@@ -13,7 +13,7 @@ const useGetInvitations = () => {
   const [invitations, setInvitations] = useState<
     InvitationsResponseDto['invitations']
   >([]);
-  const { data, error, callApi } = useApi<InvitationsResponseDto>(
+  const { data, isLoading, error, callApi } = useApi<InvitationsResponseDto>(
     '/invitations',
     'GET'
   );
@@ -47,15 +47,24 @@ const useGetInvitations = () => {
     }
   }, [data]);
 
-  useInfiniteScroll(
+  const { targetRef, saveScrollPosition } = useInfiniteScroll(
     () => {
-      const newSize = size + 10;
-      setSize(newSize);
+      saveScrollPosition();
+      setSize(prevSize => prevSize + 10);
     },
     data && data.invitations && data.invitations.length >= size
   );
 
-  return { data, error, hasNoInvitations, invitations };
+  return {
+    data,
+    error,
+    callApi,
+    isLoading,
+    hasNoInvitations,
+    invitations,
+    loadMoreRef: targetRef,
+    saveScrollPosition,
+  };
 };
 
 export default useGetInvitations;

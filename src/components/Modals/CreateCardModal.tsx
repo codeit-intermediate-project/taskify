@@ -22,6 +22,7 @@ import {
 } from 'react-hook-form';
 
 import {
+  Avatar,
   Button,
   Combobox,
   Input,
@@ -36,7 +37,7 @@ import dayjs from 'dayjs';
 import Image from 'next/image';
 
 import ImageCropperModal from '@components/Modals/ImageCropperModal';
-import { DashBoardContext } from '@core/contexts/DashBoardContext';
+import { DashBoardContext } from '@core/contexts/DashboardContext';
 import { CreateCardRequestDto } from '@core/dtos/CardsDto';
 import addPurple from '@icons/add_purple.png';
 import calendar from '@icons/calendar.png';
@@ -220,17 +221,17 @@ export default function CreateCardModal({
               >
                 {selectedAssignee ? (
                   <div className="flex items-center gap-2">
-                    {selectedAssigneeImg ? (
-                      <Image
-                        className="rounded-full"
-                        src={selectedAssigneeImg}
-                        width={25}
-                        height={25}
-                        alt="멤버 프로필"
-                      />
-                    ) : (
-                      <span className="h-[25px] w-[25px]" />
-                    )}
+                    <Avatar size="sm">
+                      {selectedAssigneeImg && (
+                        <Image
+                          className="rounded-full"
+                          src={selectedAssigneeImg}
+                          width={25}
+                          height={25}
+                          alt="멤버 프로필"
+                        />
+                      )}
+                    </Avatar>
                     <span className="font-lg-16px-regular">
                       {selectedAssignee}
                     </span>
@@ -245,17 +246,17 @@ export default function CreateCardModal({
               {members.map(member => (
                 <Combobox.Option value={member.nickname} key={member.id}>
                   <button className="flex items-center gap-2">
-                    {member.profileImageUrl ? (
-                      <Image
-                        className="rounded-full"
-                        src={member.profileImageUrl}
-                        width={25}
-                        height={25}
-                        alt="멤버 프로필"
-                      />
-                    ) : (
-                      <span className="h-[25px] w-[25px]" />
-                    )}
+                    <Avatar size="sm">
+                      {member.profileImageUrl && (
+                        <Image
+                          className="rounded-full"
+                          src={member.profileImageUrl}
+                          width={25}
+                          height={25}
+                          alt="멤버 프로필"
+                        />
+                      )}
+                    </Avatar>
                     <span>{member.nickname}</span>
                   </button>
                 </Combobox.Option>
@@ -318,7 +319,7 @@ export default function CreateCardModal({
           <span className="font-2lg-18px-medium">태그</span>
 
           <div className="wrap mt-2 flex min-h-12 w-full items-center gap-2 border border-[#ced4da] px-2.5">
-            <div className="">
+            <div>
               {tags &&
                 tags.map((tag, index) => {
                   const keyValue = `${tag}${index}`;
@@ -362,6 +363,7 @@ export default function CreateCardModal({
               }}
             >
               <Image
+                className="rounded-md"
                 src={image}
                 width={127}
                 height={76}

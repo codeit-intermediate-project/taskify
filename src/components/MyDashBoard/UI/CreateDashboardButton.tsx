@@ -1,22 +1,21 @@
-import Image from 'next/image';
-
-import addPurple from '@icons/add_purple.png';
+import PurpleAddIcon from '@components/@shared/UI/PurpleAddIcon';
+import GradientFrame from '@components/@shared/animations/GradientFrame';
 
 interface CreateDashboardButtonProps {
   onClick: () => void;
 }
 
 const CreateDashboardButton = ({ onClick }: CreateDashboardButtonProps) => (
-  <button
-    type="button"
-    onClick={onClick}
-    className="flex justify-center gap-3 rounded-lg border border-gray-200 bg-white px-5 py-[22px] font-lg-16px-semibold"
-  >
-    <p>새로운 대시보드</p>
-    <div className="rounded-[4px] bg-violet-white p-1">
-      <Image src={addPurple} alt="플러스 아이콘" width={16} height={16} />
-    </div>
-  </button>
+  <GradientFrame className="rounded-lg">
+    <button
+      type="button"
+      onClick={onClick}
+      className="flex w-full items-center justify-center gap-3 rounded-lg border border-gray-200 bg-white px-5 py-[22px] font-lg-16px-semibold"
+    >
+      <p>새로운 대시보드</p>
+      <PurpleAddIcon />
+    </button>
+  </GradientFrame>
 );
 
 export default CreateDashboardButton;

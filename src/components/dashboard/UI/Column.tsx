@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { MutableRefObject, useState } from 'react';
 
 import { Button, Modal } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
@@ -19,6 +19,8 @@ interface ColumnProps {
   column: ColumnServiceResponseDto;
   dashboardColor: string;
   onClickEditOpen: (id: number, defaultValue: string) => void;
+  columnRef: MutableRefObject<(HTMLDivElement | null)[]>;
+  index: number;
 }
 
 const INITIAL_CARD = {
@@ -26,7 +28,7 @@ const INITIAL_CARD = {
   title: '',
   description: '',
   tags: [],
-  dueDate: null,
+  dueDate: new Date(),
   assignee: null,
   imageUrl: null,
   teamId: '',
@@ -39,6 +41,8 @@ export default function Column({
   column,
   dashboardColor,
   onClickEditOpen,
+  columnRef,
+  index,
 }: ColumnProps) {
   const [createCardModal, { open: openCreateCard, close: closeCreateCard }] =
     useDisclosure(false);
@@ -57,6 +61,7 @@ export default function Column({
     clearErrors,
     onSubmitEditCard,
     onClickDeleteCard,
+    targetRef,
   } = useCards(column.id);
   const [selectedCard, setSelectedCard] =
     useState<CardServiceResponseDto>(INITIAL_CARD);
@@ -69,7 +74,15 @@ export default function Column({
   return (
     <>
       {column?.id > 0 && (
-        <div className="no-scrollbar mb-4 w-full min-w-[354px] border-b border-gray-100 px-3 pb-6 md:px-5 xl:mb-0 xl:h-full xl:max-h-[100vh] xl:overflow-scroll xl:border-b-0 xl:border-r">
+        <div
+          ref={el => {
+            if (el) {
+              const columnRefs = columnRef.current;
+              columnRefs[index] = el;
+            }
+          }}
+          className="no-scrollbar mb-4 w-full min-w-[354px] border-b border-gray-100 px-3 pb-6 md:px-5 xl:mb-0 xl:h-full xl:max-h-[90vh] xl:overflow-scroll xl:border-b-0 xl:border-r xl:pb-[100px]"
+        >
           <div className="mb-6 mt-4 flex h-[22px] justify-between">
             <div className="flex items-center gap-2 rounded-md">
               <span
@@ -98,7 +111,8 @@ export default function Column({
             onClick={() => {
               openCreateCard();
             }}
-            className="flex h-8 w-full items-center justify-center border border-gray-200 bg-white md:h-10"
+            color="#fff"
+            className="flex h-8 w-full items-center justify-center border border-gray-200 md:h-10"
           >
             <PurpleAddIcon />
           </Button>
@@ -112,6 +126,7 @@ export default function Column({
                 card={card}
               />
             ))}
+          <div ref={targetRef} />
         </div>
       )}
       <Modal

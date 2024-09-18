@@ -9,8 +9,8 @@ export default function showSuccessNotification({ message }: Props) {
     color: 'green',
     message,
     position: 'bottom-right',
-    autoClose: 3000,
+    autoClose: 10000,
     className:
-      '[&_*]:font-2xl-24px-semibold bg-green my-4 [&_*]:text-white py-5 px-10',
+      '[&_*]:font-xl-20px-regular bg-white border my-4 [&_*]:text-black py-5 px-10',
   });
 }
