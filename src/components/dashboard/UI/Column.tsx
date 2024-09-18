@@ -81,7 +81,7 @@ export default function Column({
               columnRefs[index] = el;
             }
           }}
-          className="no-scrollbar mb-4 w-full min-w-[354px] border-b border-gray-100 px-3 pb-6 md:px-5 xl:mb-0 xl:h-full xl:max-h-[90vh] xl:overflow-scroll xl:border-b-0 xl:border-r xl:pb-[100px]"
+          className="no-scrollbar mb-4 w-full border-b border-gray-100 px-3 pb-6 md:px-5 xl:mb-0 xl:h-full xl:max-h-[90vh] xl:min-w-[354px] xl:overflow-scroll xl:border-b-0 xl:border-r xl:pb-[100px]"
         >
           <div className="mb-6 mt-4 flex h-[22px] justify-between">
             <div className="flex items-center gap-2 rounded-md">
