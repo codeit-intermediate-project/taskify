@@ -1,5 +1,4 @@
 /* eslint-disable import/order */
-/* eslint-disable jsx-a11y/control-has-associated-label */
 
 'use client';
 

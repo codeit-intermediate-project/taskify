@@ -1,4 +1,3 @@
-/* eslint-disable import/order */
 import '@mantine/core/styles.css';
 import '@mantine/notifications/styles.css';
 import './globals.css';
