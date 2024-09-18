@@ -10,6 +10,10 @@ import { useRoot } from '@core/contexts/RootContexts';
 
 import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
+import DeleteModal from '@components/edit/DeleteModal';
+
+import showSuccessNotification from '@lib/utils/notifications/showSuccessNotification';
 
 export default function DashBoardEditPage() {
   const pathname = usePathname();
@@ -17,20 +21,43 @@ export default function DashBoardEditPage() {
   const { setDashboardsFlag } = useRoot();
 
   const dashboardId = pathname.split('/')[2];
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [alertDisplayed, setAlertDisplayed] = useState(false);
+  const [isDeleted, setIsDeleted] = useState(false);
 
   // 돌아가기 버튼
   const handleGoBack = () => {
     router.push(`/dashboard/${dashboardId}`);
   };
 
+  // 모달 열기
+  const openDeleteModal = () => {
+    setIsDeleteModalOpen(true);
+    setAlertDisplayed(false);
+  };
+
+  // 모달 닫기
+  const closeDeleteModal = () => {
+    setIsDeleteModalOpen(false);
+  };
+
   // 대시보드 삭제
   const handleDeleteDashboard = async () => {
     await deleteDashboard(dashboardId);
     setDashboardsFlag(true);
-    // eslint-disable-next-line no-alert
-    alert('대시보드 삭제 완료!');
-    router.push('/mydashboard');
+    setIsDeleted(true);
   };
+
+  // 삭제 후 처리
+  useEffect(() => {
+    if (isDeleted && !isDeleteModalOpen && !alertDisplayed) {
+      setTimeout(() => {
+        showSuccessNotification({ message: '대시보드 삭제 완료!' });
+        router.push('/mydashboard');
+      }, 300);
+      setAlertDisplayed(true);
+    }
+  }, [isDeleted, isDeleteModalOpen, alertDisplayed, router]);
 
   return (
     <div className="relative left-12 mt-14 flex-1 overflow-y-auto overflow-x-hidden bg-gray-50 p-4 md:left-40 md:mt-16 lg:mt-14 xl:left-[300px]">
@@ -54,13 +81,20 @@ export default function DashBoardEditPage() {
         <MemberList dashboardId={Number(dashboardId)} />
         <InvitationList dashboardId={dashboardId} />
         <button
-          onClick={handleDeleteDashboard}
+          onClick={openDeleteModal}
           type="button"
           className="flex h-[52px] w-full max-w-[92%] items-center justify-center rounded-lg border border-solid border-gray-200 shadow font-lg-16px-medium md:w-[320px]"
         >
           대시보드 삭제하기
         </button>
       </div>
+
+      {/* 삭제 확인 모달 */}
+      <DeleteModal
+        isOpen={isDeleteModalOpen}
+        onClose={closeDeleteModal}
+        onDelete={handleDeleteDashboard}
+      />
     </div>
   );
 }

@@ -1,10 +1,35 @@
+/* eslint-disable import/order */
 /* eslint-disable jsx-a11y/control-has-associated-label */
 
 'use client';
 
-import { useState } from 'react';
+import { useForm } from 'react-hook-form';
 
 import Image from 'next/image';
+
+import { Modal, Stack } from '@mantine/core';
+
+import SecondaryButton from '@components/@shared/UI/Button/SecondaryButton';
+import PrimaryButton from '@components/@shared/UI/Button/PrimaryButton';
+import useDevice, { DEVICE } from '@lib/hooks/useDevice';
+
+import Input from '@components/@shared/Common/Inputs/Input';
+
+type DeviceKeyObject = {
+  [key in keyof typeof DEVICE]: string;
+};
+
+const MODAL_SIZE: DeviceKeyObject = {
+  mobile: '327px',
+  tablet: '584px',
+  desktop: '584px',
+};
+
+const MODAL_RADIUS: DeviceKeyObject = {
+  mobile: '8px',
+  tablet: '16px',
+  desktop: '16px',
+};
 
 interface InviteModalProps {
   isOpen: boolean;
@@ -17,72 +42,85 @@ export default function InviteModal({
   onClose,
   onAddInvitation,
 }: InviteModalProps) {
-  const [email, setEmail] = useState('');
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isValid },
+    reset,
+  } = useForm<{ invitedEmail: string }>({
+    mode: 'onChange',
+  });
 
-  if (!isOpen) return null;
-
-  const handleCreateEmail = () => {
-    if (email.trim() === '') {
+  const handleCreateEmail = (data: { invitedEmail: string }) => {
+    if (data.invitedEmail.trim() === '') {
       // eslint-disable-next-line no-alert
       alert('이메일을 입력하세요.');
       return;
     }
 
-    onAddInvitation(email);
-    setEmail('');
+    onAddInvitation(data.invitedEmail);
+    reset({ invitedEmail: '' });
   };
 
+  const handleClose = () => {
+    reset({ invitedEmail: '' });
+    onClose();
+  };
+
+  const device = useDevice();
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
-      <div
-        className="fixed inset-0 bg-black-700 bg-opacity-80"
-        onClick={onClose}
-        role="button"
-        tabIndex={-1}
-        onKeyDown={e => {
-          if (e.key === 'Escape') {
-            onClose();
-          }
-        }}
-      />
-      <div className="relative z-10 w-[327px] max-w-md rounded-lg bg-white p-6 md:w-[568px]">
+    <Modal
+      opened={isOpen}
+      onClose={handleClose}
+      centered
+      withCloseButton={false}
+      size={MODAL_SIZE[device]}
+      radius={MODAL_RADIUS[device]}
+    >
+      <Stack className="gap-4 md:p-4">
         <div className="mb-4 flex items-center justify-between">
           <h2 className="text-xl font-bold">초대하기</h2>
-          <button onClick={onClose} className="text-xl font-bold text-gray-500">
+          <button
+            onClick={handleClose}
+            className="text-xl font-bold text-gray-500"
+          >
             <Image src="/icons/X.png" alt="닫기" width={36} height={36} />
           </button>
         </div>
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col">
           <label
             htmlFor="InviteEmail"
-            className="text-black-600 font-2lg-18px-medium"
+            className="mb-2 text-black-600 font-2lg-18px-medium"
           >
             이메일
           </label>
-          <input
-            id="InviteEmail"
+          <Input
+            id="invitedEmail"
+            label="이메일"
             type="email"
             placeholder="이메일을 입력하세요"
-            value={email}
-            onChange={e => setEmail(e.target.value)}
-            className="mb-5 w-full rounded border border-gray-200 p-2"
+            register={register}
+            errors={errors}
+            validation={{
+              required: '이메일을 입력해주세요',
+              pattern: {
+                value: /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/,
+                message: '잘못된 이메일 형식입니다.',
+              },
+            }}
           />
         </div>
         <div className="flex justify-center gap-2">
-          <button
-            onClick={onClose}
-            className="w-full rounded border border-gray-200 px-4 py-2 text-gray-400"
+          <SecondaryButton onClick={onClose}>취소</SecondaryButton>
+          <PrimaryButton
+            disabled={!isValid}
+            onClick={handleSubmit(handleCreateEmail)}
           >
-            취소
-          </button>
-          <button
-            onClick={handleCreateEmail}
-            className="w-full rounded bg-violet px-4 py-2 text-white"
-          >
-            생성
-          </button>
+            초대
+          </PrimaryButton>
         </div>
-      </div>
-    </div>
+      </Stack>
+    </Modal>
   );
 }
