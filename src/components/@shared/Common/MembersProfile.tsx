@@ -33,7 +33,7 @@ export default function MembersProfile() {
   return (
     <Avatar.Group
       className={cn(
-        'h-[38px] pl-0',
+        'h-[38px] pl-0 max-[428px]:hidden',
         dashboardMembers.members.length > 0 && 'pl-8 md:pl-10'
       )}
     >

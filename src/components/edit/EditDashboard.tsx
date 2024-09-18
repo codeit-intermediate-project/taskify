@@ -67,7 +67,7 @@ export default function EditDashboard({ dashboardId }: EditDashboardProps) {
       <PrimaryButton
         onClick={handleUpdate}
         disabled={!hasChanges}
-        className="h-14 w-full rounded-lg text-base shadow md:h-16 md:w-[488px] md:text-lg lg:w-[564px]"
+        className="h-14 w-[100%] max-w-full rounded-lg text-base shadow md:h-16 md:w-[488px] md:text-lg lg:w-[564px]"
       >
         변경
       </PrimaryButton>

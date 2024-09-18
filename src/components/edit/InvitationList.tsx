@@ -8,6 +8,7 @@ import Image from 'next/image';
 import InviteModal from '@components/edit/InviteModal';
 import Pagination from '@components/edit/Pagination';
 import usePagination from '@lib/hooks/usePagination';
+import showSuccessNotification from '@lib/utils/notifications/showSuccessNotification';
 import {
   addInvitation,
   deleteInvitation,
@@ -115,8 +116,7 @@ export default function InvitationList({ dashboardId }: InvitationListProps) {
   useEffect(() => {
     if (isDeleted && !isDeleteModalOpen && !alertDisplayed) {
       setTimeout(() => {
-        // eslint-disable-next-line no-alert
-        alert('삭제가 완료되었습니다.');
+        showSuccessNotification({ message: '삭제 완료!' });
         window.location.reload();
       }, 300);
       setAlertDisplayed(true);
