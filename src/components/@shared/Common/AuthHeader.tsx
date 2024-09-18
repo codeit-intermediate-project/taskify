@@ -57,7 +57,7 @@ export default function AuthHeader() {
                     width={20}
                     height={20}
                     src="/icons/add_box.png"
-                    alt="settings"
+                    alt="invitation"
                   />
                 </Rotate>
                 초대하기

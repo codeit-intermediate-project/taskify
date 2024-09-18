@@ -5,7 +5,6 @@ import Link from 'next/link';
 export default function LandingTop() {
   return (
     <div className="mb-[76px] mt-[102px] flex w-full flex-col items-center justify-center md:mb-[180px] md:mt-[164px]">
-      {/* 이미지에 애니메이션 적용 */}
       <motion.div
         variants={{
           hidden: { opacity: 0, y: 20 },
@@ -23,7 +22,6 @@ export default function LandingTop() {
         />
       </motion.div>
 
-      {/* 텍스트에 애니메이션 적용 */}
       <motion.div
         className="mt-[26px] flex flex-col flex-wrap items-center justify-center gap-[24px] md:mt-[48px] md:flex-row"
         variants={{
@@ -39,7 +37,6 @@ export default function LandingTop() {
         </h1>
       </motion.div>
 
-      {/* 버튼에 애니메이션 적용 */}
       <motion.div
         className="mt-[101px] flex h-[46px] w-[235px] items-center justify-center rounded-lg bg-violet text-white font-md-14px-medium md:mt-[109px] md:h-[52px] md:w-[280px]"
         variants={{
