@@ -5,7 +5,6 @@ import { useState } from 'react';
 import DashboardAddModal from '@components/@shared/Common/Modals/DashboardAddModal';
 import { useMyDashboard } from '@core/contexts/MyDashboardContext';
 import useCategorizedDashboards from '@lib/hooks/useCategorizedDashboards';
-import useCountItemsByWidth from '@lib/hooks/useCountItems';
 
 import DashboardGroup from './DashboardGroup';
 import CreateDashboardButton from './UI/CreateDashboardButton';
@@ -22,9 +21,8 @@ const JoinedDashboardList = () => {
     getCurrentDashboards,
     totalCreatedByMe,
     totalNotCreatedByMe,
+    itemsPerPage,
   } = useCategorizedDashboards();
-
-  const itemsPerPage = useCountItemsByWidth(3, 4, 6);
 
   // 작성자 기준 분류된 대시보드 가져오기
   const dashboards = {
