@@ -53,7 +53,7 @@ export default function ColumnList() {
     <>
       <div
         ref={divRef}
-        className="no-scrollbar flex snap-x flex-col overflow-hidden md:mx-0 md:max-w-full xl:min-h-[100vh] xl:flex-row xl:overflow-scroll"
+        className="no-scrollbar flex snap-x flex-col overflow-hidden dark:bg-black-500 md:mx-0 md:max-w-full xl:min-h-[100vh] xl:flex-row xl:overflow-scroll"
       >
         {Boolean(columnList?.length) &&
           columnList.map(

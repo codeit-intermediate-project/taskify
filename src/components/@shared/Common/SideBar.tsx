@@ -15,7 +15,7 @@ export default function SideBar() {
   const isMobile = device === 'mobile';
 
   return (
-    <Stack className="fixed bottom-0 left-0 top-0 z-50 w-[67px] items-center border-r border-border-gray bg-white pt-5 text-gray-400 md:w-40 md:items-stretch md:px-[13px] xl:w-[300px]">
+    <Stack className="fixed bottom-0 left-0 top-0 z-50 w-[67px] items-center border-r border-border-gray bg-white pt-5 text-gray-400 dark:border-r-black-500 dark:bg-black-600 md:w-40 md:items-stretch md:px-[13px] xl:w-[300px]">
       <Logo />
       <DashboardAddModal opened={opened} onClose={close}>
         <Flex className="mt-4 items-center justify-between md:mt-10">
