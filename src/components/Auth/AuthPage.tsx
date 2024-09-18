@@ -1,12 +1,12 @@
+/* eslint-disable import/order */
+/* eslint-disable import/order */
 import { useState, useMemo, useEffect } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
-
+import { useRouter } from 'next/navigation';
 import axios from 'axios';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
 
 import { useRoot } from '@core/contexts/RootContexts';
-
 import Modal from './AuthModal';
 import InputField from './InputField';
 
@@ -32,6 +32,7 @@ type LoginResponse = LoginResponseDto | ErrorResponse | undefined;
 
 export default function AuthPage({ mode }: AuthPageProps) {
   const { login, refreshUser } = useRoot();
+  const router = useRouter();
   const {
     register,
     handleSubmit,
@@ -39,12 +40,11 @@ export default function AuthPage({ mode }: AuthPageProps) {
     watch,
   } = useForm<FormValues>({ mode: 'onBlur' });
 
-  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [termsAccepted, setTermsAccepted] = useState(false);
-  const [isModalVisible, setIsModalVisible] = useState(false); // 모달 상태
-  const [modalMessage, setModalMessage] = useState(''); // 모달 메시지
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [modalMessage, setModalMessage] = useState('');
 
   const emailValue = watch('email');
   const passwordValue = watch('password');
@@ -83,27 +83,23 @@ export default function AuthPage({ mode }: AuthPageProps) {
           throw new Error(result.message || '회원가입에 실패했습니다.');
         }
       } else {
-        // 로그인 처리
+        // 일반 로그인 처리
         const loginResponse: LoginResponse = await login({
           email: data.email.trim(),
           password: data.password.trim(),
         } as LoginRequestDto);
 
-        // 타입 좁히기를 사용하여 loginResponse가 AxiosResponse인지 확인
         if (loginResponse && 'status' in loginResponse) {
           if (loginResponse.status === 201) {
             setModalMessage('로그인 성공!');
             refreshUser(loginResponse.user);
           }
         } else {
-          // 서버에서 받은 메시지 사용
           throw new Error('로그인에 실패했습니다.');
         }
       }
     } catch (error: unknown) {
-      // axios 에러 처리
       if (axios.isAxiosError(error)) {
-        // 에러 응답에서 메시지를 가져오거나 기본 메시지를 설정
         const errorMessage =
           (error.response?.data as { message?: string })?.message ||
           '로그인에 실패했습니다.';
@@ -114,7 +110,7 @@ export default function AuthPage({ mode }: AuthPageProps) {
         setModalMessage('알 수 없는 오류가 발생했습니다.');
       }
     } finally {
-      setIsModalVisible(true); // 성공이든 실패든 모달을 띄움
+      setIsModalVisible(true);
     }
   };
 
