@@ -53,8 +53,9 @@ export default function SideBarList() {
           <Flex
             key={dashboard.id}
             className={cn(
-              'h-[43px] items-center rounded hover:border-2 hover:border-blue',
-              dashboard.id === Number(dashboardid) && 'bg-violet-white'
+              'h-[43px] items-center rounded hover:border-2 hover:border-blue dark:text-gray-200 dark:hover:border-gray-400',
+              dashboard.id === Number(dashboardid) &&
+                'bg-violet-white dark:bg-black-700'
             )}
             onClick={() => handleDashboardClick(dashboard.id)}
           >

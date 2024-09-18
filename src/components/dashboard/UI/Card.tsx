@@ -36,7 +36,7 @@ export default function Card({
           onClickCard(card);
           openDetail();
         }}
-        className="mt-4 flex w-full flex-col gap-1 rounded-md border border-gray-200 bg-white px-3 pb-[5px] pt-3 transition-all duration-300 ease-in-out hover:shadow-lg md:flex-row md:gap-5 md:px-5 md:py-5 xl:flex-col xl:gap-4"
+        className="mt-4 flex w-full flex-col gap-1 rounded-md border border-gray-200 bg-white px-3 pb-[5px] pt-3 transition-all duration-300 ease-in-out hover:shadow-lg dark:border-black-500 dark:bg-black-500 md:flex-row md:gap-5 md:px-5 md:py-5 xl:flex-col xl:gap-4"
       >
         <div className="relative w-full pb-[60%] md:w-[90px] md:pb-[54px] xl:w-full xl:pb-[60%]">
           {card.imageUrl && (
@@ -69,7 +69,7 @@ export default function Card({
             <div className="flex items-center justify-between md:grow">
               <div className="flex gap-1.5">
                 <Image src={calendar} alt="마감일" width={18} height={18} />
-                <span className="text-gray-400 font-xs-12px-medium">
+                <span className="text-gray-400 font-xs-12px-medium dark:text-gray-300">
                   {restDayView === '날짜' ? formattedDueDate : formattedDDay}
                 </span>
               </div>
@@ -93,6 +93,11 @@ export default function Card({
         withCloseButton={false}
         size="80%"
         onClose={closeDetail}
+        styles={{
+          content: {
+            backgroundColor: '#333236',
+          },
+        }}
       >
         <CardDetailModal
           onClickDeleteCard={onClickDeleteCard}

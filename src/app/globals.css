@@ -92,7 +92,7 @@
     @apply flex items-center rounded-md bg-violet text-white;
   }
   .column-hover {
-    @apply flex items-center rounded-md bg-violet-white;
+    @apply flex items-center rounded-md bg-violet-white dark:bg-gray-400;
   }
 }
 

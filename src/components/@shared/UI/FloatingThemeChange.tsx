@@ -1,9 +1,12 @@
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 
-import useDarkMode from '@lib/hooks/useDarkMode';
+import { useTheme } from '@core/contexts/ThemeContext';
+import dark from '@icons/dark_mode.svg';
+import light from '@icons/light_mode.svg';
 
 export default function FloatingThemeChange() {
-  const { toggleDarkMode, darkMode } = useDarkMode();
+  const { toggleDarkMode, darkMode } = useTheme();
   const spring = {
     type: 'spring',
     stiffness: 700,
@@ -12,14 +15,14 @@ export default function FloatingThemeChange() {
   return (
     <button
       onClick={toggleDarkMode}
-      className={`${darkMode ? 'justify-end' : 'justify-start'} fixed bottom-[30px] right-[30px] flex h-[60px] w-[100px] cursor-pointer items-center rounded-full bg-[rgba(233,233,233,0.5)] px-1 py-3.5 opacity-30 shadow-md hover:opacity-100`}
+      className="fixed bottom-[30px] right-[30px] flex h-[30px] w-[50px] cursor-pointer items-center justify-start rounded-full bg-[rgba(233,229,96,0.73)] px-1 py-3.5 opacity-30 shadow-md hover:opacity-100 dark:justify-end dark:bg-[rgba(31,25,100,0.68)] md:h-[60px] md:w-[100px]"
     >
       <motion.div
-        className="h-[50px] w-[50px] rounded-full bg-white"
+        className="relative h-[25px] w-[25px] rounded-full bg-white md:h-[50px] md:w-[50px]"
         layout
         transition={spring}
       >
-        {darkMode ? '다크' : '안다크'}
+        <Image src={darkMode ? dark : light} alt="모드변경" fill />
       </motion.div>
     </button>
   );

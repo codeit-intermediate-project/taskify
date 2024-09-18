@@ -5,6 +5,7 @@ import React, { PropsWithChildren, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 
 import { useRoot } from '@core/contexts/RootContexts';
+import ThemeProvider from '@core/contexts/ThemeContext';
 
 import AuthHeader from '../Common/AuthHeader';
 import SideBar from '../Common/SideBar';
@@ -22,11 +23,11 @@ export default function DashboardLayout({ children }: PropsWithChildren) {
   }, [dashboardid, setDashboardid, id]);
 
   return (
-    <>
+    <ThemeProvider>
       {user ? <AuthHeader /> : <UnAuthHeader />}
       {user && <SideBar />}
       {children}
       <FloatingThemeChange />
-    </>
+    </ThemeProvider>
   );
 }

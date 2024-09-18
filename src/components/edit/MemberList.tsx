@@ -118,7 +118,7 @@ export default function MemberList({ dashboardId }: MemberListProps) {
   }, [isDeleted, isDeleteModalOpen, alertDisplayed]);
 
   return (
-    <div className="max-w-[92%] rounded-md bg-white p-6 shadow md:mx-0 md:max-w-[544px] xl:max-w-[620px]">
+    <div className="max-w-[92%] rounded-md bg-white p-6 shadow dark:bg-black-600 md:mx-0 md:max-w-[544px] xl:max-w-[620px]">
       <div className="mb-4 flex items-center justify-between">
         <h2 className="text-xl font-bold">구성원</h2>
         <Pagination
@@ -130,7 +130,9 @@ export default function MemberList({ dashboardId }: MemberListProps) {
       </div>
 
       <div>
-        <div className="mb-2 text-gray-600 font-lg-16px-regular">이름</div>
+        <div className="mb-2 text-gray-600 font-lg-16px-regular dark:text-gray-400">
+          이름
+        </div>
         {members.map((member: Member) => (
           <div
             key={member.id}
@@ -158,7 +160,7 @@ export default function MemberList({ dashboardId }: MemberListProps) {
             <button
               type="button"
               onClick={() => openDeleteModal(member.id)}
-              className="flex h-8 w-20 items-center justify-center rounded border border-solid border-gray-200 text-violet font-md-14px-medium"
+              className="flex h-8 w-20 items-center justify-center rounded border border-solid border-gray-200 text-violet font-md-14px-medium dark:border-gray-300 dark:bg-gray-300"
             >
               삭제
             </button>

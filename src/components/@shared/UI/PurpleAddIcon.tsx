@@ -6,7 +6,7 @@ import Rotate from '../animations/Rotate';
 
 export default function PurpleAddIcon() {
   return (
-    <span className="flex h-[22px] w-[22px] items-center justify-center rounded bg-violet-white">
+    <span className="flex h-[22px] w-[22px] items-center justify-center rounded bg-violet-white dark:bg-gray-400">
       <Rotate>
         <Image
           src={addPurple}

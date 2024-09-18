@@ -4,6 +4,8 @@ import React from 'react';
 
 import Image from 'next/image';
 
+import { useTheme } from '@core/contexts/ThemeContext';
+
 interface PaginationProps {
   currentPage: number;
   totalItems: number;
@@ -32,6 +34,7 @@ export default function Pagination({
       onPageChange(currentPage + 1);
     }
   };
+  const { darkMode } = useTheme();
 
   return (
     <nav className="flex items-center gap-2">
@@ -45,7 +48,7 @@ export default function Pagination({
           aria-label="이전 페이지로 이동"
         >
           <div
-            className="flex h-8 w-8 items-center justify-center border border-gray-200 md:h-10 md:w-10"
+            className="flex h-8 w-8 items-center justify-center border border-gray-200 dark:border-black-500 md:h-10 md:w-10"
             style={{
               borderTopLeftRadius: '4px',
               borderTopRightRadius: '0px',
@@ -54,7 +57,11 @@ export default function Pagination({
             }}
           >
             <Image
-              src="/icons/arrow_left.png"
+              src={
+                darkMode
+                  ? '/icons/arrow_left_dark.svg'
+                  : '/icons/arrow_left.png'
+              }
               alt="이전 페이지"
               width={16}
               height={16}
@@ -67,7 +74,7 @@ export default function Pagination({
           aria-label="다음 페이지로 이동"
         >
           <div
-            className="flex h-8 w-8 items-center justify-center border border-gray-200 md:h-10 md:w-10"
+            className="flex h-8 w-8 items-center justify-center border border-gray-200 dark:border-black-500 md:h-10 md:w-10"
             style={{
               borderTopLeftRadius: '0px',
               borderTopRightRadius: '4px',
@@ -76,7 +83,11 @@ export default function Pagination({
             }}
           >
             <Image
-              src="/icons/arrow_right.png"
+              src={
+                darkMode
+                  ? '/icons/arrow_right_dark.svg'
+                  : '/icons/arrow_right.png'
+              }
               alt="다음 페이지"
               width={16}
               height={16}
