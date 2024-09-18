@@ -16,7 +16,7 @@ const staggerVariants = {
   visible: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.3, // 자식 요소들이 0.3초 간격으로 애니메이션됨
+      staggerChildren: 0.3,
     },
   },
   hidden: { opacity: 0 },
@@ -27,7 +27,7 @@ export default function Home() {
   const router = useRouter();
 
   const { ref: topRef, inView: topInView } = useInView({
-    triggerOnce: false, // 다시 화면에 보일 때 애니메이션이 반복 실행되도록 설정
+    triggerOnce: false,
     threshold: 0.1,
   });
   const { ref: mainRef, inView: mainInView } = useInView({
