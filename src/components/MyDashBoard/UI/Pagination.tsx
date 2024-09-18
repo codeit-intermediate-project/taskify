@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { motion } from 'framer-motion';
 import Image from 'next/image';
 
 import arrowLeft from '@icons/arrow_left.png';
@@ -48,7 +49,8 @@ export default function Pagination({
         </p>
       )}
       <div className="flex gap-1">
-        <button
+        <motion.button
+          whileTap={{ scale: 0.8 }}
           type="button"
           onClick={handlePrePage}
           className={`h-10 w-10 rounded-[4px] border-gray-200 bg-white outline-1 ${currentPage === 1 ? 'opacity-50' : ''}`}
@@ -62,8 +64,9 @@ export default function Pagination({
             height={16}
             className="m-auto"
           />
-        </button>
-        <button
+        </motion.button>
+        <motion.button
+          whileTap={{ scale: 0.8 }}
           type="button"
           onClick={handleNextPage}
           className={`h-10 w-10 rounded-[4px] border-gray-200 bg-white outline-1 ${currentPage === totalPages ? 'opacity-50' : ''}`}
@@ -77,7 +80,7 @@ export default function Pagination({
             height={16}
             className="m-auto"
           />
-        </button>
+        </motion.button>
       </div>
       {!isMobile && (
         <p className="text-black-500 font-md-14px-regular">
