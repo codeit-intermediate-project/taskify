@@ -124,7 +124,7 @@ export default function InvitationList({ dashboardId }: InvitationListProps) {
   }, [isDeleted, isDeleteModalOpen, alertDisplayed]);
 
   return (
-    <div className="max-w-[92%] rounded-lg bg-white p-6 shadow md:mx-0 md:max-w-[544px] xl:max-w-[620px]">
+    <div className="max-w-[92%] rounded-lg bg-white p-6 shadow dark:border-black-600 dark:bg-black-600 dark:text-gray-200 md:mx-0 md:max-w-[544px] xl:max-w-[620px]">
       <div className="mb-4 flex items-center justify-between">
         <h2 className="font-lg-16px-bold md:font-xl-20px-bold">초대 내역</h2>
         <div className="flex items-center gap-4">
@@ -137,7 +137,7 @@ export default function InvitationList({ dashboardId }: InvitationListProps) {
           <button
             type="button"
             onClick={handleInviteClick}
-            className="hidden h-8 w-[105px] items-center justify-center gap-2 rounded border border-solid bg-violet text-white shadow font-md-14px-medium md:flex"
+            className="hidden h-8 w-[105px] items-center justify-center gap-2 rounded border border-solid bg-violet text-white shadow font-md-14px-medium dark:border-violet md:flex"
           >
             <Image
               src="/icons/add_box.png"
@@ -151,7 +151,9 @@ export default function InvitationList({ dashboardId }: InvitationListProps) {
       </div>
 
       <div className="mb-2 flex items-center justify-between">
-        <div className="text-gray-600 font-lg-16px-regular">이메일</div>
+        <div className="text-gray-600 font-lg-16px-regular dark:text-gray-400">
+          이메일
+        </div>
         <button
           type="button"
           className="flex h-8 w-[105px] items-center justify-center gap-2 rounded border border-solid bg-violet text-white shadow font-md-14px-medium md:hidden"

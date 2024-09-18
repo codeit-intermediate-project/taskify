@@ -33,7 +33,7 @@ export default function PointCard({ type }: MyComponentProps) {
 
   return (
     <motion.div
-      className={`mb-[59px] flex h-[686px] w-full flex-col items-center justify-between rounded-lg bg-[rgba(23,23,23,1)] md:h-[972px] md:items-start xl:h-[600px] xl:w-[1200px] xl:items-start ${type === '01' ? 'xl:flex-row' : 'xl:flex-row-reverse xl:justify-end'}`}
+      className={`mb-[59px] flex h-[686px] w-full flex-col items-center justify-between rounded-lg bg-[rgba(23,23,23,1)] dark:bg-[#000] md:h-[972px] md:items-start xl:h-[600px] xl:w-[1200px] xl:items-start ${type === '01' ? 'xl:flex-row' : 'xl:flex-row-reverse xl:justify-end'}`}
     >
       <motion.div className="md:pl-[60px]">
         <motion.div className="flex flex-col items-center md:items-start">
