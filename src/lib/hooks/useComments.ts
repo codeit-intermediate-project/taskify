@@ -12,6 +12,8 @@ import { useRoot } from '@core/contexts/RootContexts';
 import { CardServiceResponseDto } from '@core/dtos/CardsDto';
 import { CommentServiceDto } from '@core/dtos/CommentsDto';
 
+import useInfiniteScroll from './useInfiniteScroll';
+
 interface EditingComment {
   id: number;
   content: string;
@@ -19,16 +21,27 @@ interface EditingComment {
 
 function useComments(card: CardServiceResponseDto) {
   const [commentList, setCommentList] = useState<CommentServiceDto[]>([]);
+  const [cursorId, setCursorId] = useState<number | null>(null);
   const [editingComment, setEditingComment] = useState<EditingComment | null>(
     null
   );
   const { dashboardid } = useParams();
   const { user } = useRoot();
-  const LoadComments = useCallback(async () => {
-    const { comments } = await getComments(card.id);
+
+  const loadComments = useCallback(async () => {
+    const { comments, cursorId: nextCursorId } = await getComments(card.id);
     setCommentList(comments);
+    setCursorId(nextCursorId);
   }, [card.id]);
 
+  const loadMoreComments = async () => {
+    const { comments, cursorId: nextCursorId } = await getComments(
+      card.id,
+      cursorId
+    );
+    setCommentList(prev => [...prev, ...comments]);
+    setCursorId(nextCursorId);
+  };
   const onSubmitCreateCommentForm = async (content: string) => {
     if (!content.trim()) {
       return false;
@@ -43,6 +56,10 @@ function useComments(card: CardServiceResponseDto) {
     const data = await postComment(formData);
     setCommentList(prev => [data, ...prev]);
   };
+
+  const { targetRef } = useInfiniteScroll(() => {
+    loadMoreComments();
+  }, Boolean(cursorId));
 
   const onClickEditComment = (commentId: number, value: string) => {
     setEditingComment({ id: commentId, content: value });
@@ -70,8 +87,8 @@ function useComments(card: CardServiceResponseDto) {
   };
 
   useEffect(() => {
-    LoadComments();
-  }, [LoadComments]);
+    loadComments();
+  }, [loadComments]);
   return {
     commentList,
     onSubmitCreateCommentForm,
@@ -82,6 +99,7 @@ function useComments(card: CardServiceResponseDto) {
     onClickEditCancel,
     onClickEditComplete,
     onClickDeleteComment,
+    targetRef,
   };
 }
 

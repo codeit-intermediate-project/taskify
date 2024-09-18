@@ -23,6 +23,7 @@ export default function CardDetailComment({ card }: CommentProps) {
     onClickEditCancel,
     onClickEditComplete,
     onClickDeleteComment,
+    targetRef,
   } = useComments(card);
   const {
     register,
@@ -181,6 +182,7 @@ export default function CardDetailComment({ card }: CommentProps) {
               );
             })
           : null}
+        <div ref={targetRef} />
       </div>
     </>
   );
