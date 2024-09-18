@@ -11,7 +11,7 @@ import ConfirmDeleteModal from './ConfirmDeleteModal';
 
 interface EditColumnModalProps {
   closeEdit: () => void;
-  onSubmit: (title: string) => void;
+  onSubmit: (editedTitle: string) => Promise<boolean>;
   register: UseFormRegister<FieldValues>;
   errors: FieldErrors<FieldValues>;
   handleSubmit: UseFormHandleSubmit<FieldValues>;
@@ -36,14 +36,18 @@ export default function EditColumnModal({
     closeConfirm();
     closeEdit();
   };
+  const onSubmitAndClose = async (title: string) => {
+    const result = await onSubmit(title);
+
+    if (result) closeEdit();
+  };
   return (
     <>
       <form
-        className="relative flex flex-col"
         onSubmit={handleSubmit(data => {
-          onSubmit(data.editedTitle);
-          closeEdit();
+          onSubmitAndClose(data.editedTitle);
         })}
+        className="relative flex flex-col"
       >
         <label htmlFor="editedTitle" className="pb-2">
           컬럼 제목

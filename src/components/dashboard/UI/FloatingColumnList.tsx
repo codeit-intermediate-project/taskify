@@ -1,6 +1,8 @@
-import { useContext, useEffect, useRef } from 'react';
+import { useContext, useRef } from 'react';
 
-import { DashBoardContext } from '@core/contexts/DashBoardContext';
+import { motion } from 'framer-motion';
+
+import { DashBoardContext } from '@core/contexts/DashboardContext';
 
 interface FloatingColumnListProps {
   onClickMoveFloatingButton: (index: number) => void;
@@ -12,19 +14,30 @@ export default function FloatingColumnList({
 }: FloatingColumnListProps) {
   const { columnList } = useContext(DashBoardContext);
   const buttonRefs = useRef<HTMLButtonElement[] | null[]>([]);
-  useEffect(() => {
-    buttonRefs.current.forEach((button, index) => {
-      if (button && index === focusIndex) {
-        button.classList.add('focused-column');
-      } else {
-        button?.classList.remove('focused-column');
-      }
-    });
-  }, [focusIndex]);
+  const staggerContainer = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.05,
+      },
+    },
+  };
+
+  const item = {
+    hidden: { opacity: 1, x: 150 },
+    show: { opacity: 1, x: 0, transition: { duration: 0.3 } },
+  };
   return (
-    <div className="absolute right-10 top-[175px] hidden flex-col items-end gap-2 text-gray-300 xl:flex">
+    <motion.div
+      variants={staggerContainer}
+      initial="hidden"
+      animate="show"
+      className="flex flex-col"
+    >
       {columnList.map((column, index) => (
-        <button
+        <motion.button
+          variants={item}
           ref={el => {
             buttonRefs.current[index] = el;
           }}
@@ -32,11 +45,13 @@ export default function FloatingColumnList({
           onClick={() => {
             onClickMoveFloatingButton(index);
           }}
-          className="pointer hover:column-hover flex items-center gap-1 rounded-[20px] transition-all duration-300 ease-in-out"
+          className={`${index === focusIndex ? 'focused-column' : ''} columns pointer hover:column-hover flex w-full items-center gap-1 pl-2 transition-all duration-300 ease-in-out`}
         >
-          <span className="pr-1font-lg-16px-semibold">{column.title}</span>
-        </button>
+          <span className="overflow-hidden overflow-ellipsis whitespace-nowrap font-md-14px-medium">
+            {column.title}
+          </span>
+        </motion.button>
       ))}
-    </div>
+    </motion.div>
   );
 }

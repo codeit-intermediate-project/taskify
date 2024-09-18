@@ -9,7 +9,7 @@ import { Button, Input } from '@mantine/core';
 
 interface CreateColumnModalProps {
   onClose: () => void;
-  onSubmit: (title: string) => void;
+  onSubmit: (title: string) => Promise<boolean>;
   register: UseFormRegister<FieldValues>;
   errors: FieldErrors<FieldValues>;
   handleSubmit: UseFormHandleSubmit<FieldValues>;
@@ -22,12 +22,15 @@ export default function CreateColumnModal({
   register,
   errors,
 }: CreateColumnModalProps) {
+  const onSubmitAndClose = async (title: string) => {
+    const result = await onSubmit(title);
+    if (result) onClose();
+  };
   return (
     <form
       className="relative flex flex-col"
       onSubmit={handleSubmit(data => {
-        onSubmit(data.title);
-        onClose();
+        onSubmitAndClose(data.title);
       })}
     >
       <label htmlFor="title" className="pb-2">
@@ -43,8 +46,8 @@ export default function CreateColumnModal({
         id="title"
       />
       <p className="absolute top-[68px] text-red">
-        {typeof errors.editedTitle?.message === 'string'
-          ? errors.editedTitle.message
+        {typeof errors.title?.message === 'string'
+          ? errors.title.message
           : null}
       </p>
       <div className="flex h-[54px] justify-stretch gap-2 font-2lg-18px-medium">

@@ -6,11 +6,13 @@ import {
 } from '@core/dtos/CommentsDto';
 
 interface CommentResponseDto {
-  cursorId: number;
+  cursorId: number | null;
   comments: CommentServiceDto[];
 }
-export const getComments = async (cardId: number) => {
-  const res = await axios.get<CommentResponseDto>(`/comments?cardId=${cardId}`);
+export const getComments = async (cardId: number, cursorId?: number | null) => {
+  const res = await axios.get<CommentResponseDto>(
+    `/comments?cardId=${cardId}&size=5${cursorId ? `&cursorId=${cursorId}` : ''}`
+  );
   const { data } = res;
   return data;
 };

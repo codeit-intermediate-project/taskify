@@ -1,17 +1,19 @@
 'use client';
 
-import { useCallback, useContext, useEffect, useRef, useState } from 'react';
+import { useContext } from 'react';
 
 import { Modal } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 
 import CreateColumnModal from '@components/Modals/CreateColumnModal';
 import EditColumnModal from '@components/Modals/EditColumnModal';
-import { DashBoardContext } from '@core/contexts/DashBoardContext';
+import { DashBoardContext } from '@core/contexts/DashboardContext';
 import useColumns from '@lib/hooks/useColumns';
+import useScrollToColumn from '@lib/hooks/useScrollToColumn';
 
 import AddColumnButton from './UI/AddColumnButton';
 import Column from './UI/Column';
+import DashboardSideMenu from './UI/DashboardSideMenu';
 
 export default function ColumnList() {
   const {
@@ -20,10 +22,14 @@ export default function ColumnList() {
     handleSubmit,
     register,
     errors,
+    clearErrors,
     setValue,
     setTargetColumnId,
     onClickDeleteAtEditModal,
   } = useColumns();
+
+  const { divRef, columnRefs, focusIndex, onClickMoveFloatingButton } =
+    useScrollToColumn();
   const { columnList, dashboardColor: columnColor } =
     useContext(DashBoardContext);
   const [createColumnModal, { open: openCreate, close: closeCreate }] =
@@ -43,66 +49,6 @@ export default function ColumnList() {
     openCreate();
   };
 
-  const divRef = useRef<HTMLDivElement | null>(null);
-  const columnRefs = useRef<(HTMLDivElement | null)[]>([]);
-  const [focusIndex, setFocusIndex] = useState(0);
-
-  const onClickMoveFloatingButton = (index: number) => {
-    setFocusIndex(index);
-  };
-  const scrollToColumn = useCallback(() => {
-    const container = divRef.current;
-    const column = columnRefs.current[focusIndex];
-    if (container && column) {
-      column.scrollIntoView({ behavior: 'smooth', inline: 'start' });
-    }
-  }, [focusIndex]);
-
-  // 좌우로 스크롤 할 때 플로팅컬럼의 focus가 변경되는 로직 (디바운싱적용)
-  const debounceTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const handleScroll = useCallback(() => {
-    if (debounceTimeoutRef.current) {
-      clearTimeout(debounceTimeoutRef.current);
-    }
-
-    debounceTimeoutRef.current = setTimeout(() => {
-      const columnListScrollLeft = divRef.current?.scrollLeft;
-      if (columnListScrollLeft === undefined || columnListScrollLeft === null) {
-        setFocusIndex(0);
-        return;
-      }
-      const divideColumnIndex = columnListScrollLeft / 354;
-      const nextFocusIndex =
-        columnListScrollLeft % 354 > 177
-          ? Math.ceil(divideColumnIndex)
-          : Math.floor(divideColumnIndex);
-
-      if (nextFocusIndex === focusIndex) {
-        return;
-      }
-      if (nextFocusIndex >= columnRefs.current.length) {
-        setFocusIndex(columnRefs.current.length - 1);
-        return;
-      }
-      setFocusIndex(nextFocusIndex);
-    }, 200);
-  }, [debounceTimeoutRef, divRef, focusIndex, columnRefs, setFocusIndex]);
-
-  useEffect(() => {
-    // 버튼 눌러서 스크롤 되는 중에는 이벤트 잠깐 꺼짐
-    divRef.current?.removeEventListener('scroll', handleScroll);
-    scrollToColumn();
-    divRef.current?.addEventListener('scroll', handleScroll);
-  }, [focusIndex, handleScroll, scrollToColumn]);
-
-  useEffect(() => {
-    const currentDiv = divRef.current;
-    currentDiv?.addEventListener('scroll', handleScroll);
-
-    return () => {
-      currentDiv?.removeEventListener('scroll', handleScroll);
-    };
-  }, [handleScroll]);
   return (
     <>
       <div
@@ -123,12 +69,13 @@ export default function ColumnList() {
                 />
               )
           )}
+        <AddColumnButton open={onClickCreateOpen} clearErrors={clearErrors} />
+        <DashboardSideMenu
+          focusIndex={focusIndex}
+          onClickMoveFloatingButton={onClickMoveFloatingButton}
+          onClickCreateOpen={onClickCreateOpen}
+        />
       </div>
-      <AddColumnButton
-        open={onClickCreateOpen}
-        onClickMoveFloatingButton={onClickMoveFloatingButton}
-        focusIndex={focusIndex}
-      />
       <Modal
         opened={createColumnModal}
         padding={24}

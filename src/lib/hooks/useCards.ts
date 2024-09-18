@@ -1,20 +1,29 @@
-import { useContext, useEffect, useState } from 'react';
+import { useCallback, useContext, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 import dayjs from 'dayjs';
 import { useParams } from 'next/navigation';
 
 import { deleteCard, postCard, putCard } from '@core/api/cardApis';
-import { DashBoardContext } from '@core/contexts/DashBoardContext';
+import { DashBoardContext } from '@core/contexts/DashboardContext';
+import {
+  SortCardType,
+  useDashboardSideMenu,
+} from '@core/contexts/DashboardSideMenuContext';
 import {
   CardServiceResponseDto,
   CreateCardRequestDto,
   UpdateCardRequestDto,
 } from '@core/dtos/CardsDto';
+import showSuccessNotification from '@lib/utils/notifications/showSuccessNotification';
+
+import useInfiniteScroll from './useInfiniteScroll';
 
 export default function useCards(columnId: number) {
+  const { sortCard } = useDashboardSideMenu();
   const [cards, setCards] = useState<CardServiceResponseDto[]>([]);
-  const { cardList2D, moveCard } = useContext(DashBoardContext);
+  const [cursorId, setCursorId] = useState<number | null>(null);
+  const { cardList2D, moveCard, loadMoreCards } = useContext(DashBoardContext);
   const { dashboardid } = useParams();
   const {
     register,
@@ -33,6 +42,9 @@ export default function useCards(columnId: number) {
       dueDate: new Date().toString(),
     },
   });
+  const { targetRef } = useInfiniteScroll(() => {
+    loadMoreCards(columnId, cursorId);
+  }, Boolean(cursorId));
 
   // 카드 생성, 수정시 폼데이터 검사
   const requestCardFormValidator = (fieldData: CreateCardRequestDto) => {
@@ -90,6 +102,7 @@ export default function useCards(columnId: number) {
 
     const data = await postCard(formData);
     setCards(prev => [...prev, data]);
+    showSuccessNotification({ message: '할 일이 생성 되었습니다.' });
     return true;
   };
 
@@ -130,19 +143,52 @@ export default function useCards(columnId: number) {
 
     const data = await putCard(Number(cardId), formData);
     moveCard(columnId, data);
+    showSuccessNotification({ message: '할 일이 수정 되었습니다.' });
     return true;
   };
 
   const onClickDeleteCard = async (cardId: number) => {
     await deleteCard(cardId);
     setCards(prev => prev.filter(card => card.id !== cardId));
+    showSuccessNotification({ message: '할 일이 삭제 되었습니다.' });
   };
   useEffect(() => {
     const nextCards = cardList2D.find(
       cardList => cardList.columnId === columnId
     );
-    if (nextCards) setCards(nextCards.cardList);
+    if (nextCards) {
+      setCards(nextCards.cardList);
+      setCursorId(nextCards.cursorId);
+    }
   }, [cardList2D, columnId]);
+
+  // 카드 정렬 변경 로직
+  const handleCardsSort = useCallback(
+    (sortBy: SortCardType) => {
+      if (sortBy === '생성일 순') {
+        setCards(prev => {
+          return prev.sort((card, nextCard) => {
+            const first = new Date(card.createdAt).getTime();
+            const second = new Date(nextCard.createdAt).getTime();
+            return first - second;
+          });
+        });
+      } else if (sortBy === '마감일 순') {
+        setCards(prev => {
+          return prev.sort((card, nextCard) => {
+            const first = new Date(card.dueDate).getTime();
+            const second = new Date(nextCard.dueDate).getTime();
+            return first - second;
+          });
+        });
+      }
+    },
+    [setCards]
+  );
+
+  useEffect(() => {
+    handleCardsSort(sortCard);
+  }, [sortCard, handleCardsSort]);
 
   return {
     cards,
@@ -159,5 +205,6 @@ export default function useCards(columnId: number) {
     onClickDeleteCard,
     reset,
     clearErrors,
+    targetRef,
   };
 }
