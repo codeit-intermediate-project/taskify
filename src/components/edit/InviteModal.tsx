@@ -1,5 +1,4 @@
 /* eslint-disable import/order */
-/* eslint-disable jsx-a11y/control-has-associated-label */
 
 'use client';
 
@@ -85,7 +84,7 @@ export default function InviteModal({
             onClick={handleClose}
             className="text-xl font-bold text-gray-500"
           >
-            <Image src="/icons/X.png" alt="닫기" width={36} height={36} />
+            <Image src="/icons/x.png" alt="닫기" width={36} height={36} />
           </button>
         </div>
         <div className="flex flex-col">
