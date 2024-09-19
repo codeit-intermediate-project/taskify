@@ -55,7 +55,7 @@ export default function DeleteModal({
         <div className="mb-4 flex items-center justify-between">
           <h2 className="text-xl font-bold">삭제 확인</h2>
           <button onClick={onClose} className="text-xl font-bold text-gray-500">
-            <Image src="/icons/X.png" alt="닫기" width={36} height={36} />
+            <Image src="/icons/x.png" alt="닫기" width={36} height={36} />
           </button>
         </div>
         <div className="flex flex-col items-center gap-4">

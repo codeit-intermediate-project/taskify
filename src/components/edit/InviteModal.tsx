@@ -84,16 +84,14 @@ export default function InviteModal({
             onClick={handleClose}
             className="text-xl font-bold text-gray-500"
           >
-            <Image src="/icons/X.png" alt="닫기" width={36} height={36} />
+            <Image src="/icons/x.png" alt="닫기" width={36} height={36} />
           </button>
         </div>
         <div className="flex flex-col">
           <label
             htmlFor="InviteEmail"
             className="mb-2 text-black-600 font-2lg-18px-medium"
-          >
-            이메일
-          </label>
+          />
           <Input
             id="invitedEmail"
             label="이메일"
