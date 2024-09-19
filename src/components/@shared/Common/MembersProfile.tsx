@@ -33,25 +33,26 @@ export default function MembersProfile() {
   return (
     <Avatar.Group
       className={cn(
-        'h-[38px] pl-0',
+        'h-[38px] pl-0 max-[428px]:hidden',
         dashboardMembers.members.length > 0 && 'pl-8 md:pl-10'
       )}
     >
       {dashboardMembers.members &&
-        dashboardMembers.members
-          .slice(0, profileCount)
-          .map(member => (
-            <Avatar key={member.id}>
-              {member.profileImageUrl && (
-                <Image
-                  width={38}
-                  height={38}
-                  src={member.profileImageUrl}
-                  alt="member profile"
-                />
-              )}
-            </Avatar>
-          ))}
+        dashboardMembers.members.slice(0, profileCount).map(member => (
+          <Avatar
+            key={member.id}
+            className="dark:border-black-600 dark:bg-black-600"
+          >
+            {member.profileImageUrl && (
+              <Image
+                width={38}
+                height={38}
+                src={member.profileImageUrl}
+                alt="member profile"
+              />
+            )}
+          </Avatar>
+        ))}
       {profileMore !== 0 && <Avatar>+{profileMore}</Avatar>}
     </Avatar.Group>
   );

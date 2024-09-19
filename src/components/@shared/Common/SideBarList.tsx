@@ -61,8 +61,9 @@ export default function SideBarList() {
             <Flex
               key={dashboard.id}
               className={cn(
-                'h-[43px] items-center rounded hover:border-2 hover:border-blue',
-                dashboard.id === Number(dashboardid) && 'bg-violet-white'
+                'h-[43px] items-center rounded hover:border-2 hover:border-blue dark:hover:border-black-500',
+                dashboard.id === Number(dashboardid) &&
+                  'bg-violet-white dark:bg-black-500'
               )}
               onClick={() => handleDashboardClick(dashboard.id)}
             >
@@ -75,7 +76,7 @@ export default function SideBarList() {
               </button>
               {!isMobile && (
                 <Flex className="items-center gap-2">
-                  <span className="h-[26px] max-w-[75px] overflow-hidden text-ellipsis whitespace-nowrap font-lg-16px-medium xl:max-w-[200px] xl:font-2lg-18px-medium">
+                  <span className="h-[26px] max-w-[75px] overflow-hidden text-ellipsis whitespace-nowrap font-lg-16px-medium dark:text-gray-200 xl:max-w-[200px] xl:font-2lg-18px-medium">
                     {dashboard.title}
                   </span>
                   {dashboard.createdByMe && (

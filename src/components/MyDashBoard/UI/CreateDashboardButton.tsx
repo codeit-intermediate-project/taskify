@@ -10,7 +10,7 @@ const CreateDashboardButton = ({ onClick }: CreateDashboardButtonProps) => (
     <button
       type="button"
       onClick={onClick}
-      className="flex w-full items-center justify-center gap-3 rounded-lg border border-gray-200 bg-white px-5 py-[22px] font-lg-16px-semibold"
+      className="flex w-full items-center justify-center gap-3 rounded-lg border border-gray-200 bg-white px-5 py-[22px] font-lg-16px-semibold dark:border-black-600 dark:bg-black-600"
     >
       <p>새로운 대시보드</p>
       <PurpleAddIcon />

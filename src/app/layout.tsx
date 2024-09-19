@@ -1,4 +1,3 @@
-/* eslint-disable import/order */
 import '@mantine/core/styles.css';
 import '@mantine/notifications/styles.css';
 import './globals.css';
@@ -31,7 +30,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="ko">
       <body className={`${pretandard.variable}`}>
         <MantineProvider>
           <Notifications />

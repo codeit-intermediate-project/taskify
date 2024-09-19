@@ -42,21 +42,26 @@ export default function EditDashboard({ dashboardId }: EditDashboardProps) {
   };
 
   return (
-    <div className="max-w-[92%] rounded-lg bg-white p-6 shadow md:mx-0 md:max-w-[544px] xl:max-w-[620px]">
+    <div className="max-w-[92%] rounded-lg bg-white p-6 shadow dark:bg-black-600 md:mx-0 md:max-w-[544px] xl:max-w-[620px]">
       <h2 className="mb-4 text-xl font-bold">{dashboardName}</h2>
       <div className="mb-4">
-        <label htmlFor="dashboard-name" className="mb-2 block text-gray-700">
+        <label
+          htmlFor="dashboard-name"
+          className="mb-2 block text-gray-700 dark:text-gray-200"
+        >
           대시보드 이름
         </label>
         <input
           id="dashboard-name"
-          className="w-full rounded border border-gray-300 p-2"
+          className="w-full rounded border border-gray-300 p-2 dark:border-black-500 dark:bg-black-500 dark:text-gray-200"
           value={dashboardName}
           onChange={e => setDashboardName(e.target.value)}
         />
       </div>
       <div className="mb-6">
-        <div className="mb-2 block text-gray-700">색상 선택</div>
+        <div className="mb-2 block text-gray-700 dark:text-gray-200">
+          색상 선택
+        </div>
         <div className="align-start flex w-full">
           <DashboardColorPicker
             color={dashboardColor}

@@ -4,6 +4,8 @@ import React from 'react';
 
 import Image from 'next/image';
 
+import { useTheme } from '@core/contexts/ThemeContext';
+
 interface PaginationProps {
   currentPage: number;
   totalItems: number;
@@ -32,6 +34,7 @@ export default function Pagination({
       onPageChange(currentPage + 1);
     }
   };
+  const { darkMode } = useTheme();
 
   return (
     <nav className="flex items-center gap-2">
@@ -46,9 +49,13 @@ export default function Pagination({
           disabled={currentPage === 1}
           className={currentPage === 1 ? 'cursor-not-allowed opacity-50' : ''}
         >
-          <div className="flex h-8 w-8 items-center justify-center rounded-l border border-gray-200 md:h-10 md:w-10">
+          <div className="flex h-8 w-8 items-center justify-center rounded-l border border-gray-200 dark:border-black-500 md:h-10 md:w-10">
             <Image
-              src="/icons/arrow_left.png"
+              src={
+                darkMode
+                  ? '/icons/arrow_left_dark.svg'
+                  : '/icons/arrow_left.png'
+              }
               alt="이전 페이지"
               width={16}
               height={16}
@@ -65,9 +72,13 @@ export default function Pagination({
             currentPage === totalPages ? 'cursor-not-allowed opacity-50' : ''
           }
         >
-          <div className="flex h-8 w-8 items-center justify-center rounded-r border border-gray-200 md:h-10 md:w-10">
+          <div className="flex h-8 w-8 items-center justify-center rounded-r border border-gray-200 dark:border-black-500 md:h-10 md:w-10">
             <Image
-              src="/icons/arrow_right.png"
+              src={
+                darkMode
+                  ? '/icons/arrow_right_dark.svg'
+                  : '/icons/arrow_right.png'
+              }
               alt="다음 페이지"
               width={16}
               height={16}

@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
 import axios from 'axios';
@@ -35,9 +35,9 @@ export default function AuthPage({ mode }: AuthPageProps) {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isValid },
     watch,
-  } = useForm<FormValues>({ mode: 'onBlur' });
+  } = useForm<FormValues>({ mode: 'onChange' });
 
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
@@ -46,9 +46,9 @@ export default function AuthPage({ mode }: AuthPageProps) {
   const [isModalVisible, setIsModalVisible] = useState(false); // 모달 상태
   const [modalMessage, setModalMessage] = useState(''); // 모달 메시지
 
-  const emailValue = watch('email');
+  // const emailValue = watch('email');
   const passwordValue = watch('password');
-  const passwordConfirmValue = watch('passwordConfirm');
+  // const passwordConfirmValue = watch('passwordConfirm');
 
   // 모달이 닫힐 때 리다이렉트를 처리하는 useEffect
   useEffect(() => {
@@ -125,27 +125,27 @@ export default function AuthPage({ mode }: AuthPageProps) {
     }
   };
 
-  const isFormValid = useMemo(() => {
-    if (mode === 'signup') {
-      return (
-        termsAccepted &&
-        !Object.keys(errors).length &&
-        passwordValue === passwordConfirmValue
-      );
-    }
-    return (
-      Boolean(emailValue) &&
-      Boolean(passwordValue) &&
-      !Object.keys(errors).length
-    );
-  }, [
-    emailValue,
-    passwordValue,
-    passwordConfirmValue,
-    errors,
-    termsAccepted,
-    mode,
-  ]);
+  // const isFormValid = useMemo(() => {
+  //  if (mode === 'signup') {
+  //    return (
+  //      termsAccepted &&
+  //      !Object.keys(errors).length &&
+  //      passwordValue === passwordConfirmValue
+  //    );
+  //  }
+  //  return (
+  //    Boolean(emailValue) &&
+  //    Boolean(passwordValue) &&
+  //    !Object.keys(errors).length
+  //  );
+  // }, [
+  //  emailValue,
+  //  passwordValue,
+  //  passwordConfirmValue,
+  //  errors,
+  //  termsAccepted,
+  //  mode,
+  // ]);
 
   return (
     <div className="flex min-h-screen items-center justify-center p-4">
@@ -160,7 +160,7 @@ export default function AuthPage({ mode }: AuthPageProps) {
             className="cursor-pointer"
             onClick={() => router.push('/')} // 클라이언트 측에서만 작동
           />
-          <p className="mt-[8px] text-black-600 font-2lg-18px-medium md:mt-[10px] md:font-xl-20px-medium">
+          <p className="mt-[8px] text-black-600 font-2lg-18px-medium dark:text-gray-100 md:mt-[10px] md:font-xl-20px-medium">
             {mode === 'login'
               ? '오늘도 만나서 반가워요!'
               : '첫 방문을 환영합니다!'}
@@ -245,7 +245,7 @@ export default function AuthPage({ mode }: AuthPageProps) {
                 />
                 <label
                   htmlFor="terms"
-                  className="text-sm font-medium text-gray-700"
+                  className="text-sm font-medium text-gray-700 dark:text-gray-200"
                 >
                   이용약관에 동의합니다.
                 </label>
@@ -254,9 +254,9 @@ export default function AuthPage({ mode }: AuthPageProps) {
           )}
           <button
             type="submit"
-            disabled={!isFormValid}
+            disabled={!isValid}
             className={`h-[50px] w-full rounded-[8px] px-4 py-2 font-semibold text-white ${
-              isFormValid
+              isValid
                 ? 'bg-indigo-600 hover:bg-indigo-700'
                 : 'cursor-not-allowed bg-gray-300'
             } focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2`}
@@ -267,7 +267,7 @@ export default function AuthPage({ mode }: AuthPageProps) {
 
         {/* 하단 회원가입/로그인 링크 */}
         <div className="mt-4 flex items-center justify-center text-sm text-gray-600">
-          <p className="mr-2 text-gray-700">
+          <p className="mr-2 text-gray-700 dark:text-gray-500">
             {mode === 'login' ? '회원이 아니신가요?' : '이미 회원이신가요?'}
           </p>
           <button

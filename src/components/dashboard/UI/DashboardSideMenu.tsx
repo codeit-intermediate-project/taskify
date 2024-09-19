@@ -49,7 +49,7 @@ export default function DashboardSideMenu({
     >
       <Affix
         className="hidden items-start text-gray-400 xl:flex"
-        position={{ top: 120, right: 0 }}
+        position={{ top: 230, right: 0 }}
       >
         <AnimatePresence>
           {opened && (
@@ -66,10 +66,10 @@ export default function DashboardSideMenu({
                   handlers.toggle();
                   setIsAnimating(true);
                 }}
-                className="rounded-bl-lg rounded-tl-lg border border-r-0 bg-white p-2 shadow-md"
+                className="rounded-bl-lg rounded-tl-lg border border-r-0 bg-white p-2 shadow-md dark:border-black-500 dark:bg-black-500 dark:text-gray-200"
               >
                 {isAnimating ? (
-                  <div className="rounded-md bg-violet-white px-0.5 py-0.5">
+                  <div className="rounded-md bg-violet-white px-0.5 py-0.5 dark:bg-gray-400">
                     <Image
                       src={arrowLeft}
                       alt="펼치기"
@@ -78,12 +78,12 @@ export default function DashboardSideMenu({
                     />
                   </div>
                 ) : (
-                  <div className="rounded-md bg-violet-white px-0.5 py-0.5">
+                  <div className="rounded-md bg-violet-white px-0.5 py-0.5 dark:bg-gray-400">
                     <Image src={arrowRight} alt="접기" width={20} height={20} />
                   </div>
                 )}
               </button>
-              <div className="hidden w-[150px] flex-col gap-2 rounded-bl-lg border bg-white p-2 shadow-md xl:flex">
+              <div className="hidden w-[150px] flex-col gap-2 rounded-bl-lg border bg-white p-2 shadow-md dark:border-black-500 dark:bg-black-500 dark:text-gray-200 xl:flex">
                 <button
                   className="flex w-full items-center justify-between gap-2"
                   onClick={onClickCreateOpen}
@@ -145,10 +145,10 @@ export default function DashboardSideMenu({
               onClick={() => {
                 if (!isDragging) handlers.toggle();
               }}
-              className="rounded-bl-lg rounded-tl-lg border border-r-0 bg-white p-2 shadow-md"
+              className="rounded-bl-lg rounded-tl-lg border border-r-0 bg-white p-2 shadow-md dark:border-black-500 dark:bg-black-500 dark:text-gray-200"
             >
               {' '}
-              <div className="rounded-md bg-violet-white px-0.5 py-0.5">
+              <div className="rounded-md bg-violet-white px-0.5 py-0.5 dark:bg-gray-400">
                 <Image
                   onDragStart={e => {
                     e.preventDefault();
