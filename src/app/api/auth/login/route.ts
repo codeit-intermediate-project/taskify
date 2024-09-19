@@ -29,10 +29,7 @@ export async function POST(request: NextRequest) {
   const cookiesList = cookies();
   cookiesList.set('accessToken', accessToken);
 
-  return Response.json(
-    { hello: 'hello' },
-    {
-      status: 201,
-    }
-  );
+  return Response.json(undefined, {
+    status: 201,
+  });
 }
