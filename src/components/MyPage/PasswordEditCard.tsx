@@ -48,7 +48,7 @@ export default function PasswordConfirmCard() {
   return (
     <>
       {/* <PasswordEditModal opened={opened} onClose={close}>
-        {statusMessage} 
+        {statusMessage}
       </PasswordEditModal> */}
       <form className="z-10 flex flex-col gap-10 rounded-lg bg-white p-4 dark:bg-black-600">
         <h1 className="font-2lg-18px-bold md:font-2xl-24px-bold">

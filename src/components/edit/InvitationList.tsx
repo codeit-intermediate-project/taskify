@@ -16,6 +16,8 @@ import {
 } from '@core/api/columnApis';
 import DeleteModal from './DeleteModal';
 import { AxiosError } from 'axios';
+import findAxiosErrorMessage from '@lib/utils/findAxiosErrorMessage';
+import showErrorNotification from '@lib/utils/notifications/showErrorNotification';
 
 interface InvitationListProps {
   dashboardId: string;
@@ -79,6 +81,7 @@ export default function InvitationList({ dashboardId }: InvitationListProps) {
   };
 
   const handleAddInvitation = async (email: string) => {
+    setIsInviteModalOpen(false);
     if (!dashboardId) return;
 
     const newInvitation = await addInvitation(dashboardId, email);
@@ -88,7 +91,9 @@ export default function InvitationList({ dashboardId }: InvitationListProps) {
         { id: newInvitation.id, email: newInvitation.email },
       ]);
     }
-    setIsInviteModalOpen(false);
+    if (newInvitation instanceof AxiosError) {
+      showErrorNotification({ message: findAxiosErrorMessage(newInvitation) });
+    }
   };
 
   const openDeleteModal = (id: number) => {
