@@ -13,8 +13,8 @@ import {
 } from 'react';
 
 import axios from 'axios';
+import { useRouter } from 'next/navigation';
 
-import localInstance from '@core/api/localInstance';
 import useApi from '@lib/hooks/useApi';
 
 import type {
@@ -29,6 +29,7 @@ interface ContextValue {
   dashboardid: string | undefined;
   setDashboardid: Dispatch<SetStateAction<string | undefined>>;
   login: (body: LoginRequestDto) => Promise<LoginResponseDto | undefined>;
+  logout: () => void;
   dashboardsFlag: boolean;
   setDashboardsFlag: Dispatch<SetStateAction<boolean>>;
 }
@@ -39,22 +40,25 @@ const RootContext = createContext<ContextValue>({
   dashboardid: undefined,
   setDashboardid: () => {},
   login: async () => undefined,
+  logout: async () => {},
   dashboardsFlag: false,
   setDashboardsFlag: () => {},
 });
 
 export default function RootProvider({ children }: PropsWithChildren) {
   const [dashboardid, setDashboardid] = useState<string | undefined>(undefined);
-  const { data: loginData, callApi: postAuthLogin } = useApi<LoginResponseDto>(
-    '/auth/login',
-    'POST'
-  );
+  const {
+    data: loginData,
+    setData: setLoginData,
+    callApi: postAuthLogin,
+  } = useApi<LoginResponseDto>('/auth/login', 'POST');
   const {
     data: user,
     setData: setUser,
     callApi: getMe,
   } = useApi<UserServiceResponseDto>('/users/me', 'GET');
   const [dashboardsFlag, setDashboardsFlag] = useState(false);
+  const router = useRouter();
 
   /** 유저 정보를 최신상태로 만들고 싶을 때 사용 */
   const refreshUser = useCallback(
@@ -69,7 +73,7 @@ export default function RootProvider({ children }: PropsWithChildren) {
   const login = useCallback(
     async (body: LoginRequestDto): Promise<LoginResponseDto | undefined> => {
       const response = await postAuthLogin(body);
-      await localInstance.post('http://localhost:3000/api/auth/login', body);
+      // await localInstance.post('http://localhost:3000/api/auth/login', body);
       if (response && 'data' in response) {
         const { data, status } = response; // 필요한 필드를 추출
         return { ...data, status } as LoginResponseDto; // 올바른 구조로 반환
@@ -85,6 +89,15 @@ export default function RootProvider({ children }: PropsWithChildren) {
     },
     [postAuthLogin]
   );
+
+  const logout = useCallback(async () => {
+    if (!localStorage) return;
+
+    localStorage.removeItem('accessToken');
+    setLoginData(undefined);
+    setUser(undefined);
+    router.push('/');
+  }, [router, setLoginData, setUser]);
 
   useEffect(() => {
     if (localStorage.getItem('accessToken')) getMe(undefined);
@@ -110,10 +123,19 @@ export default function RootProvider({ children }: PropsWithChildren) {
       dashboardid,
       setDashboardid,
       login,
+      logout,
       dashboardsFlag,
       setDashboardsFlag,
     }),
-    [user, dashboardid, login, refreshUser, dashboardsFlag, setDashboardsFlag]
+    [
+      user,
+      dashboardid,
+      login,
+      refreshUser,
+      dashboardsFlag,
+      setDashboardsFlag,
+      logout,
+    ]
   );
 
   return <RootContext.Provider value={value}>{children}</RootContext.Provider>;
