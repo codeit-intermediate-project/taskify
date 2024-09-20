@@ -10,6 +10,7 @@ import PrimaryButton from '@components/@shared/UI/Button/PrimaryButton';
 import SecondaryButton from '@components/@shared/UI/Button/SecondaryButton';
 import postCreateDashboards from '@core/api/postDashboards';
 import { useRoot } from '@core/contexts/RootContexts';
+import { useTheme } from '@core/contexts/ThemeContext';
 import COLORS from '@lib/constants/themeConst';
 import useDevice, { DEVICE } from '@lib/hooks/useDevice';
 import findAxiosErrorMessage from '@lib/utils/findAxiosErrorMessage';
@@ -90,6 +91,7 @@ export default function DashboardAddModal({
     const { color: colorSet } = target.dataset;
     setColor(colorSet as ColorType);
   };
+  const { darkMode } = useTheme();
   return (
     <>
       <Modal
@@ -99,11 +101,20 @@ export default function DashboardAddModal({
         onClose={onClose}
         withCloseButton={false}
         centered
+        styles={
+          darkMode
+            ? {
+                content: {
+                  backgroundColor: '#333236',
+                },
+              }
+            : {}
+        }
       >
-        <Stack className="gap-4 md:p-4" onSubmit={handleSubmit(onSubmit)}>
+        <Stack className="black gap-4 md:p-4" onSubmit={handleSubmit(onSubmit)}>
           <h2 className="font-xl-20px-bold">새로운 대시보드</h2>
           <Input
-            className="border border-border-gray"
+            className="border border-border-gray dark:border-black-500 dark:bg-black-500"
             id="title"
             label="대시보드 이름"
             type="text"

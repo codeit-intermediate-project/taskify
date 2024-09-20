@@ -1,55 +1,59 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState } from 'react';
 
 import DashboardAddModal from '@components/@shared/Common/Modals/DashboardAddModal';
 import { useMyDashboard } from '@core/contexts/MyDashboardContext';
-import usePagination from '@lib/hooks/usePagination';
+import useCategorizedDashboards from '@lib/hooks/useCategorizedDashboards';
 
+import DashboardGroup from './DashboardGroup';
 import CreateDashboardButton from './UI/CreateDashboardButton';
-import DashboardCard from './UI/DashboardCard';
-import Pagination from './UI/Pagination';
 
-export default function JoinedDashboardList() {
-  const { localDashboards, loading, error } = useMyDashboard();
+const JoinedDashboardList = () => {
+  const { loading, error } = useMyDashboard();
   const [modalOpened, setModalOpened] = useState(false);
-  const itemsPerPage = 5;
-
-  const fetchDashboards = useCallback(
-    async (page: number, size: number) => {
-      const startIndex = (page - 1) * size;
-      return localDashboards.slice(startIndex, startIndex + size);
-    },
-    [localDashboards]
-  );
 
   const {
-    currentPage: paginationCurrentPage,
-    handlePageChange,
-    data: currentDashboards,
-  } = usePagination({
-    fetchData: fetchDashboards,
-    totalItems: localDashboards.length,
+    createdByMeCurrentPage,
+    notCreatedByMeCurrentPage,
+    setCreatedByMeCurrentPage,
+    setNotCreatedByMeCurrentPage,
+    getCurrentDashboards,
+    totalCreatedByMe,
+    totalNotCreatedByMe,
     itemsPerPage,
-  });
+  } = useCategorizedDashboards();
+
+  // 작성자 기준 분류된 대시보드 가져오기
+  const dashboards = {
+    createdByMe: getCurrentDashboards(true, createdByMeCurrentPage),
+    notCreatedByMe: getCurrentDashboards(false, notCreatedByMeCurrentPage),
+  };
 
   return (
-    <section className="flex flex-col gap-3">
+    <section className="flex flex-col gap-6">
       {loading && <div>나의 대시보드 목록을 불러오고 있습니다.</div>}
       {!loading && !error && (
         <>
-          <div className="grid grid-flow-row-dense grid-cols-1 grid-rows-6 gap-3 md:grid-cols-2 md:grid-rows-3 xl:grid-cols-3 xl:grid-rows-2">
-            <CreateDashboardButton onClick={() => setModalOpened(true)} />
-            {currentDashboards.map(dashboard => (
-              <DashboardCard key={dashboard.id} value={dashboard} />
-            ))}
+          <CreateDashboardButton onClick={() => setModalOpened(true)} />
+          <div className="flex flex-1 flex-col gap-6 md:flex-row">
+            <DashboardGroup
+              title="내 대시보드"
+              dashboards={dashboards.createdByMe}
+              currentPage={createdByMeCurrentPage}
+              totalItems={totalCreatedByMe}
+              onPageChange={setCreatedByMeCurrentPage}
+              itemsPerPage={itemsPerPage}
+            />
+            <DashboardGroup
+              title="참여 중인 대시보드"
+              dashboards={dashboards.notCreatedByMe}
+              currentPage={notCreatedByMeCurrentPage}
+              totalItems={totalNotCreatedByMe}
+              onPageChange={setNotCreatedByMeCurrentPage}
+              itemsPerPage={itemsPerPage}
+            />
           </div>
-          <Pagination
-            currentPage={paginationCurrentPage}
-            totalItems={localDashboards.length}
-            onPageChange={handlePageChange}
-            itemsPerPage={itemsPerPage}
-          />
           <DashboardAddModal
             opened={modalOpened}
             onClose={() => setModalOpened(false)}
@@ -58,4 +62,6 @@ export default function JoinedDashboardList() {
       )}
     </section>
   );
-}
+};
+
+export default JoinedDashboardList;

@@ -1,7 +1,10 @@
+/* eslint-disable jsx-a11y/no-static-element-interactions */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
 import React, { PropsWithChildren } from 'react';
 
 import { Avatar, Flex, Menu, Stack, Text } from '@mantine/core';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 
 import { useRoot } from '@core/contexts/RootContexts';
 
@@ -10,21 +13,32 @@ import LinkButton from '../UI/Button/LinkButton';
 function DropdownItem({ children, href }: PropsWithChildren<{ href: string }>) {
   return (
     <LinkButton
-      className="rounded border-0 hover:bg-violet-white hover:text-violet"
+      className="rounded border-0 hover:bg-violet-white hover:text-violet dark:hover:bg-gray-500"
       href={href}
     >
-      <Flex className="h-8 items-center justify-center">{children}</Flex>
+      <Flex className="h-8 items-center justify-center dark:text-gray-200">
+        {children}
+      </Flex>
     </LinkButton>
   );
 }
 
 export default function UserProfile() {
   const { user } = useRoot();
+  const router = useRouter();
+
+  const handleLogout = () => {
+    if (localStorage) {
+      localStorage.removeItem('accessToken');
+      router.push('/');
+      window.location.reload();
+    }
+  };
 
   return (
     <Menu>
       <Menu.Target>
-        <Flex className="cursor-pointer items-center gap-3 rounded-md px-3 py-2 hover:bg-violet-white">
+        <Flex className="cursor-pointer items-center gap-3 rounded-md px-3 py-2 hover:bg-violet-white dark:hover:bg-black-600">
           {user && (
             <>
               <Avatar>
@@ -44,9 +58,9 @@ export default function UserProfile() {
           )}
         </Flex>
       </Menu.Target>
-      <Menu.Dropdown className="rounded-lg p-1">
+      <Menu.Dropdown className="rounded-lg p-1 dark:border-gray-500 dark:bg-black-600">
         <Stack className="gap-1">
-          <DropdownItem href="/">로그아웃</DropdownItem>
+          <div onClick={handleLogout}>로그아웃</div>
           <DropdownItem href="/mypage">내 정보</DropdownItem>
           <DropdownItem href="/mydashboard">내 대시보드</DropdownItem>
         </Stack>

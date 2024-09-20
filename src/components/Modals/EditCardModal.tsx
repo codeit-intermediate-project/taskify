@@ -22,6 +22,7 @@ import {
 } from 'react-hook-form';
 
 import {
+  Avatar,
   Button,
   Combobox,
   Input,
@@ -36,12 +37,13 @@ import dayjs from 'dayjs';
 import Image from 'next/image';
 
 import ImageCropperModal from '@components/Modals/ImageCropperModal';
-import { DashBoardContext } from '@core/contexts/DashBoardContext';
+import { DashBoardContext } from '@core/contexts/DashboardContext';
+import { useTheme } from '@core/contexts/ThemeContext';
 import {
   CardServiceResponseDto,
   CreateCardRequestDto,
 } from '@core/dtos/CardsDto';
-import addPurple from '@icons/add_purple.png';
+import addPurple from '@icons/add_purple.svg';
 import { stringToHex, stringToRgba } from '@lib/utils/convertStringToColor';
 
 interface CreateCardModalProps {
@@ -225,6 +227,8 @@ export default function EditCardModal({
     columnId,
     setValue,
   ]);
+  const { darkMode } = useTheme();
+
   return (
     <>
       <form
@@ -243,9 +247,31 @@ export default function EditCardModal({
                 onClickColumnOption(value);
                 columnCombobox.closeDropdown();
               }}
+              styles={
+                darkMode
+                  ? {
+                      dropdown: {
+                        backgroundColor: '#4B4B4B',
+                        border: '#4B4B4B',
+                        color: '#D9D9D9',
+                      },
+                    }
+                  : {}
+              }
             >
               <Combobox.Target>
                 <InputBase
+                  styles={
+                    darkMode
+                      ? {
+                          input: {
+                            backgroundColor: '#4B4B4B',
+                            border: '#4B4B4B',
+                            color: '#D9D9D9',
+                          },
+                        }
+                      : {}
+                  }
                   className="pt-2.5"
                   component="button"
                   type="button"
@@ -282,6 +308,17 @@ export default function EditCardModal({
             <span className="font-2lg-18px-medium">담당자</span>
 
             <Combobox
+              styles={
+                darkMode
+                  ? {
+                      dropdown: {
+                        backgroundColor: '#4B4B4B',
+                        border: '#4B4B4B',
+                        color: '#D9D9D9',
+                      },
+                    }
+                  : {}
+              }
               store={assigneeCombobox}
               onOptionSubmit={value => {
                 setSelectedAssignee(value);
@@ -290,6 +327,17 @@ export default function EditCardModal({
             >
               <Combobox.Target>
                 <InputBase
+                  styles={
+                    darkMode
+                      ? {
+                          input: {
+                            backgroundColor: '#4B4B4B',
+                            border: '#4B4B4B',
+                            color: '#D9D9D9',
+                          },
+                        }
+                      : {}
+                  }
                   className="pt-2.5"
                   component="button"
                   type="button"
@@ -299,17 +347,17 @@ export default function EditCardModal({
                 >
                   {selectedAssignee ? (
                     <div className="flex items-center gap-2">
-                      {selectedAssigneeImg ? (
-                        <Image
-                          className="rounded-full"
-                          src={selectedAssigneeImg}
-                          width={25}
-                          height={25}
-                          alt="멤버 프로필"
-                        />
-                      ) : (
-                        <span className="h-[25px] w-[25px]" />
-                      )}
+                      <Avatar size="sm">
+                        {selectedAssigneeImg && (
+                          <Image
+                            className="rounded-full"
+                            src={selectedAssigneeImg}
+                            width={25}
+                            height={25}
+                            alt="멤버 프로필"
+                          />
+                        )}
+                      </Avatar>
                       <span className="font-lg-16px-regular">
                         {selectedAssignee}
                       </span>
@@ -335,17 +383,17 @@ export default function EditCardModal({
                 {members.map(member => (
                   <Combobox.Option value={member.nickname} key={member.id}>
                     <button className="flex items-center gap-2">
-                      {member.profileImageUrl ? (
-                        <Image
-                          className="rounded-full"
-                          src={member.profileImageUrl}
-                          width={25}
-                          height={25}
-                          alt="멤버 프로필"
-                        />
-                      ) : (
-                        <span className="h-[25px] w-[25px]" />
-                      )}
+                      <Avatar size="sm">
+                        {member.profileImageUrl && (
+                          <Image
+                            className="rounded-full"
+                            src={member.profileImageUrl}
+                            width={25}
+                            height={25}
+                            alt="멤버 프로필"
+                          />
+                        )}
+                      </Avatar>
                       <span>{member.nickname}</span>
                     </button>
                   </Combobox.Option>
@@ -360,6 +408,17 @@ export default function EditCardModal({
           label={<span className="font-2lg-18px-medium">제목</span>}
         >
           <Input
+            styles={
+              darkMode
+                ? {
+                    input: {
+                      backgroundColor: '#4B4B4B',
+                      border: '#4B4B4B',
+                      color: '#D9D9D9',
+                    },
+                  }
+                : {}
+            }
             {...register('title')}
             className="pt-2.5"
             placeholder="제목을 입력해 주세요."
@@ -371,6 +430,17 @@ export default function EditCardModal({
           label={<span className="font-2lg-18px-medium">설명</span>}
         >
           <Textarea
+            styles={
+              darkMode
+                ? {
+                    input: {
+                      backgroundColor: '#4B4B4B',
+                      border: '#4B4B4B',
+                      color: '#D9D9D9',
+                    },
+                  }
+                : {}
+            }
             placeholder="설명을 입력해 주세요."
             className="pt-2.5"
             {...register('description')}
@@ -386,6 +456,17 @@ export default function EditCardModal({
             control={control}
             render={({ field: { value, onChange } }) => (
               <DateInput
+                styles={
+                  darkMode
+                    ? {
+                        input: {
+                          backgroundColor: '#4B4B4B',
+                          border: '#4B4B4B',
+                          color: '#D9D9D9',
+                        },
+                      }
+                    : {}
+                }
                 value={
                   value
                     ? dayjs(value, 'YYYY. MM. DD HH:mm').toDate()
@@ -405,7 +486,7 @@ export default function EditCardModal({
         <div>
           <span className="font-2lg-18px-medium">태그</span>
 
-          <div className="mt-2 flex h-12 w-full items-center gap-2 whitespace-nowrap border border-[#ced4da] px-2.5">
+          <div className="mt-2 flex h-12 w-full items-center gap-2 whitespace-nowrap border border-[#ced4da] px-2.5 dark:border-black-500 dark:bg-black-500 dark:text-gray-200">
             <div>
               {tags &&
                 tags.map((tag, index) => {
@@ -414,10 +495,17 @@ export default function EditCardModal({
                     <span
                       key={keyValue}
                       className="mr-2 px-0.5 py-1 font-md-14px-regular"
-                      style={{
-                        color: `${stringToHex(tag)}`,
-                        backgroundColor: `${stringToRgba(tag, 0.1)}`,
-                      }}
+                      style={
+                        darkMode
+                          ? {
+                              color: `#cccccc`,
+                              backgroundColor: `${stringToRgba(tag, 0.5)}`,
+                            }
+                          : {
+                              color: `${stringToHex(tag)}`,
+                              backgroundColor: `${stringToRgba(tag, 0.1)}`,
+                            }
+                      }
                     >
                       {tag}
                     </span>
@@ -428,7 +516,7 @@ export default function EditCardModal({
               ref={tagInputRef}
               onKeyDown={handleKeyDownTag}
               placeholder="입력 후 Enter"
-              className="placeholder:text-gray-300 placeholder:font-md-14px-regular"
+              className="placeholder:text-gray-300 placeholder:font-md-14px-regular dark:border-black-500 dark:bg-black-500 dark:text-gray-200"
             />
           </div>
           <p className="pt-1 text-red">{errors.tags?.message}</p>
@@ -463,14 +551,18 @@ export default function EditCardModal({
               onClick={() => {
                 imgInputRef.current?.click();
               }}
-              className="flex h-[76px] w-[76px] items-center justify-center rounded-md bg-gray-50"
+              className="flex h-[76px] w-[76px] items-center justify-center rounded-md bg-gray-50 dark:border-black-500 dark:bg-black-500 dark:text-gray-200"
             >
-              <Image
-                src={addPurple}
-                alt="이미지 추가하기"
-                width={28}
-                height={28}
-              />
+              {darkMode ? (
+                '+'
+              ) : (
+                <Image
+                  src={addPurple}
+                  alt="이미지 추가하기"
+                  width={28}
+                  height={28}
+                />
+              )}
             </button>
           )}
           <input
@@ -484,7 +576,7 @@ export default function EditCardModal({
         <div className="flex h-[54px] w-full gap-2">
           <Button
             type="button"
-            className="h-full grow border-gray-200 bg-white text-gray-400"
+            className="h-full grow border-gray-200 bg-white text-gray-400 dark:border-black-500 dark:bg-black-500 dark:text-gray-200"
             onClick={closeEdit}
           >
             취소

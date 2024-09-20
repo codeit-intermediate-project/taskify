@@ -15,7 +15,7 @@ export default function SecondaryButton({
   return (
     <Button
       type="submit"
-      className="border border-border-gray"
+      className="border border-border-gray dark:border-black-500"
       onClick={onClick}
       disabled={disabled}
     >

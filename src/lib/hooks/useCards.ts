@@ -5,16 +5,20 @@ import dayjs from 'dayjs';
 import { useParams } from 'next/navigation';
 
 import { deleteCard, postCard, putCard } from '@core/api/cardApis';
-import { DashBoardContext } from '@core/contexts/DashBoardContext';
+import { DashBoardContext } from '@core/contexts/DashboardContext';
 import {
   CardServiceResponseDto,
   CreateCardRequestDto,
   UpdateCardRequestDto,
 } from '@core/dtos/CardsDto';
+import showSuccessNotification from '@lib/utils/notifications/showSuccessNotification';
+
+import useInfiniteScroll from './useInfiniteScroll';
 
 export default function useCards(columnId: number) {
   const [cards, setCards] = useState<CardServiceResponseDto[]>([]);
-  const { cardList2D, moveCard } = useContext(DashBoardContext);
+  const [cursorId, setCursorId] = useState<number | null>(null);
+  const { cardList2D, moveCard, loadMoreCards } = useContext(DashBoardContext);
   const { dashboardid } = useParams();
   const {
     register,
@@ -33,6 +37,9 @@ export default function useCards(columnId: number) {
       dueDate: new Date().toString(),
     },
   });
+  const { targetRef } = useInfiniteScroll(() => {
+    loadMoreCards(columnId, cursorId);
+  }, Boolean(cursorId));
 
   // 카드 생성, 수정시 폼데이터 검사
   const requestCardFormValidator = (fieldData: CreateCardRequestDto) => {
@@ -90,6 +97,7 @@ export default function useCards(columnId: number) {
 
     const data = await postCard(formData);
     setCards(prev => [...prev, data]);
+    showSuccessNotification({ message: '할 일이 생성 되었습니다.' });
     return true;
   };
 
@@ -130,18 +138,23 @@ export default function useCards(columnId: number) {
 
     const data = await putCard(Number(cardId), formData);
     moveCard(columnId, data);
+    showSuccessNotification({ message: '할 일이 수정 되었습니다.' });
     return true;
   };
 
   const onClickDeleteCard = async (cardId: number) => {
     await deleteCard(cardId);
     setCards(prev => prev.filter(card => card.id !== cardId));
+    showSuccessNotification({ message: '할 일이 삭제 되었습니다.' });
   };
   useEffect(() => {
     const nextCards = cardList2D.find(
       cardList => cardList.columnId === columnId
     );
-    if (nextCards) setCards(nextCards.cardList);
+    if (nextCards) {
+      setCards(nextCards.cardList);
+      setCursorId(nextCards.cursorId);
+    }
   }, [cardList2D, columnId]);
 
   return {
@@ -159,5 +172,6 @@ export default function useCards(columnId: number) {
     onClickDeleteCard,
     reset,
     clearErrors,
+    targetRef,
   };
 }

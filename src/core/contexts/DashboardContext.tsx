@@ -17,6 +17,7 @@ import { MemberApplicationServiceResponseDto } from '@core/dtos/MembersDto';
 
 export interface CardList2D {
   columnId: number;
+  cursorId: number;
   cardList: CardServiceResponseDto[];
 }
 
@@ -33,19 +34,21 @@ export interface DashBoardContextValue {
     beforeColumnId: number,
     afterMoveCard: CardServiceResponseDto
   ) => void;
+  loadMoreCards: (columnId: number, cursorId: number | null) => void;
 }
 
 const DEFAULT_VALUE: DashBoardContextValue = {
   cardList2D: [
     {
       columnId: 0,
+      cursorId: 0,
       cardList: [
         {
           id: 0,
           title: '',
           description: '',
           tags: [],
-          dueDate: null,
+          dueDate: new Date(),
           assignee: null,
           imageUrl: null,
           teamId: '',
@@ -71,6 +74,7 @@ const DEFAULT_VALUE: DashBoardContextValue = {
   dashboardColor: '',
   members: [],
   moveCard: () => {},
+  loadMoreCards: () => {},
 };
 
 export const DashBoardContext =
@@ -90,13 +94,35 @@ function DashBoardProvider({ children }: PropsWithChildren) {
 
   const { dashboardid } = useParams();
   const loadCards = useCallback(async (columnId: number) => {
-    const nextCards = await getCards(columnId);
-    if (nextCards.length) {
-      setCardList2D(prev => [...prev, { columnId, cardList: nextCards }]);
+    const { cards, cursorId } = await getCards(columnId);
+    if (cards.length) {
+      setCardList2D(prev => [...prev, { columnId, cursorId, cardList: cards }]);
     } else {
-      setCardList2D(prev => [...prev, { columnId, cardList: [] }]);
+      setCardList2D(prev => [...prev, { columnId, cursorId, cardList: [] }]);
     }
   }, []);
+
+  const loadMoreCards = useCallback(
+    async (columnId: number, cursorId: number | null) => {
+      if (!cursorId) return;
+      const { cards, cursorId: nextCursorId } = await getCards(
+        columnId,
+        cursorId
+      );
+      setCardList2D(prevCardList2D =>
+        prevCardList2D.map(prevCardList =>
+          prevCardList.columnId === columnId
+            ? {
+                ...prevCardList,
+                cursorId: nextCursorId,
+                cardList: [...prevCardList.cardList, ...cards],
+              }
+            : prevCardList
+        )
+      );
+    },
+    []
+  );
 
   const moveCard = useCallback(
     (beforeColumnId: number, afterMoveCard: CardServiceResponseDto) => {
@@ -166,6 +192,7 @@ function DashBoardProvider({ children }: PropsWithChildren) {
       dashboardColor,
       members,
       moveCard,
+      loadMoreCards,
     }),
     [
       cardList2D,
@@ -175,6 +202,7 @@ function DashBoardProvider({ children }: PropsWithChildren) {
       dashboardColor,
       members,
       moveCard,
+      loadMoreCards,
     ]
   );
   return (

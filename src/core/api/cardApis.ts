@@ -8,12 +8,12 @@ import { MembersResponseDto } from '@core/dtos/MembersDto';
 
 import axios from './instance';
 
-export const getCards = async (columnId: number) => {
+export const getCards = async (columnId: number, cursorId?: number) => {
   const res = await axios.get<GetCardsResponseDto>(
-    `/cards?size=10&columnId=${columnId}`
+    `/cards?size=4&columnId=${columnId}${cursorId ? `&cursorId=${cursorId}` : ''}`
   );
   const { data } = res;
-  return data.cards;
+  return data;
 };
 
 export const deleteCard = async (cardId: number) => {
