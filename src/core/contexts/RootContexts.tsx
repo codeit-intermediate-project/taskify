@@ -16,6 +16,7 @@ import axios from 'axios';
 import { useRouter } from 'next/navigation';
 
 import useApi from '@lib/hooks/useApi';
+import showSuccessNotification from '@lib/utils/notifications/showSuccessNotification';
 
 import type {
   LoginRequestDto,
@@ -97,6 +98,7 @@ export default function RootProvider({ children }: PropsWithChildren) {
     setLoginData(undefined);
     setUser(undefined);
     router.push('/');
+    showSuccessNotification({ message: '로그아웃 되었습니다.' });
   }, [router, setLoginData, setUser]);
 
   useEffect(() => {
