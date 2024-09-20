@@ -8,6 +8,7 @@ import Image from 'next/image';
 import InviteModal from '@components/edit/InviteModal';
 import Pagination from '@components/edit/Pagination';
 import usePagination from '@lib/hooks/usePagination';
+import showSuccessNotification from '@lib/utils/notifications/showSuccessNotification';
 import {
   addInvitation,
   deleteInvitation,
@@ -15,6 +16,8 @@ import {
 } from '@core/api/columnApis';
 import DeleteModal from './DeleteModal';
 import { AxiosError } from 'axios';
+import findAxiosErrorMessage from '@lib/utils/findAxiosErrorMessage';
+import showErrorNotification from '@lib/utils/notifications/showErrorNotification';
 
 interface InvitationListProps {
   dashboardId: string;
@@ -78,6 +81,7 @@ export default function InvitationList({ dashboardId }: InvitationListProps) {
   };
 
   const handleAddInvitation = async (email: string) => {
+    setIsInviteModalOpen(false);
     if (!dashboardId) return;
 
     const newInvitation = await addInvitation(dashboardId, email);
@@ -87,7 +91,9 @@ export default function InvitationList({ dashboardId }: InvitationListProps) {
         { id: newInvitation.id, email: newInvitation.email },
       ]);
     }
-    setIsInviteModalOpen(false);
+    if (newInvitation instanceof AxiosError) {
+      showErrorNotification({ message: findAxiosErrorMessage(newInvitation) });
+    }
   };
 
   const openDeleteModal = (id: number) => {
@@ -115,8 +121,7 @@ export default function InvitationList({ dashboardId }: InvitationListProps) {
   useEffect(() => {
     if (isDeleted && !isDeleteModalOpen && !alertDisplayed) {
       setTimeout(() => {
-        // eslint-disable-next-line no-alert
-        alert('삭제가 완료되었습니다.');
+        showSuccessNotification({ message: '삭제 완료!' });
         window.location.reload();
       }, 300);
       setAlertDisplayed(true);
@@ -124,7 +129,7 @@ export default function InvitationList({ dashboardId }: InvitationListProps) {
   }, [isDeleted, isDeleteModalOpen, alertDisplayed]);
 
   return (
-    <div className="max-w-[92%] rounded-lg bg-white p-6 shadow md:mx-0 md:max-w-[544px] xl:max-w-[620px]">
+    <div className="max-w-[92%] rounded-lg bg-white p-6 shadow dark:border-black-600 dark:bg-black-600 dark:text-gray-200 md:mx-0 md:max-w-[544px] xl:max-w-[620px]">
       <div className="mb-4 flex items-center justify-between">
         <h2 className="font-lg-16px-bold md:font-xl-20px-bold">초대 내역</h2>
         <div className="flex items-center gap-4">
@@ -137,7 +142,7 @@ export default function InvitationList({ dashboardId }: InvitationListProps) {
           <button
             type="button"
             onClick={handleInviteClick}
-            className="hidden h-8 w-[105px] items-center justify-center gap-2 rounded border border-solid bg-violet text-white shadow font-md-14px-medium md:flex"
+            className="hidden h-8 w-[105px] items-center justify-center gap-2 rounded border border-solid bg-violet text-white shadow font-md-14px-medium dark:border-violet md:flex"
           >
             <Image
               src="/icons/add_box.png"
@@ -151,7 +156,9 @@ export default function InvitationList({ dashboardId }: InvitationListProps) {
       </div>
 
       <div className="mb-2 flex items-center justify-between">
-        <div className="text-gray-600 font-lg-16px-regular">이메일</div>
+        <div className="text-gray-600 font-lg-16px-regular dark:text-gray-400">
+          이메일
+        </div>
         <button
           type="button"
           className="flex h-8 w-[105px] items-center justify-center gap-2 rounded border border-solid bg-violet text-white shadow font-md-14px-medium md:hidden"

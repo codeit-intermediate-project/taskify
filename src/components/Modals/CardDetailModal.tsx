@@ -8,6 +8,7 @@ import Image from 'next/image';
 import CardDetailComment from '@components/dashboard/CardDetailComment';
 import DropDownEditMenu from '@components/dashboard/UI/DropDownEditMenu';
 import { DashBoardContext } from '@core/contexts/DashboardContext';
+import { useTheme } from '@core/contexts/ThemeContext';
 import { CardServiceResponseDto } from '@core/dtos/CardsDto';
 import close from '@icons/x.png';
 import convertHexToRGBA from '@lib/utils/convertHexToRGBA';
@@ -42,6 +43,7 @@ export default function CardDetailModal({
       setColumnTitle(findColumn?.title);
     }
   }, [card.columnId, columnList]);
+  const { darkMode } = useTheme();
   return (
     <>
       <div className="md:px-4">
@@ -112,10 +114,17 @@ export default function CardDetailModal({
                   <span
                     key={`${tag},${index * card.id}`}
                     className="flex h-7 items-center rounded px-1.5 font-md-14px-regular md:h-[28px]"
-                    style={{
-                      color: `${stringToHex(tag)}`,
-                      backgroundColor: `${stringToRgba(tag, 0.1)}`,
-                    }}
+                    style={
+                      darkMode
+                        ? {
+                            color: `#cccccc`,
+                            backgroundColor: `${stringToRgba(tag, 0.5)}`,
+                          }
+                        : {
+                            color: `${stringToHex(tag)}`,
+                            backgroundColor: `${stringToRgba(tag, 0.1)}`,
+                          }
+                    }
                   >
                     {tag}
                   </span>

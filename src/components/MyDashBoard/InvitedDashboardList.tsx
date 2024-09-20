@@ -89,7 +89,7 @@ function InvitedDashboardList() {
   };
 
   return (
-    <section className="flex flex-col gap-6 rounded-2xl bg-white px-6 pb-8 pt-6">
+    <section className="flex flex-col gap-6 rounded-2xl bg-white px-6 pb-8 pt-6 dark:bg-black-600">
       <h1
         className="whitespace-normal break-words font-2xl-24px-bold max-md:font-xl-20px-bold"
         style={{ wordBreak: 'keep-all', overflowWrap: 'break-word' }}

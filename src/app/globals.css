@@ -80,7 +80,7 @@
       'Segoe UI Emoji',
       'Segoe UI Symbol',
       sans-serif;
-    @apply bg-gray-50 text-black-600;
+    @apply bg-gray-50 text-black-600 dark:bg-black-700 dark:text-gray-200;
   }
   input {
     outline: none;
@@ -92,7 +92,7 @@
     @apply flex items-center rounded-md bg-violet text-white;
   }
   .column-hover {
-    @apply flex items-center rounded-md bg-violet-white;
+    @apply flex items-center rounded-md bg-violet-white dark:bg-gray-400;
   }
 }
 

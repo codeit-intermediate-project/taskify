@@ -5,6 +5,7 @@ import { Avatar, Textarea } from '@mantine/core';
 import dayjs from 'dayjs';
 import Image from 'next/image';
 
+import { useTheme } from '@core/contexts/ThemeContext';
 import { CardServiceResponseDto } from '@core/dtos/CardsDto';
 import useComments from '@lib/hooks/useComments';
 
@@ -54,6 +55,7 @@ export default function CardDetailComment({ card }: CommentProps) {
       setValue('editedContent', editingComment.content);
     }
   }, [editingComment?.id, editingComment?.content, setValue]);
+  const { darkMode } = useTheme();
   return (
     <>
       <form
@@ -68,14 +70,25 @@ export default function CardDetailComment({ card }: CommentProps) {
           <Textarea
             autosize
             minRows={5}
-            styles={{ input: { width: '100%' } }}
+            styles={
+              darkMode
+                ? {
+                    input: {
+                      width: '100%',
+                      backgroundColor: '#4B4B4B',
+                      border: '#4B4B4B',
+                      color: '#D9D9D9',
+                    },
+                  }
+                : {}
+            }
             {...register('content', {
               maxLength: { value: 250, message: '내용이 너무 많습니다.' },
             })}
             placeholder="댓글 작성하기"
             className="w-full resize-none text-wrap placeholder:font-md-14px-regular"
           />
-          <button className="absolute bottom-3 right-3 flex h-[28px] w-[84px] items-center justify-center border text-violet md:h-[33px]">
+          <button className="absolute bottom-3 right-3 flex h-[28px] w-[84px] items-center justify-center border text-violet dark:border-gray-400 dark:bg-gray-400 dark:text-gray-200 md:h-[33px]">
             입력
           </button>
         </div>
@@ -120,14 +133,25 @@ export default function CardDetailComment({ card }: CommentProps) {
                     {editingComment?.id === comment.id ? (
                       <Textarea
                         autosize
-                        styles={{ input: { width: '100%' } }}
+                        styles={
+                          darkMode
+                            ? {
+                                input: {
+                                  width: '100%',
+                                  backgroundColor: '#4B4B4B',
+                                  border: '#4B4B4B',
+                                  color: '#D9D9D9',
+                                },
+                              }
+                            : {}
+                        }
                         {...register('editedContent', {
                           maxLength: {
                             value: 250,
                             message: '내용이 너무 많습니다.',
                           },
                         })}
-                        className='font-md-14px-regular" w-full rounded-lg border outline-none'
+                        className='font-md-14px-regular" w-full rounded-lg border outline-none dark:border-none'
                       />
                     ) : (
                       <p className="pb-1 font-md-14px-regular">
