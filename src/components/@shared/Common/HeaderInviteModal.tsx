@@ -102,7 +102,7 @@ export default function HeaderInviteModal({
               onClick={onClose}
               className="text-xl font-bold text-gray-500"
             >
-              <Image src="/icons/x.png" alt="닫기" width={36} height={36} />
+              <Image src="/icons/X.png" alt="닫기" width={36} height={36} />
             </button>
           </div>
           <div className="flex flex-col gap-2">
@@ -124,9 +124,7 @@ export default function HeaderInviteModal({
             />
           </div>
           <div className="flex justify-center gap-2">
-            <SecondaryButton disabled={false} onClick={onClose}>
-              취소
-            </SecondaryButton>
+            <SecondaryButton onClick={onClose}>취소</SecondaryButton>
             <PrimaryButton disabled={!isValid} onClick={handleSubmit(onSubmit)}>
               초대
             </PrimaryButton>
