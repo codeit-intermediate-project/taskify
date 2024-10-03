@@ -6,7 +6,6 @@ import { useInView } from 'react-intersection-observer';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 
-import UnAutherHeader from '@components/Common/UnAuthHeader';
 import LandingBottom from '@components/Home/LandingBottom';
 import LandingMain from '@components/Home/LandingMain';
 import LandingTop from '@components/Home/LandingTop';
@@ -57,8 +56,6 @@ export default function Home() {
 
   return (
     <>
-      <UnAutherHeader />
-
       <motion.div
         ref={topRef}
         initial="hidden"

@@ -9,7 +9,7 @@ import { AxiosError } from 'axios';
 import FileInput from '@components/@shared/Common/Inputs/FileInput';
 import Input from '@components/@shared/Common/Inputs/Input';
 import PrimaryButton from '@components/@shared/UI/Button/PrimaryButton';
-import postImageUpload from '@core/api/postImageUpload';
+import localInstance from '@core/api/localInstance';
 import putMyProfile from '@core/api/putMyProfile';
 import { useRoot } from '@core/contexts/RootContexts';
 import findAxiosErrorMessage from '@lib/utils/findAxiosErrorMessage';
@@ -47,7 +47,16 @@ export default function ProfileEditCard() {
      */
     if (image instanceof File) {
       formData.append('image', image);
-      imgURL = await postImageUpload(formData);
+      // imgURL = await postImageUpload(formData);
+      // 테스트 코드
+      const headers = {
+        'Content-Type': 'multipart/form-data',
+      };
+      const res = await localInstance.post('/api/users/me/image', formData, {
+        headers,
+        withCredentials: true,
+      });
+      imgURL = res.data.profileImageUrl;
       /** 이미지 업로드가 에러날 상황을 찾을 수 없음 === 에러 핸들링 불가 */
     }
     const res = await putMyProfile({
